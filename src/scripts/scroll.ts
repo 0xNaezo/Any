@@ -46,7 +46,13 @@ export function initScroll(reducedMotion: boolean) {
 
     event.preventDefault();
     scrollToTarget(toTop ? 0 : target!);
-    if (!toTop) history.replaceState(null, '', hash);
+    if (!toTop) {
+      try {
+        history.replaceState(null, '', hash);
+      } catch {
+        // sandboxed frames may refuse history changes; scrolling still works
+      }
+    }
 
     // move focus for keyboard and screen-reader users
     const focusTarget = toTop ? document.getElementById('main') : target;

@@ -86,6 +86,7 @@ export function initCopy() {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-copy]');
     if (!button) return;
     const value = button.dataset.copy || '';
+    let copied = true;
     try {
       await navigator.clipboard.writeText(value);
     } catch {
@@ -93,10 +94,21 @@ export function initCopy() {
       area.style.cssText = 'position:fixed;opacity:0';
       document.body.append(area);
       area.select();
-      document.execCommand('copy');
+      try {
+        copied = document.execCommand('copy');
+      } catch {
+        copied = false;
+      }
       area.remove();
     }
     const status = button.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    if (!copied) {
+      // Clipboard is blocked (embedded frames, old browsers): select the address so it can be copied by hand.
+      const address = button.parentElement?.querySelector('a');
+      if (address) window.getSelection()?.selectAllChildren(address);
+      if (status) status.textContent = 'Address selected. Press Ctrl+C or Cmd+C to copy it.';
+      return;
+    }
     if (status) status.textContent = 'Email address copied';
     button.classList.add('is-copied');
     window.setTimeout(() => {
