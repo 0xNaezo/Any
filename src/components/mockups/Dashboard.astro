@@ -1,0 +1,359 @@
+---
+/** Generated UI illustration — fintech dashboard. Decorative only. */
+import MockBrowser from './MockBrowser.astro';
+
+const values = [22, 26, 24, 31, 29, 35, 33, 38, 36, 44, 41, 47, 45, 52, 49, 58, 55, 61, 66, 63, 71, 69, 77, 82];
+const W = 100;
+const H = 40;
+const max = 90;
+const step = W / (values.length - 1);
+const pts = values.map((v, i) => [i * step, H - (v / max) * H] as const);
+let line = `M0 ${pts[0]![1].toFixed(2)}`;
+pts.slice(1).forEach(([x, y]) => (line += ` H${x.toFixed(2)} V${y.toFixed(2)}`));
+const area = `${line} V${H} H0 Z`;
+
+const nav = ['Overview', 'Payments', 'Reconciliation', 'Reports', 'Clients', 'Settings'];
+const rows = [
+  ['PX-20931', 'Northwind Labs', '€ 12,400.00', 'ok'],
+  ['PX-20930', 'Atlas Freight', '€ 3,180.50', 'ok'],
+  ['PX-20929', 'Polaris GmbH', '€ 940.00', 'wait'],
+  ['PX-20928', 'Brightloop', '€ 27,005.10', 'ok'],
+  ['PX-20927', 'Helix Pay', '€ 610.00', 'flag'],
+];
+---
+
+<MockBrowser url="app.finora.io/reconciliation">
+  <div class="db">
+    <aside class="db__side">
+      <div class="db__brand"><i></i>FINORA</div>
+      <ul>
+        {nav.map((n, i) => <li class:list={{ 'is-on': i === 2 }}><i></i>{n}</li>)}
+      </ul>
+      <div class="db__user"><i></i><span>A. Gromov<em>Admin</em></span></div>
+    </aside>
+    <div class="db__main">
+      <div class="db__head">
+        <div>
+          <p class="db__crumb">Workspace / Reconciliation</p>
+          <p class="db__title">Reconciliation</p>
+        </div>
+        <div class="db__actions"><span>Last 30 days</span><b>Export</b></div>
+      </div>
+      <div class="db__kpis">
+        <div class="db__kpi"><p>Matched today</p><strong>12,480</strong><span class="up">▲ 8.2%</span></div>
+        <div class="db__kpi"><p>Auto-match rate</p><strong>98.7%</strong><span class="up">▲ 2.1%</span></div>
+        <div class="db__kpi"><p>Avg. match time</p><strong>1.2s</strong><span class="up">▼ 63%</span></div>
+      </div>
+      <div class="db__chart">
+        <div class="db__chart-head"><p>Volume, k</p><span><i></i>Payments <i class="dim"></i>Forecast</span></div>
+        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <pattern id="db-dither" width="1" height="1" patternUnits="userSpaceOnUse">
+              <rect width="0.5" height="0.5" fill="currentColor"></rect>
+              <rect x="0.5" y="0.5" width="0.5" height="0.5" fill="currentColor"></rect>
+            </pattern>
+          </defs>
+          {[10, 20, 30].map((y) => <line x1="0" x2={W} y1={y} y2={y} class="db__grid" />)}
+          <path d={area} fill="url(#db-dither)" class="db__area"></path>
+          <path d={line} class="db__line"></path>
+        </svg>
+      </div>
+      <div class="db__table">
+        {
+          rows.map((r) => (
+            <div class="db__row">
+              <span class="db__id">{r[0]}</span>
+              <span>{r[1]}</span>
+              <span class="db__amt">{r[2]}</span>
+              <span class:list={['db__status', `is-${r[3]}`]}>
+                <i />
+                {r[3] === 'ok' ? 'Matched' : r[3] === 'wait' ? 'Pending' : 'Review'}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</MockBrowser>
+
+<style>
+  .db {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 19% 1fr;
+    font-family: var(--font-sans);
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .db__side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6em;
+    padding: 1.8em 1.4em;
+    border-right: 1px solid rgb(255 255 255 / 0.07);
+    background: #0c0c0f;
+  }
+
+  .db__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.05em;
+    letter-spacing: 0.12em;
+  }
+
+  .db__brand i {
+    width: 1.1em;
+    height: 1.1em;
+    background: var(--accent);
+  }
+
+  .db__side ul {
+    display: grid;
+    gap: 0.35em;
+    font-size: 1.05em;
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .db__side li {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    padding: 0.55em 0.7em;
+  }
+
+  .db__side li i {
+    width: 0.7em;
+    height: 0.7em;
+    border: 1px solid currentColor;
+  }
+
+  .db__side li.is-on {
+    color: #fff;
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .db__side li.is-on i {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .db__user {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    font-size: 0.95em;
+  }
+
+  .db__user i {
+    width: 2.2em;
+    height: 2.2em;
+    background:
+      repeating-conic-gradient(rgb(255 255 255 / 0.35) 0 25%, transparent 0 50%) 0 0 / 0.5em 0.5em,
+      #1b1b20;
+  }
+
+  .db__user span {
+    display: grid;
+  }
+
+  .db__user em {
+    font-style: normal;
+    color: rgb(255 255 255 / 0.4);
+    font-size: 0.9em;
+  }
+
+  .db__main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6em;
+    padding: 1.8em 2.2em;
+    min-width: 0;
+  }
+
+  .db__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .db__crumb {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: rgb(255 255 255 / 0.35);
+    margin-bottom: 0.4em;
+  }
+
+  .db__title {
+    font-size: 2.1em;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .db__actions {
+    display: flex;
+    gap: 0.8em;
+    font-size: 0.95em;
+  }
+
+  .db__actions span,
+  .db__actions b {
+    padding: 0.6em 1em;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    font-weight: 400;
+  }
+
+  .db__actions b {
+    background: #ecece6;
+    color: #0a0a0b;
+    border-color: #ecece6;
+    font-weight: 500;
+  }
+
+  .db__kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+  }
+
+  .db__kpi {
+    padding: 1.2em 1.3em;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background: #111115;
+  }
+
+  .db__kpi p {
+    font-size: 0.9em;
+    color: rgb(255 255 255 / 0.45);
+    margin-bottom: 0.6em;
+  }
+
+  .db__kpi strong {
+    display: block;
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    font-size: 2.2em;
+    line-height: 1;
+    margin-bottom: 0.45em;
+  }
+
+  .db__kpi span {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  .up {
+    color: var(--accent);
+  }
+
+  .db__chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    padding: 1.2em 1.3em;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background: #111115;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .db__chart-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .db__chart-head span {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+
+  .db__chart-head i {
+    width: 0.7em;
+    height: 0.7em;
+    background: var(--accent);
+    margin-left: 0.6em;
+  }
+
+  .db__chart-head i.dim {
+    background: rgb(255 255 255 / 0.25);
+  }
+
+  .db__chart svg {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    color: var(--accent);
+    overflow: visible;
+  }
+
+  .db__grid {
+    stroke: rgb(255 255 255 / 0.06);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .db__area {
+    opacity: 0.22;
+  }
+
+  .db__line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    shape-rendering: crispEdges;
+  }
+
+  .db__table {
+    display: grid;
+    font-size: 0.95em;
+  }
+
+  .db__row {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 1.2fr 1fr;
+    gap: 1em;
+    padding: 0.7em 0.2em;
+    border-top: 1px solid rgb(255 255 255 / 0.06);
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  .db__id,
+  .db__amt {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+  }
+
+  .db__id {
+    color: rgb(255 255 255 / 0.4);
+  }
+
+  .db__status {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+
+  .db__status i {
+    width: 0.6em;
+    height: 0.6em;
+    background: var(--accent);
+  }
+
+  .db__status.is-wait i {
+    background: rgb(255 255 255 / 0.4);
+  }
+
+  .db__status.is-flag i {
+    background: #ff8a5c;
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+/**
+ * Multi-colour pixel sprite. Each character in the bitmap maps to a CSS class
+ * (`sprite__<name>`), so colours stay themeable. Optional LED-style gaps.
+ */
+import { bitmapSize, bitmapToPath, type Bitmap } from '@/lib/pixel';
+
+interface Props {
+  rows: Bitmap;
+  /** char → class suffix, e.g. { '#': 'body', '+': 'gray', '*': 'accent' } */
+  palette: Record<string, string>;
+  /** Gap between cells as a fraction of a cell (0 = solid). */
+  gap?: number;
+  class?: string;
+  title?: string;
+}
+
+const { rows, palette, gap = 0, class: className, title } = Astro.props;
+const { w, h } = bitmapSize(rows);
+const layers = Object.entries(palette).map(([ch, name]) => ({ name, d: bitmapToPath(rows, ch) }));
+const id = `sg-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<svg
+  class:list={['sprite', className]}
+  viewBox={`0 0 ${w} ${h}`}
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+  shape-rendering={gap > 0 ? undefined : 'crispEdges'}
+>
+  {title && <title>{title}</title>}
+  {layers.map((l) => <path d={l.d} class={`sprite__${l.name}`} />)}
+  {
+    gap > 0 && (
+      <>
+        <defs>
+          <pattern id={id} width="1" height="1" patternUnits="userSpaceOnUse">
+            <rect class="sprite__gap" x="0" y="0" width="1" height={gap} />
+            <rect class="sprite__gap" x={1 - gap} y="0" width={gap} height="1" />
+          </pattern>
+        </defs>
+        <rect width={w} height={h} fill={`url(#${id})`} />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .sprite {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .sprite :global(.sprite__body) {
+    fill: var(--fg);
+  }
+
+  .sprite :global(.sprite__gray) {
+    fill: #7d7d78;
+  }
+
+  .sprite :global(.sprite__accent) {
+    fill: var(--accent);
+  }
+
+  .sprite :global(.sprite__gap) {
+    fill: var(--sprite-gap, var(--bg));
+  }
+</style>

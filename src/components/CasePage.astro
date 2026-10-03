@@ -1,0 +1,490 @@
+---
+import Base from '@/layouts/Base.astro';
+import Pixel from './ui/Pixel.astro';
+import Mockup from './mockups/Mockup.astro';
+import { ARROW_RIGHT, CHECK, QUOTE } from '@/lib/sprites';
+import { flipX } from '@/lib/pixel';
+import { pad2 } from '@/lib/text';
+import { localeUrl, type Dictionary } from '@/i18n';
+import type { CaseStudy } from '@/i18n/types';
+
+interface Props {
+  dict: Dictionary;
+  item: CaseStudy;
+}
+
+const { dict, item } = Astro.props;
+const { work, caseStudy: cs } = dict;
+const index = work.items.findIndex((c) => c.slug === item.slug);
+const next = work.items[(index + 1) % work.items.length]!;
+const home = localeUrl(dict.locale, '/');
+const ARROW_LEFT = flipX(ARROW_RIGHT);
+
+const title = `${item.name} — ${item.kind} · Nightloom`;
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: `${item.name} — ${item.kind}`,
+    description: item.summary,
+    dateCreated: item.year,
+    creator: { '@type': 'Organization', name: 'Nightloom' },
+    keywords: item.stack.join(', '),
+  },
+];
+
+const story = [
+  { label: cs.challenge, paras: item.challenge },
+  { label: cs.solution, paras: item.solution },
+];
+---
+
+<Base dict={dict} title={title} description={item.summary} image={`/og/${dict.locale}/${item.slug}.png`} schema={schema}>
+  <article class="cp">
+    <header class="cp-hero container">
+      <a class="cp-back t-mono link" href={`${home}#work`} data-transition>
+        <Pixel rows={ARROW_LEFT} cell={2} />
+        {cs.back}
+      </a>
+      <p class="cp-label t-mono" data-hero-item>
+        <span class="t-pixel accent">{pad2(index + 1)}</span> / {pad2(work.items.length)} · {item.industry} · {item.year}
+      </p>
+      <h1 class="t-display cp-title" data-split="hero">{item.name}</h1>
+      <div class="cp-intro grid-12">
+        <p class="cp-kind t-h3" data-hero-item>{item.kind}</p>
+        <p class="cp-summary t-lead" data-hero-item>{item.summary}</p>
+      </div>
+      <dl class="cp-meta" data-hero-item>
+        <div><dt class="t-mono">{work.labels.client}</dt><dd>{item.client}</dd></div>
+        <div><dt class="t-mono">{work.labels.industry}</dt><dd>{item.industry}</dd></div>
+        <div><dt class="t-mono">{work.labels.year}</dt><dd>{item.year}</dd></div>
+        <div><dt class="t-mono">{work.labels.duration}</dt><dd>{item.duration}</dd></div>
+        <div class="cp-meta__wide">
+          <dt class="t-mono">{work.labels.services}</dt>
+          <dd class="tags">{item.services.map((s) => <span class="tag">{s}</span>)}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <div class="container cp-cover" data-hero-scene>
+      <div class="cp-stage">
+        <Mockup kind={item.mockup} cover={item.cover} alt={item.name} />
+      </div>
+    </div>
+
+    <section class="section cp-metrics" aria-label={cs.results}>
+      <dl class="container cp-metrics__grid">
+        {
+          item.metrics.map((m) => (
+            <div class="cp-metric" data-reveal>
+              <dt>{m.label}</dt>
+              <dd class="t-pixel">{m.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="section cp-story">
+      <div class="container cp-story__grid">
+        {
+          story.map((block, i) => (
+            <div class="cp-block grid-12">
+              <h2 class="cp-block__label t-mono" data-reveal>
+                <span class="t-pixel accent">{pad2(i + 1)}</span>
+                <span class="cp-rule" aria-hidden="true" />
+                {block.label}
+              </h2>
+              <div class="cp-block__body">
+                {block.paras.map((p, j) => (
+                  <p class:list={[j === 0 ? 'cp-first' : 't-lead']} data-reveal>
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+
+        <div class="cp-block grid-12">
+          <h2 class="cp-block__label t-mono" data-reveal>
+            <span class="t-pixel accent">03</span>
+            <span class="cp-rule" aria-hidden="true"></span>
+            {cs.results}
+          </h2>
+          <ul class="cp-block__body cp-results">
+            {
+              item.results.map((r) => (
+                <li data-reveal>
+                  <Pixel rows={CHECK} cell={3} />
+                  <span>{r}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="cp-block grid-12">
+          <h2 class="cp-block__label t-mono" data-reveal>
+            <span class="t-pixel accent">04</span>
+            <span class="cp-rule" aria-hidden="true"></span>
+            {cs.stack}
+          </h2>
+          <ul class="cp-block__body tags cp-stack" data-reveal>
+            {item.stack.map((s) => <li class="tag">{s}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    {
+      item.quote && (
+        <section class="section cp-quote">
+          <figure class="container">
+            <Pixel rows={QUOTE} cell={4} class="cp-quote__mark" />
+            <blockquote class="cp-quote__text" data-split>
+              {item.quote.text}
+            </blockquote>
+            <figcaption class="cp-quote__author t-mono" data-reveal>
+              {item.quote.author} · {item.quote.role}
+            </figcaption>
+          </figure>
+        </section>
+      )
+    }
+
+    <nav class="section cp-next" aria-label={cs.next}>
+      <a class="container cp-next__link" href={localeUrl(dict.locale, `/work/${next.slug}/`)} data-transition>
+        <span class="cp-next__text">
+          <span class="t-mono cp-next__label">{cs.next} →</span>
+          <span class="cp-next__name">{next.name}</span>
+          <span class="cp-next__kind">{next.kind}</span>
+        </span>
+        <span class="cp-next__preview">
+          <Mockup kind={next.mockup} cover={next.cover} alt={next.name} />
+        </span>
+      </a>
+    </nav>
+
+    <section class="section cp-cta">
+      <div class="container cp-cta__inner">
+        <h2 class="t-h2" data-split>{cs.cta}</h2>
+        <p class="t-lead" data-reveal>{cs.ctaText}</p>
+        <a class="btn btn--primary" href={`${home}#contact`} data-reveal>
+          {dict.nav.cta}
+          <Pixel rows={ARROW_RIGHT} cell={2} />
+        </a>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .cp-hero {
+    padding-top: calc(var(--header-h) + clamp(32px, 5vw, 72px));
+    padding-bottom: clamp(40px, 5vw, 64px);
+  }
+
+  .cp-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--fg-2);
+    margin-bottom: clamp(36px, 5vw, 64px);
+  }
+
+  .cp-back:hover {
+    color: var(--fg);
+  }
+
+  .cp-back :global(.pixel) {
+    width: 12px;
+  }
+
+  .cp-label {
+    font-size: 12px;
+    color: var(--fg-3);
+    margin-bottom: 20px;
+  }
+
+  .cp-label .t-pixel {
+    font-size: 14px;
+  }
+
+  .cp-title {
+    font-size: clamp(56px, 11vw, 168px);
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .cp-intro {
+    row-gap: 20px;
+    margin-bottom: clamp(36px, 5vw, 64px);
+  }
+
+  .cp-kind {
+    grid-column: 1 / span 5;
+    font-size: clamp(22px, 2.2vw, 30px);
+    letter-spacing: -0.03em;
+  }
+
+  .cp-summary {
+    grid-column: 7 / span 6;
+  }
+
+  .cp-meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  .cp-meta > div {
+    display: grid;
+    gap: 8px;
+    padding: 20px 20px 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cp-meta > div + div:not(.cp-meta__wide) {
+    padding-left: 20px;
+    border-left: 1px solid var(--line);
+  }
+
+  .cp-meta dt {
+    font-size: 11px;
+    color: var(--fg-3);
+  }
+
+  .cp-meta dd {
+    font-size: 16px;
+  }
+
+  .cp-meta__wide {
+    grid-column: 1 / -1;
+  }
+
+  .cp-stage {
+    position: relative;
+    padding: clamp(16px, 5vw, 72px);
+    border: 1px solid var(--line-2);
+    background:
+      radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1.2px) 0 0 / 16px 16px,
+      linear-gradient(to bottom, #0b0b0e, #0e0e12);
+  }
+
+  .cp-stage :global(.mock) {
+    box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.9);
+  }
+
+  .cp-metrics {
+    margin-top: clamp(64px, 8vw, 120px);
+    padding-block: 0;
+  }
+
+  .cp-metrics__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cp-metric {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 14px;
+    padding: clamp(28px, 4vw, 56px) clamp(16px, 2vw, 32px);
+    border-left: 1px solid var(--line);
+  }
+
+  .cp-metric:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .cp-metric dd {
+    font-size: clamp(44px, 6vw, 96px);
+    line-height: 0.9;
+  }
+
+  .cp-metric dt {
+    color: var(--fg-2);
+    font-size: 15px;
+  }
+
+  .cp-story__grid {
+    display: grid;
+    gap: clamp(56px, 7vw, 96px);
+  }
+
+  .cp-block {
+    row-gap: 20px;
+  }
+
+  .cp-block__label {
+    grid-column: 1 / span 4;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    align-self: start;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--fg-2);
+  }
+
+  .cp-block__label .t-pixel {
+    font-size: 13px;
+  }
+
+  .cp-rule {
+    width: 28px;
+    height: 1px;
+    background: var(--line-3);
+  }
+
+  .cp-block__body {
+    grid-column: 5 / span 8;
+    display: grid;
+    gap: 20px;
+    max-width: 68ch;
+  }
+
+  .cp-first {
+    font-size: clamp(20px, 1.9vw, 28px);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+
+  .cp-results li {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(17px, 1.4vw, 20px);
+    line-height: 1.5;
+  }
+
+  .cp-results :global(.pixel) {
+    color: var(--accent);
+    margin-top: 6px;
+  }
+
+  .cp-stack .tag {
+    height: 34px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .cp-quote figure {
+    display: grid;
+    gap: 32px;
+  }
+
+  .cp-quote :global(.cp-quote__mark) {
+    color: var(--accent);
+  }
+
+  .cp-quote__text {
+    font-size: clamp(28px, 3.6vw, 54px);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    max-width: 24ch;
+  }
+
+  .cp-quote__author {
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+
+  .cp-next {
+    padding-block: 0;
+  }
+
+  .cp-next__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    align-items: center;
+    gap: var(--col-gap);
+    padding-block: clamp(48px, 7vw, 96px);
+  }
+
+  .cp-next__text {
+    display: grid;
+    gap: 12px;
+  }
+
+  .cp-next__label {
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+
+  .cp-next__name {
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    font-weight: 500;
+    transition: color 0.3s steps(3);
+  }
+
+  .cp-next__link:hover .cp-next__name {
+    color: var(--accent);
+  }
+
+  .cp-next__kind {
+    color: var(--fg-2);
+  }
+
+  .cp-next__preview {
+    padding: clamp(12px, 2vw, 28px);
+    border: 1px solid var(--line-2);
+    background: radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1.2px) 0 0 / 16px 16px, #0b0b0e;
+    transition: transform 0.5s steps(5);
+  }
+
+  .cp-next__link:hover .cp-next__preview {
+    transform: translateY(-6px);
+  }
+
+  .cp-cta__inner {
+    display: grid;
+    justify-items: start;
+    gap: 24px;
+  }
+
+  .cp-cta__inner .t-lead {
+    max-width: 48ch;
+  }
+
+  @media (max-width: 960px) {
+    .cp-kind,
+    .cp-summary,
+    .cp-block__label,
+    .cp-block__body {
+      grid-column: 1 / -1;
+    }
+
+    .cp-meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cp-meta > div:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .cp-next__link {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cp-metrics__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cp-metric,
+    .cp-metric:first-child {
+      padding: 24px 0;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+  }
+</style>

@@ -1,0 +1,377 @@
+---
+/** Generated UI illustration — Telegram Mini App for a coffee chain. Decorative only. */
+import { bitmapToPath } from '@/lib/pixel';
+import { CUP } from '@/lib/sprites';
+
+const cup = bitmapToPath(CUP);
+const items = [
+  { n: 'Flat white', p: '240', on: true },
+  { n: 'Cappuccino', p: '220' },
+  { n: 'Raf vanilla', p: '280' },
+  { n: 'Cold brew', p: '260' },
+];
+---
+
+<div class="tg">
+  <div class="tg__phone">
+    <div class="tg__screen">
+      <div class="tg__status"><span>9:41</span><span class="tg__notch"></span><span>●●●</span></div>
+      <div class="tg__header">
+        <span class="tg__close">×</span>
+        <span class="tg__name">Kofeyna<em>mini app</em></span>
+        <span class="tg__more">⋯</span>
+      </div>
+      <div class="tg__app">
+        <div class="tg__pickup">
+          <span>Pickup · Nevsky 28</span>
+          <b>in 10 min</b>
+        </div>
+        <div class="tg__cats"><b>Coffee</b><span>Tea</span><span>Bakery</span></div>
+        <ul class="tg__grid">
+          {
+            items.map((it) => (
+              <li class:list={['tg__item', { 'is-on': it.on }]}>
+                <svg viewBox="0 0 9 8" aria-hidden="true">
+                  <path d={cup} />
+                </svg>
+                <span class="tg__item-name">{it.n}</span>
+                <span class="tg__item-row">
+                  <span>{it.p} ₽</span>
+                  <i>{it.on ? '1' : '+'}</i>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="tg__points">
+          <span>Loyalty</span>
+          <span class="tg__dots">{[...Array(8)].map((_, i) => <i class:list={{ on: i < 5 }} />)}</span>
+          <b>5 / 8</b>
+        </div>
+      </div>
+      <div class="tg__main-btn">Order · 240 ₽</div>
+    </div>
+  </div>
+
+  <div class="tg__side">
+    <div class="tg__notify">
+      <span class="tg__bot"><svg viewBox="0 0 9 8" aria-hidden="true"><path d={cup}></path></svg></span>
+      <span class="tg__notify-text">
+        <b>Kofeyna</b>
+        <span>Your flat white is ready ☕ Order #A-214</span>
+      </span>
+    </div>
+    <div class="tg__stat">
+      <p>Orders via Mini App</p>
+      <strong>28%</strong>
+      <span class="tg__bars">{[30, 42, 38, 55, 61, 58, 74, 80].map((h) => <i style={`height:${h}%`} />)}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5%;
+    background:
+      radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1.2px) 0 0 / 2.2em 2.2em,
+      #0c0c0f;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    overflow: hidden;
+    font-family: var(--font-sans);
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .tg__phone {
+    width: 25%;
+    aspect-ratio: 9 / 19;
+    padding: 0.7em;
+    background: #16161a;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    box-shadow: 0 2em 4em rgb(0 0 0 / 0.5);
+  }
+
+  .tg__screen {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0e0e11;
+    overflow: hidden;
+  }
+
+  .tg__status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9em 1.1em 0.5em;
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .tg__notch {
+    width: 30%;
+    height: 1.1em;
+    background: #000;
+  }
+
+  .tg__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6em 1.1em;
+    border-bottom: 1px solid rgb(255 255 255 / 0.07);
+    font-size: 0.9em;
+  }
+
+  .tg__close,
+  .tg__more {
+    color: rgb(255 255 255 / 0.5);
+    width: 1.5em;
+  }
+
+  .tg__more {
+    text-align: right;
+  }
+
+  .tg__name {
+    display: grid;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .tg__name em {
+    font-style: normal;
+    font-size: 0.75em;
+    color: rgb(255 255 255 / 0.4);
+    font-weight: 400;
+  }
+
+  .tg__app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    padding: 0.9em 1em;
+    min-height: 0;
+  }
+
+  .tg__pickup {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    padding: 0.6em 0.8em;
+    background: #141418;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .tg__pickup b {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .tg__cats {
+    display: flex;
+    gap: 0.4em;
+    font-size: 0.75em;
+  }
+
+  .tg__cats b,
+  .tg__cats span {
+    padding: 0.35em 0.75em;
+    font-weight: 400;
+    color: rgb(255 255 255 / 0.5);
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .tg__cats b {
+    background: #ecece6;
+    border-color: #ecece6;
+    color: #0a0a0b;
+    font-weight: 500;
+  }
+
+  .tg__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+  }
+
+  .tg__item {
+    display: grid;
+    gap: 0.35em;
+    padding: 0.7em;
+    background: #131317;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    font-size: 0.75em;
+  }
+
+  .tg__item svg {
+    width: 2.6em;
+    fill: rgb(236 236 230 / 0.75);
+    shape-rendering: crispEdges;
+    margin-bottom: 0.3em;
+  }
+
+  .tg__item.is-on {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .tg__item.is-on svg {
+    fill: var(--accent);
+  }
+
+  .tg__item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .tg__item-row i {
+    display: grid;
+    place-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    font-style: normal;
+    border: 1px solid rgb(255 255 255 / 0.2);
+  }
+
+  .tg__item.is-on .tg__item-row i {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .tg__points {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6em;
+    font-size: 0.72em;
+    color: rgb(255 255 255 / 0.5);
+    margin-top: auto;
+  }
+
+  .tg__points b {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: #fff;
+  }
+
+  .tg__dots {
+    display: flex;
+    gap: 0.3em;
+  }
+
+  .tg__dots i {
+    width: 0.65em;
+    height: 0.65em;
+    border: 1px solid rgb(255 255 255 / 0.3);
+  }
+
+  .tg__dots i.on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .tg__main-btn {
+    margin: 0.4em 1em 1.1em;
+    padding: 0.85em;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .tg__side {
+    width: 38%;
+    display: grid;
+    gap: 1.6em;
+    font-size: 1.15em;
+  }
+
+  .tg__notify {
+    display: flex;
+    gap: 0.9em;
+    padding: 1em 1.1em;
+    background: rgb(22 22 26 / 0.95);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: 0 1.5em 3em rgb(0 0 0 / 0.45);
+    transform: translateX(-12%);
+  }
+
+  .tg__bot {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 2.8em;
+    height: 2.8em;
+    background: var(--accent);
+  }
+
+  .tg__bot svg {
+    width: 60%;
+    fill: var(--accent-ink);
+    shape-rendering: crispEdges;
+  }
+
+  .tg__notify-text {
+    display: grid;
+    gap: 0.2em;
+    font-size: 0.9em;
+  }
+
+  .tg__notify-text span {
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .tg__stat {
+    padding: 1.2em 1.3em;
+    background: #111115;
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .tg__stat p {
+    font-size: 0.9em;
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .tg__stat strong {
+    display: block;
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    font-size: 3.4em;
+    line-height: 1.1;
+    color: var(--accent);
+  }
+
+  .tg__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.4em;
+    height: 4.5em;
+    margin-top: 0.6em;
+  }
+
+  .tg__bars i {
+    flex: 1;
+    background: rgb(255 255 255 / 0.14);
+  }
+
+  .tg__bars i:last-child {
+    background: var(--accent);
+  }
+</style>

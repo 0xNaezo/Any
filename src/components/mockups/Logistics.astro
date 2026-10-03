@@ -1,0 +1,338 @@
+---
+/** Generated UI illustration — logistics dispatch with a live map. Decorative only. */
+import MockBrowser from './MockBrowser.astro';
+import { bitmapToPath } from '@/lib/pixel';
+import { TRUCK } from '@/lib/sprites';
+
+const orders = [
+  { id: 'CG-4821', route: 'Hub 3 → Retail Park', eta: '14:20', p: 72, on: true },
+  { id: 'CG-4819', route: 'Port 2 → Warehouse 7', eta: '14:55', p: 45 },
+  { id: 'CG-4816', route: 'Hub 1 → City Center', eta: '15:10', p: 30 },
+  { id: 'CG-4812', route: 'Warehouse 7 → Mall', eta: '16:40', p: 12 },
+];
+
+// Manhattan-style route (map units)
+const route = 'M18 78 H40 V62 H66 V48 H92 V30 H124 V20 H142';
+const done = 'M18 78 H40 V62 H66 V48 H84';
+const truck = bitmapToPath(TRUCK);
+---
+
+<MockBrowser url="dispatch.cargoline.app/live">
+  <div class="lg">
+    <aside class="lg__side">
+      <p class="lg__title">Dispatch</p>
+      <div class="lg__tabs"><b>Active <em>48</em></b><span>Done <em>213</em></span></div>
+      <ul class="lg__orders">
+        {
+          orders.map((o) => (
+            <li class:list={['lg__order', { 'is-on': o.on }]}>
+              <div class="lg__order-top">
+                <span class="lg__id">#{o.id}</span>
+                <span class="lg__eta">ETA {o.eta}</span>
+              </div>
+              <p class="lg__route">{o.route}</p>
+              <div class="lg__bar">
+                <i style={`width:${o.p}%`} />
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </aside>
+    <div class="lg__map">
+      <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <pattern id="lg-dither" width="2" height="2" patternUnits="userSpaceOnUse">
+            <rect width="1" height="1" fill="#fff"></rect>
+          </pattern>
+        </defs>
+        <rect width="160" height="100" fill="#0c0c0f"></rect>
+        <path d="M-5 30 C30 40 50 18 80 26 S130 52 170 40 L170 52 C130 64 110 40 80 38 S30 52 -5 42 Z" fill="url(#lg-dither)" opacity="0.07"></path>
+        <g class="lg__streets">
+          {[12, 24, 48, 62, 78, 90].map((y) => <line x1="0" x2="160" y1={y} y2={y} />)}
+          {[18, 40, 66, 92, 124, 142].map((x) => <line y1="0" y2="100" x1={x} x2={x} />)}
+          <line x1="0" y1="100" x2="70" y2="0" class="minor" />
+          <line x1="100" y1="100" x2="160" y2="54" class="minor" />
+        </g>
+        <g class="lg__blocks">
+          <rect x="44" y="66" width="18" height="9"></rect>
+          <rect x="96" y="52" width="24" height="7"></rect>
+          <rect x="70" y="80" width="18" height="8"></rect>
+          <rect x="128" y="64" width="22" height="12"></rect>
+          <rect x="22" y="14" width="14" height="8"></rect>
+        </g>
+        <path d={route} class="lg__route-todo"></path>
+        <path d={done} class="lg__route-done"></path>
+        {[[18, 78], [66, 48], [124, 20]].map(([x, y]) => <rect x={x - 1.6} y={y - 1.6} width="3.2" height="3.2" class="lg__stop" />)}
+        <rect x="140" y="18" width="4" height="4" class="lg__dest"></rect>
+        <g transform="translate(79.5 44.5) scale(0.82)">
+          <path d={truck} class="lg__truck"></path>
+        </g>
+      </svg>
+      <div class="lg__ctrl"><i>+</i><i>−</i></div>
+      <div class="lg__card">
+        <div class="lg__card-top">
+          <span class="lg__live"><i></i>TRK-214</span>
+          <span>12 km left</span>
+        </div>
+        <p class="lg__driver">D. Petrov · Box truck 3.5t</p>
+        <div class="lg__bar lg__bar--lg"><i style="width:72%"></i></div>
+        <div class="lg__card-bot">
+          <span>Hub 3</span>
+          <strong>ETA 14:20</strong>
+          <span>Retail Park</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</MockBrowser>
+
+<style>
+  .lg {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    font-family: var(--font-sans);
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .lg__side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3em;
+    padding: 1.8em 1.5em;
+    border-right: 1px solid rgb(255 255 255 / 0.07);
+    background: #0e0e11;
+    min-width: 0;
+  }
+
+  .lg__title {
+    font-size: 2em;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .lg__tabs {
+    display: flex;
+    gap: 0.4em;
+    font-size: 0.95em;
+  }
+
+  .lg__tabs b,
+  .lg__tabs span {
+    padding: 0.5em 0.9em;
+    font-weight: 400;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .lg__tabs b {
+    color: #0a0a0b;
+    background: #ecece6;
+    border-color: #ecece6;
+    font-weight: 500;
+  }
+
+  .lg__tabs em {
+    font-style: normal;
+    font-family: var(--font-mono);
+    margin-left: 0.3em;
+    opacity: 0.7;
+  }
+
+  .lg__orders {
+    display: grid;
+    gap: 0.7em;
+  }
+
+  .lg__order {
+    padding: 1em 1.1em;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background: #111115;
+  }
+
+  .lg__order.is-on {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, #111115);
+  }
+
+  .lg__order-top {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  .lg__id {
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .lg__eta {
+    color: rgb(255 255 255 / 0.4);
+  }
+
+  .lg__order.is-on .lg__eta {
+    color: var(--accent);
+  }
+
+  .lg__route {
+    font-size: 1em;
+    margin: 0.4em 0 0.8em;
+    color: rgb(255 255 255 / 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .lg__bar {
+    height: 0.35em;
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .lg__bar i {
+    display: block;
+    height: 100%;
+    background: rgb(255 255 255 / 0.5);
+  }
+
+  .lg__order.is-on .lg__bar i,
+  .lg__bar--lg i {
+    background: var(--accent);
+  }
+
+  .lg__map {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lg__map svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .lg__streets line {
+    stroke: rgb(255 255 255 / 0.1);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .lg__streets line.minor {
+    stroke: rgb(255 255 255 / 0.05);
+  }
+
+  .lg__blocks rect {
+    fill: rgb(255 255 255 / 0.025);
+    stroke: rgb(255 255 255 / 0.05);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .lg__route-todo {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+    opacity: 0.45;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .lg__route-done {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .lg__stop {
+    fill: #0c0c0f;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .lg__dest {
+    fill: #ecece6;
+  }
+
+  .lg__truck {
+    fill: #ecece6;
+    shape-rendering: crispEdges;
+  }
+
+  .lg__ctrl {
+    position: absolute;
+    top: 1.4em;
+    right: 1.4em;
+    display: grid;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: #111115;
+  }
+
+  .lg__ctrl i {
+    display: grid;
+    place-items: center;
+    width: 2.4em;
+    height: 2.4em;
+    font-style: normal;
+    font-family: var(--font-mono);
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .lg__ctrl i + i {
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .lg__card {
+    position: absolute;
+    left: 1.6em;
+    bottom: 1.6em;
+    width: 46%;
+    padding: 1.2em 1.3em;
+    background: rgb(17 17 21 / 0.92);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(6px);
+  }
+
+  .lg__card-top,
+  .lg__card-bot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .lg__live {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    color: #fff;
+  }
+
+  .lg__live i {
+    width: 0.6em;
+    height: 0.6em;
+    background: var(--accent);
+  }
+
+  .lg__driver {
+    font-size: 1em;
+    margin: 0.5em 0 0.9em;
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  .lg__bar--lg {
+    height: 0.45em;
+    margin-bottom: 0.8em;
+  }
+
+  .lg__card-bot strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+</style>

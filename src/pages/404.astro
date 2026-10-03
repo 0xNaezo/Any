@@ -1,0 +1,81 @@
+---
+import Base from '@/layouts/Base.astro';
+import Pixel from '@/components/ui/Pixel.astro';
+import PixelGrid from '@/components/ui/PixelGrid.astro';
+import { ARROW_RIGHT, GHOST, word } from '@/lib/sprites';
+import { getDictionary, localeUrl } from '@/i18n';
+
+const dict = getDictionary('ru');
+const en = getDictionary('en');
+const code = word('404');
+---
+
+<Base dict={dict} title={`404 — ${dict.notFound.title}`} description={dict.notFound.text} noindex>
+  <section class="nf container">
+    <div class="nf__art" aria-hidden="true">
+      <div class="nf__code"><PixelGrid rows={code} /></div>
+      <div class="nf__ghost"><Pixel rows={GHOST} cell={10} /></div>
+    </div>
+    <h1 class="t-h2" data-split="hero">{dict.notFound.title}</h1>
+    <p class="t-lead" data-hero-item>{dict.notFound.text}</p>
+    <div class="nf__actions" data-hero-item>
+      <a class="btn btn--primary" href={localeUrl('ru', '/')}>
+        {dict.notFound.back}
+        <Pixel rows={ARROW_RIGHT} cell={2} />
+      </a>
+      <a class="btn" href={localeUrl('en', '/')} lang="en">
+        {en.notFound.back} (EN)
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 24px;
+    padding-top: calc(var(--header-h) + 40px);
+    padding-bottom: 80px;
+  }
+
+  .nf__art {
+    position: relative;
+    width: min(100%, 520px);
+    margin-bottom: 24px;
+    color: var(--fg-4);
+  }
+
+  .nf__ghost {
+    position: absolute;
+    right: -6%;
+    top: -38%;
+    width: 24%;
+    color: var(--fg);
+    animation: nf-float 2.8s steps(4) infinite alternate;
+  }
+
+  .nf__ghost :global(.pixel) {
+    width: 100%;
+    height: auto;
+  }
+
+  @keyframes nf-float {
+    to {
+      translate: 0 -14px;
+    }
+  }
+
+  .nf .t-lead {
+    max-width: 44ch;
+  }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+  }
+</style>

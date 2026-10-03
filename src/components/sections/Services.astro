@@ -1,0 +1,133 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import Pixel from '../ui/Pixel.astro';
+import { ICONS } from '@/lib/sprites';
+import { pad2 } from '@/lib/text';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  index: number;
+}
+
+const { dict, index } = Astro.props;
+const s = dict.services;
+---
+
+<section class="section services" id="services" aria-labelledby="services-title">
+  <div class="container">
+    <SectionHead index={index} label={s.label} title={s.title} lead={s.lead} id="services-title" />
+
+    <ul class="services__grid">
+      {
+        s.items.map((item, i) => (
+          <li class="service" data-reveal>
+            <div class="service__top">
+              <Pixel rows={ICONS[item.icon]} cell={3} class="service__icon" />
+              <span class="service__idx t-pixel">{pad2(i + 1)}</span>
+            </div>
+            <h3 class="service__title t-h3">{item.title}</h3>
+            <p class="service__text t-body">{item.text}</p>
+            <ul class="tags service__tags">
+              {item.tags.map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .services__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .service {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 340px;
+    padding: clamp(24px, 2.4vw, 36px);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    isolation: isolate;
+    transition: background-color 0.35s steps(3);
+  }
+
+  /* Dithered glow that rises from the bottom on hover. */
+  .service::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: repeating-conic-gradient(rgb(255 255 255 / 0.055) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+    mask-image: linear-gradient(to top, #000, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s steps(4);
+  }
+
+  .service:hover::before {
+    opacity: 1;
+  }
+
+  .service:hover {
+    background: rgb(255 255 255 / 0.015);
+  }
+
+  .service__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: auto;
+    padding-bottom: 56px;
+  }
+
+  .service :global(.service__icon) {
+    color: var(--fg-2);
+    transition: color 0.3s steps(3);
+  }
+
+  .service:hover :global(.service__icon) {
+    color: var(--accent);
+  }
+
+  .service__idx {
+    font-size: 12px;
+    color: var(--fg-4);
+  }
+
+  .service__title {
+    margin-bottom: 12px;
+  }
+
+  .service__text {
+    margin-bottom: 24px;
+    max-width: 38ch;
+  }
+
+  @media (max-width: 1080px) {
+    .services__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .services__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .service {
+      min-height: 0;
+    }
+
+    .service__top {
+      padding-bottom: 36px;
+    }
+  }
+</style>

@@ -1,0 +1,537 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import Pixel from '../ui/Pixel.astro';
+import { ARROW_RIGHT, ARROW_UP_RIGHT, CHECK, GHOST } from '@/lib/sprites';
+import { pad2 } from '@/lib/text';
+import { site } from '@/config/site';
+import { localeUrl, type Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  index: number;
+}
+
+const { dict, index } = Astro.props;
+const c = dict.contact;
+const f = c.form;
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <SectionHead index={index} label={c.label} title={c.title} lead={c.lead} id="contact-title" size="xl" />
+
+    <div class="contact__grid">
+      <form
+        class="form"
+        novalidate
+        data-contact-form
+        data-endpoint={site.form.endpoint}
+        data-email={site.email}
+        data-subject={f.mailSubject}
+        data-locale={dict.locale}
+        data-msg-required={f.required}
+        data-msg-invalid={f.invalid}
+        data-msg-sending={f.sending}
+        data-msg-fallback={f.mailFallback}
+      >
+        <div class="form__row">
+          <div class="field">
+            <label class="field__label t-mono" for="cf-name">{f.name} <span aria-hidden="true">*</span></label>
+            <input class="field__input" id="cf-name" name="name" type="text" autocomplete="name" placeholder={f.namePh} required aria-describedby="cf-name-err" />
+            <p class="field__error t-mono" id="cf-name-err" aria-live="polite"></p>
+          </div>
+          <div class="field">
+            <label class="field__label t-mono" for="cf-contact">{f.contact} <span aria-hidden="true">*</span></label>
+            <input class="field__input" id="cf-contact" name="contact" type="text" autocomplete="email" inputmode="email" placeholder={f.contactPh} required aria-describedby="cf-contact-err" />
+            <p class="field__error t-mono" id="cf-contact-err" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label t-mono" for="cf-company">{f.company}</label>
+          <input class="field__input" id="cf-company" name="company" type="text" autocomplete="organization" placeholder={f.companyPh} />
+        </div>
+
+        <fieldset class="field">
+          <legend class="field__label t-mono">{f.type}</legend>
+          <div class="chips">
+            {
+              f.types.map((t) => (
+                <label class="chip">
+                  <input type="checkbox" name="type" value={t} />
+                  <span>{t}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend class="field__label t-mono">{f.budget}</legend>
+          <div class="chips">
+            {
+              f.budgets.map((b) => (
+                <label class="chip">
+                  <input type="radio" name="budget" value={b} />
+                  <span>{b}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label class="field__label t-mono" for="cf-message">{f.message}</label>
+          <textarea class="field__input field__input--area" id="cf-message" name="message" rows="5" placeholder={f.messagePh}></textarea>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" name="nda" value="yes" />
+          <span class="check__box" aria-hidden="true"><Pixel rows={CHECK} cell={2} /></span>
+          <span>{f.nda}</span>
+        </label>
+
+        <!-- Honeypot: humans never see or fill this field. -->
+        <div class="form__hp" aria-hidden="true">
+          <label for="cf-website">Website</label>
+          <input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form__submit">
+          <button class="btn btn--primary form__btn" type="submit" data-submit>
+            <span data-submit-label>{f.submit}</span>
+            <Pixel rows={ARROW_RIGHT} cell={2} />
+          </button>
+          <p class="form__consent">
+            {f.consent} <a class="link" href={localeUrl(dict.locale, '/privacy/')}>{f.consentLink}</a>.
+          </p>
+        </div>
+
+        <p class="form__error" data-form-error hidden>
+          {f.error} <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+
+        <div class="form__success" data-form-success hidden tabindex="-1">
+          <Pixel rows={GHOST} cell={4} class="form__success-ghost" />
+          <p class="form__success-title t-h3">{f.success}</p>
+          <p class="form__success-text t-body" data-success-text>{f.successText}</p>
+        </div>
+      </form>
+
+      <aside class="contact__aside">
+        <ol class="next">
+          {
+            c.steps.map((s, i) => (
+              <li class="next__step" data-reveal>
+                <span class="next__idx t-pixel">{pad2(i + 1)}</span>
+                <div>
+                  <p class="next__title">{s.title}</p>
+                  <p class="next__text">{s.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <div class="direct" data-reveal>
+          <p class="direct__label t-mono">{c.direct}</p>
+          <a class="direct__link" href={`mailto:${site.email}`}>
+            <span>{site.email}</span>
+            <Pixel rows={ARROW_UP_RIGHT} cell={2} />
+          </a>
+          <a class="direct__link" href={site.telegram.href} target="_blank" rel="noopener">
+            <span>Telegram {site.telegram.handle}</span>
+            <Pixel rows={ARROW_UP_RIGHT} cell={2} />
+          </a>
+          {
+            site.booking && (
+              <a class="btn btn--block direct__book" href={site.booking} target="_blank" rel="noopener">
+                {c.book}
+                <Pixel rows={ARROW_UP_RIGHT} cell={2} />
+              </a>
+            )
+          }
+          <p class="direct__hours t-mono">
+            <span class="status-dot"></span>
+            {c.hours}
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 56px;
+  }
+
+  .form {
+    position: relative;
+    grid-column: 1 / span 7;
+    display: grid;
+    gap: 28px;
+  }
+
+  .form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .field {
+    display: grid;
+    gap: 10px;
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .field__label {
+    font-size: 11px;
+    color: var(--fg-2);
+    padding: 0;
+  }
+
+  .field__label span {
+    color: var(--accent);
+  }
+
+  legend.field__label {
+    margin-bottom: 10px;
+  }
+
+  .field__input {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    background: rgb(255 255 255 / 0.015);
+    border: 1px solid var(--line-2);
+    border-radius: 0;
+    font-size: 16px;
+    color: var(--fg);
+    outline: none;
+    transition:
+      border-color 0.2s steps(2),
+      background-color 0.2s steps(2);
+  }
+
+  .field__input::placeholder {
+    color: var(--fg-4);
+  }
+
+  .field__input:hover {
+    border-color: var(--line-3);
+  }
+
+  .field__input:focus {
+    border-color: var(--accent);
+    background: rgb(255 255 255 / 0.03);
+  }
+
+  .field__input[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+
+  .field__input--area {
+    height: auto;
+    min-height: 140px;
+    padding: 14px 16px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .field__error {
+    min-height: 0;
+    font-size: 11px;
+    color: var(--danger);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .field__error:empty {
+    display: none;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+    color: var(--fg-2);
+    border: 1px solid var(--line-2);
+    transition:
+      color 0.2s steps(2),
+      background-color 0.2s steps(2),
+      border-color 0.2s steps(2);
+  }
+
+  .chip:hover span {
+    border-color: var(--line-3);
+    color: var(--fg);
+  }
+
+  .chip input:checked + span {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+
+  .chip input:focus-visible + span {
+    outline: 1px dashed var(--accent);
+    outline-offset: 3px;
+  }
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--fg-2);
+    cursor: pointer;
+    justify-self: start;
+  }
+
+  .check input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .check__box {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--line-3);
+    color: transparent;
+    transition:
+      background-color 0.2s steps(2),
+      border-color 0.2s steps(2);
+  }
+
+  .check__box :global(.pixel) {
+    width: 12px;
+  }
+
+  .check input:checked + .check__box {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .check input:focus-visible + .check__box {
+    outline: 1px dashed var(--accent);
+    outline-offset: 3px;
+  }
+
+  .form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form__submit {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+  }
+
+  .form__btn {
+    --btn-h: 56px;
+    padding-inline: 28px;
+  }
+
+  .form__btn[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .form__consent {
+    flex: 1;
+    min-width: 220px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--fg-3);
+  }
+
+  .form__consent a {
+    color: var(--fg-2);
+  }
+
+  .form__error {
+    padding: 14px 16px;
+    border: 1px solid var(--danger);
+    color: var(--fg);
+    font-size: 14px;
+  }
+
+  .form__success {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+    padding: clamp(24px, 4vw, 56px);
+    background:
+      radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1.2px) 0 0 / 16px 16px,
+      var(--bg-1);
+    border: 1px solid var(--accent);
+    outline: none;
+  }
+
+  .form__success[hidden] {
+    display: none;
+  }
+
+  .form__success :global(.form__success-ghost) {
+    color: var(--fg);
+    margin-bottom: 8px;
+  }
+
+  .form__success-text {
+    max-width: 44ch;
+  }
+
+  .contact__aside {
+    grid-column: 9 / span 4;
+    display: grid;
+    gap: 40px;
+    align-content: start;
+  }
+
+  .next {
+    border-top: 1px solid var(--line);
+  }
+
+  .next__step {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .next__idx {
+    font-size: 13px;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+
+  .next__title {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .next__text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--fg-2);
+  }
+
+  .direct {
+    display: grid;
+    gap: 12px;
+  }
+
+  .direct__label {
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-bottom: 4px;
+  }
+
+  .direct__link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(16px, 1.3vw, 19px);
+    letter-spacing: -0.01em;
+    transition: color 0.2s steps(2);
+  }
+
+  .direct__link :global(.pixel) {
+    width: 10px;
+    color: var(--fg-3);
+    transition:
+      color 0.2s steps(2),
+      transform 0.3s steps(3);
+  }
+
+  .direct__link:hover {
+    color: var(--accent);
+  }
+
+  .direct__link:hover :global(.pixel) {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  .direct__book {
+    margin-top: 12px;
+  }
+
+  .direct__book :global(.pixel) {
+    width: 10px;
+  }
+
+  .direct__hours {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-top: 6px;
+  }
+
+  @media (max-width: 1080px) {
+    .form,
+    .contact__aside {
+      grid-column: 1 / -1;
+    }
+
+    .contact__aside {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .form__row,
+    .contact__aside {
+      grid-template-columns: 1fr;
+    }
+
+    .form__btn {
+      width: 100%;
+    }
+  }
+</style>

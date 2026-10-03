@@ -1,0 +1,60 @@
+---
+import Dashboard from './Dashboard.astro';
+import Logistics from './Logistics.astro';
+import Mobile from './Mobile.astro';
+import Telegram from './Telegram.astro';
+import { assetUrl } from '@/i18n';
+import type { MockupKind } from '@/i18n/types';
+
+interface Props {
+  kind: MockupKind;
+  /** Real screenshot in /public — replaces the generated illustration. */
+  cover?: string;
+  alt?: string;
+  class?: string;
+}
+
+const { kind, cover, alt = '', class: className } = Astro.props;
+---
+
+<div class:list={['mock', className]}>
+  <div class="mock__inner" aria-hidden={cover ? undefined : 'true'}>
+    {
+      cover ? (
+        <img src={assetUrl(cover)} alt={alt} loading="lazy" decoding="async" />
+      ) : kind === 'dashboard' ? (
+        <Dashboard />
+      ) : kind === 'logistics' ? (
+        <Logistics />
+      ) : kind === 'mobile' ? (
+        <Mobile />
+      ) : (
+        <Telegram />
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .mock {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    container-type: inline-size;
+    width: 100%;
+  }
+
+  .mock__inner {
+    position: absolute;
+    inset: 0;
+    font-size: 1.05cqw;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+
+  .mock__inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+</style>

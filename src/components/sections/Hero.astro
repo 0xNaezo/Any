@@ -1,0 +1,226 @@
+---
+import Pixel from '../ui/Pixel.astro';
+import GhostScene from '../ui/GhostScene.astro';
+import { ARROW_RIGHT, ARROW_DOWN } from '@/lib/sprites';
+import { emphasize } from '@/lib/text';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { hero, status } = dict;
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <p class="hero__status t-mono" data-hero-item>
+        <span class="status-dot"></span>
+        <span>{status.available}</span>
+      </p>
+
+      <h1 class="hero__title t-display" id="hero-title" data-split="hero">
+        {hero.title.map((line) => <span class="hero__line" set:html={emphasize(line)} />)}
+      </h1>
+
+      <p class="hero__lead t-lead" data-hero-item>{hero.lead}</p>
+
+      <div class="hero__ctas" data-hero-item>
+        <a href="#contact" class="btn btn--primary">
+          {hero.primary}
+          <Pixel rows={ARROW_RIGHT} cell={2} />
+        </a>
+        <a href="#work" class="btn">
+          {hero.secondary}
+          <Pixel rows={ARROW_DOWN} cell={2} class="btn__down" />
+        </a>
+      </div>
+
+      <p class="hero__note t-mono" data-hero-item>{hero.note}</p>
+    </div>
+
+    <div class="hero__scene" data-hero-scene>
+      <GhostScene dict={dict} />
+    </div>
+  </div>
+
+  <div class="container">
+    <dl class="hero__stats">
+      {
+        hero.stats.map((s) => (
+          <div class="stat" data-hero-stat>
+            <dt class="stat__label">{s.label}</dt>
+            <dd class="stat__value t-pixel">
+              {s.prefix && <span class="stat__affix">{s.prefix}</span>}
+              <span data-count={s.value}>{s.value}</span>
+              {s.suffix && <span class="stat__affix">{s.suffix}</span>}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-top: calc(var(--header-h) + clamp(40px, 6.5vw, 88px));
+    overflow: clip;
+  }
+
+  /* Faint dot grid behind the hero, fading out downwards. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1.2px);
+    background-size: 24px 24px;
+    background-position: center top;
+    mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.6) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .hero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 48px;
+    align-items: stretch;
+  }
+
+  .hero__content {
+    grid-column: 1 / span 7;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-block: 8px 4px;
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 10px;
+    height: 32px;
+    padding: 0 12px;
+    color: var(--fg-2);
+    border: 1px solid var(--line-2);
+    background: rgb(255 255 255 / 0.02);
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: clamp(24px, 3vw, 36px);
+  }
+
+  .hero__title :global(.dim) {
+    color: var(--fg-3);
+  }
+
+  .hero__lead {
+    max-width: 54ch;
+    margin-bottom: clamp(28px, 3.4vw, 40px);
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero__ctas :global(.btn__down) {
+    width: 10px;
+  }
+
+  .btn:hover :global(.btn__down) {
+    transform: translateY(3px);
+  }
+
+  .hero__note {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--fg-3);
+  }
+
+  .hero__scene {
+    grid-column: 8 / span 5;
+    min-height: clamp(460px, 44vw, 620px);
+  }
+
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: clamp(56px, 7vw, 104px);
+    border-top: 1px solid var(--line);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: clamp(22px, 2.6vw, 32px) clamp(16px, 2vw, 28px) clamp(28px, 3.4vw, 44px);
+    border-left: 1px solid var(--line);
+  }
+
+  .stat:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .stat__value {
+    display: flex;
+    align-items: baseline;
+    font-size: clamp(40px, 4.6vw, 68px);
+    line-height: 0.9;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat__affix {
+    color: var(--fg-3);
+  }
+
+  .stat__label {
+    max-width: 24ch;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--fg-2);
+  }
+
+  @media (max-width: 1080px) {
+    .hero__content {
+      grid-column: 1 / -1;
+    }
+
+    .hero__scene {
+      grid-column: 1 / -1;
+      min-height: clamp(360px, 70vw, 520px);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat:nth-child(3) {
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    .stat:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+
+    .hero__ctas .btn {
+      flex: 1 1 auto;
+    }
+  }
+</style>

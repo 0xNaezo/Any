@@ -1,0 +1,178 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import Pixel from '../ui/Pixel.astro';
+import { ARROW_RIGHT, CHECK } from '@/lib/sprites';
+import { pad2 } from '@/lib/text';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  index: number;
+}
+
+const { dict, index } = Astro.props;
+const p = dict.pricing;
+---
+
+<section class="section pricing" id="pricing" aria-labelledby="pricing-title">
+  <div class="container">
+    <SectionHead index={index} label={p.label} title={p.title} lead={p.lead} id="pricing-title" />
+
+    <ul class="plans">
+      {
+        p.plans.map((plan, i) => (
+          <li class:list={['plan', { 'plan--featured': plan.featured }]} data-reveal>
+            {plan.featured && <span class="plan__badge t-mono">{p.popular}</span>}
+            <div class="plan__head">
+              <span class="plan__idx t-pixel">{pad2(i + 1)}</span>
+              <h3 class="plan__name t-h3">{plan.name}</h3>
+              <p class="plan__text">{plan.text}</p>
+            </div>
+            <p class="plan__price">
+              <span class="plan__from t-mono">{p.from}</span>
+              <span class="plan__amount">{plan.price}</span>
+              {plan.unit && <span class="plan__unit t-mono">{plan.unit}</span>}
+            </p>
+            <ul class="plan__features">
+              {plan.features.map((f) => (
+                <li>
+                  <Pixel rows={CHECK} cell={2} />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <a href="#contact" class:list={['btn btn--block', { 'btn--primary': plan.featured }]}>
+              {p.cta}
+              <Pixel rows={ARROW_RIGHT} cell={2} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="pricing__note t-mono" data-reveal>{p.note}</p>
+  </div>
+</section>
+
+<style>
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--col-gap);
+    align-items: stretch;
+  }
+
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(24px, 2.6vw, 36px);
+    border: 1px solid var(--line-2);
+    background: var(--bg-1);
+  }
+
+  .plan--featured {
+    border-color: var(--accent);
+    background:
+      repeating-conic-gradient(color-mix(in srgb, var(--accent) 4%, transparent) 0 25%, transparent 0 50%) 0 0 / 4px 4px,
+      var(--bg-1);
+  }
+
+  .plan__badge {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    padding: 6px 10px;
+    font-size: 10px;
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .plan__head {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+
+  .plan__idx {
+    font-size: 12px;
+    color: var(--fg-4);
+  }
+
+  .plan--featured .plan__idx {
+    color: var(--accent);
+  }
+
+  .plan__text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    min-height: 4.8em;
+  }
+
+  .plan__price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-block: 22px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+
+  .plan__from,
+  .plan__unit {
+    font-size: 11px;
+    color: var(--fg-3);
+  }
+
+  .plan__amount {
+    font-family: var(--font-pixel);
+    font-size: clamp(30px, 2.8vw, 42px);
+    line-height: 1;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+
+  .plan__features {
+    display: grid;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--fg-2);
+    margin-bottom: 32px;
+  }
+
+  .plan__features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .plan__features :global(.pixel) {
+    color: var(--accent);
+    width: 14px;
+  }
+
+  .plan .btn {
+    margin-top: auto;
+  }
+
+  .pricing__note {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--fg-3);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 1080px) {
+    .plans {
+      grid-template-columns: 1fr;
+      max-width: 560px;
+    }
+
+    .plan__text {
+      min-height: 0;
+    }
+  }
+</style>

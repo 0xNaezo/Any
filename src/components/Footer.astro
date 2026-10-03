@@ -1,0 +1,268 @@
+---
+import Logo from './ui/Logo.astro';
+import Pixel from './ui/Pixel.astro';
+import PixelGrid from './ui/PixelGrid.astro';
+import { ARROW_UP, ARROW_UP_RIGHT, GHOST, WORDMARK } from '@/lib/sprites';
+import { site } from '@/config/site';
+import { localeUrl, type Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const home = localeUrl(dict.locale, '/');
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__top grid-12">
+      <div class="footer__brand">
+        <Logo href={home} label={dict.nav.home} />
+        <p class="footer__tagline">{dict.footer.tagline}</p>
+        <p class="footer__clock t-mono">
+          <span class="status-dot"></span>
+          <span>
+            {dict.hero.scene.city} · <time data-clock data-tz={site.timezone}>--:--</time>
+            <span class="footer__clock-note" data-clock-note data-night={dict.footer.clock.night} data-day={dict.footer.clock.day}></span>
+          </span>
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label={dict.footer.nav}>
+        <p class="footer__head t-mono">{dict.footer.nav}</p>
+        <ul>
+          {
+            dict.nav.links.map((link) => (
+              <li>
+                <a class="link" href={`${home}#${link.id}`}>
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+          <li><a class="link" href={`${home}#contact`}>{dict.contact.label}</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <p class="footer__head t-mono">{dict.footer.contacts}</p>
+        <ul>
+          <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li>
+            <a class="link" href={site.telegram.href} target="_blank" rel="noopener">{site.telegram.handle}</a>
+          </li>
+          {
+            site.booking && (
+              <li>
+                <a class="link" href={site.booking} target="_blank" rel="noopener">
+                  {dict.contact.book}
+                </a>
+              </li>
+            )
+          }
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <p class="footer__head t-mono">{dict.footer.social}</p>
+        <ul>
+          {
+            site.socials.map((s) => (
+              <li>
+                <a class="link footer__social" href={s.href} target="_blank" rel="noopener">
+                  {s.label}
+                  <Pixel rows={ARROW_UP_RIGHT} cell={1} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__mark" data-footer-mark>
+      <PixelGrid rows={WORDMARK} class="footer__word" title={site.name} />
+      <span class="footer__ghost" data-footer-ghost aria-hidden="true">
+        <Pixel rows={GHOST} cell={1} />
+      </span>
+    </div>
+
+    <div class="footer__bottom t-mono">
+      <span>© {year} {site.name}. {dict.footer.rights}</span>
+      <span>{dict.footer.legal}</span>
+      <a class="link" href={localeUrl(dict.locale, '/privacy/')}>{dict.footer.privacy}</a>
+      <a class="link footer__top-link" href="#top" data-scroll-top>
+        {dict.footer.top}
+        <Pixel rows={ARROW_UP} cell={2} class="footer__top-icon" />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-top: clamp(64px, 8vw, 112px);
+    background: linear-gradient(to bottom, transparent, rgb(255 255 255 / 0.012));
+  }
+
+  .footer__top {
+    row-gap: 48px;
+  }
+
+  .footer__brand {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .footer__tagline {
+    max-width: 34ch;
+    color: var(--fg-2);
+    font-size: 15px;
+  }
+
+  .footer__clock {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--fg-3);
+    max-width: 44ch;
+  }
+
+  .footer__clock .status-dot {
+    transform: translateY(-1px);
+  }
+
+  .footer__clock time {
+    color: var(--fg);
+  }
+
+  .footer__clock-note:not(:empty)::before {
+    content: ' — ';
+  }
+
+  .footer__col {
+    grid-column: span 2;
+  }
+
+  .footer__col:first-of-type {
+    grid-column: 7 / span 2;
+  }
+
+  .footer__head {
+    color: var(--fg-3);
+    font-size: 11px;
+    margin-bottom: 18px;
+  }
+
+  .footer__col ul {
+    display: grid;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--fg-2);
+  }
+
+  .footer__col a:hover {
+    color: var(--fg);
+  }
+
+  .footer__social :global(.pixel) {
+    width: 6px;
+    opacity: 0.6;
+  }
+
+  .footer__mark {
+    position: relative;
+    margin-top: clamp(72px, 10vw, 140px);
+    color: var(--fg);
+  }
+
+  .footer__mark :global(.footer__word rect) {
+    transition: fill 0.4s steps(2);
+  }
+
+  .footer__ghost {
+    position: absolute;
+    right: calc(100% / 51 * 0.5);
+    bottom: 100%;
+    width: calc(100% / 51 * 11 * 0.34);
+    margin-bottom: calc(100% / 51 * 0.7);
+    color: var(--fg);
+    animation: float 3.2s steps(4) infinite alternate;
+  }
+
+  @keyframes float {
+    to {
+      translate: 0 -8px;
+    }
+  }
+
+  .footer__ghost :global(.pixel) {
+    width: 100%;
+    height: auto;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 28px;
+    padding-block: 24px 28px;
+    margin-top: clamp(28px, 4vw, 48px);
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--fg-3);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .footer__bottom a:hover {
+    color: var(--fg);
+  }
+
+  .footer__top-link {
+    margin-left: auto;
+  }
+
+  .footer__bottom :global(.footer__top-icon) {
+    width: 8px;
+    transition: transform 0.3s steps(3);
+  }
+
+  .footer__top-link:hover :global(.footer__top-icon) {
+    transform: translateY(-3px);
+  }
+
+  @media (max-width: 960px) {
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+
+    .footer__col,
+    .footer__col:first-of-type {
+      grid-column: span 4;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .footer__col,
+    .footer__col:first-of-type {
+      grid-column: span 6;
+    }
+
+    .footer__col:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .footer__top-link {
+      margin-left: 0;
+    }
+  }
+</style>

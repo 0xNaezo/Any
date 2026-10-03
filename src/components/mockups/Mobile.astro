@@ -1,0 +1,337 @@
+---
+/** Generated UI illustration — therapy app on two phones. Decorative only. */
+import { bitmapToPath } from '@/lib/pixel';
+
+const therapists = [
+  { n: 'Dr. Anna Reyes', t: 'Anxiety · Burnout', r: '4.9', s: 'Today 18:00' },
+  { n: 'Mark Lindqvist', t: 'Relationships', r: '4.8', s: 'Tomorrow' },
+  { n: 'Sofia Brandt', t: 'Sleep · Stress', r: '5.0', s: 'Thu 10:30' },
+];
+
+// Simple pixel face for the video call
+const FACE = [
+  '....######....',
+  '..##########..',
+  '.############.',
+  '.###......###.',
+  '##..........##',
+  '##..##..##..##',
+  '##..........##',
+  '##..........##',
+  '.#....##....#.',
+  '..#........#..',
+  '...##....##...',
+  '.....####.....',
+  '...########...',
+  '.############.',
+  '##############',
+];
+const face = bitmapToPath(FACE);
+---
+
+<div class="mo">
+  <div class="mo__phone mo__phone--a">
+    <div class="mo__screen">
+      <div class="mo__status"><span>9:41</span><span class="mo__notch"></span><span>●●●</span></div>
+      <p class="mo__hello">Good evening, Kate</p>
+      <p class="mo__h">Find your therapist</p>
+      <div class="mo__search">Search by topic…</div>
+      <div class="mo__chips"><b>All</b><span>Anxiety</span><span>Sleep</span><span>Couples</span></div>
+      <ul class="mo__list">
+        {
+          therapists.map((t, i) => (
+            <li class:list={['mo__card', { 'is-on': i === 0 }]}>
+              <span class="mo__ava" />
+              <span class="mo__info">
+                <b>{t.n}</b>
+                <em>{t.t}</em>
+                <span class="mo__meta">
+                  <span>★ {t.r}</span>
+                  <span>{t.s}</span>
+                </span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mo__tabbar"><i class="on"></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
+  <div class="mo__phone mo__phone--b">
+    <div class="mo__screen mo__screen--call">
+      <div class="mo__status"><span>9:41</span><span class="mo__notch"></span><span>●●●</span></div>
+      <div class="mo__call-top">
+        <span class="mo__rec"><i></i>24:13</span>
+        <span>Encrypted</span>
+      </div>
+      <div class="mo__video">
+        <svg viewBox="0 0 14 15" aria-hidden="true"><path d={face}></path></svg>
+        <span class="mo__pip"></span>
+      </div>
+      <p class="mo__who">Dr. Anna Reyes</p>
+      <p class="mo__note">Session 4 of 8 · Anxiety program</p>
+      <div class="mo__controls"><i></i><i></i><i class="end"></i><i></i></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7%;
+    background:
+      radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1.2px) 0 0 / 2.2em 2.2em,
+      #0c0c0f;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    overflow: hidden;
+    font-family: var(--font-sans);
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .mo__phone {
+    width: 23.5%;
+    aspect-ratio: 9 / 19;
+    padding: 0.7em;
+    background: #16161a;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    box-shadow: 0 2em 4em rgb(0 0 0 / 0.5);
+  }
+
+  .mo__phone--a {
+    transform: translateY(4%);
+  }
+
+  .mo__phone--b {
+    transform: translateY(-4%);
+  }
+
+  .mo__screen {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9em;
+    padding: 0.9em 1.1em;
+    background: #0e0e11;
+    overflow: hidden;
+  }
+
+  .mo__status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .mo__notch {
+    width: 30%;
+    height: 1.1em;
+    background: #000;
+  }
+
+  .mo__hello {
+    font-size: 0.85em;
+    color: rgb(255 255 255 / 0.45);
+    margin-top: 0.4em;
+  }
+
+  .mo__h {
+    font-size: 1.45em;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-top: -0.5em;
+  }
+
+  .mo__search {
+    padding: 0.7em 0.9em;
+    font-size: 0.8em;
+    color: rgb(255 255 255 / 0.35);
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .mo__chips {
+    display: flex;
+    gap: 0.4em;
+    font-size: 0.72em;
+    white-space: nowrap;
+  }
+
+  .mo__chips b,
+  .mo__chips span {
+    padding: 0.4em 0.7em;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    font-weight: 400;
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .mo__chips b {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 500;
+  }
+
+  .mo__list {
+    display: grid;
+    gap: 0.6em;
+  }
+
+  .mo__card {
+    display: flex;
+    gap: 0.8em;
+    padding: 0.8em;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background: #121216;
+  }
+
+  .mo__card.is-on {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .mo__ava {
+    flex-shrink: 0;
+    width: 2.8em;
+    height: 2.8em;
+    background:
+      repeating-conic-gradient(rgb(255 255 255 / 0.28) 0 25%, transparent 0 50%) 0 0 / 0.5em 0.5em,
+      #1d1d22;
+  }
+
+  .mo__info {
+    display: grid;
+    gap: 0.15em;
+    min-width: 0;
+    font-size: 0.8em;
+  }
+
+  .mo__info em {
+    font-style: normal;
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .mo__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.6em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: rgb(255 255 255 / 0.5);
+    margin-top: 0.2em;
+  }
+
+  .mo__card.is-on .mo__meta span:last-child {
+    color: var(--accent);
+  }
+
+  .mo__tabbar {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 0.8em;
+    border-top: 1px solid rgb(255 255 255 / 0.07);
+  }
+
+  .mo__tabbar i {
+    width: 1.1em;
+    height: 1.1em;
+    border: 1px solid rgb(255 255 255 / 0.3);
+  }
+
+  .mo__tabbar i.on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .mo__screen--call {
+    background: #0b0b0d;
+  }
+
+  .mo__call-top {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .mo__rec {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: #fff;
+  }
+
+  .mo__rec i {
+    width: 0.6em;
+    height: 0.6em;
+    background: var(--accent);
+  }
+
+  .mo__video {
+    position: relative;
+    flex: 1;
+    display: grid;
+    place-items: center;
+    background:
+      repeating-conic-gradient(rgb(255 255 255 / 0.04) 0 25%, transparent 0 50%) 0 0 / 0.5em 0.5em,
+      #141418;
+    border: 1px solid rgb(255 255 255 / 0.07);
+  }
+
+  .mo__video svg {
+    width: 52%;
+    fill: rgb(236 236 230 / 0.82);
+    shape-rendering: crispEdges;
+  }
+
+  .mo__pip {
+    position: absolute;
+    right: 0.6em;
+    bottom: 0.6em;
+    width: 26%;
+    aspect-ratio: 3 / 4;
+    background: #222228;
+    border: 1px solid rgb(255 255 255 / 0.18);
+  }
+
+  .mo__who {
+    font-size: 1.1em;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+
+  .mo__note {
+    font-size: 0.72em;
+    text-align: center;
+    color: rgb(255 255 255 / 0.45);
+    margin-top: -0.6em;
+  }
+
+  .mo__controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.8em;
+    padding-bottom: 0.4em;
+  }
+
+  .mo__controls i {
+    width: 2.6em;
+    height: 2.6em;
+    background: #1c1c21;
+    border: 1px solid rgb(255 255 255 / 0.12);
+  }
+
+  .mo__controls i.end {
+    background: #ff6d5e;
+    border-color: #ff6d5e;
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+/**
+ * Renders a bitmap as individual "LED" cells (one <rect> per pixel) so every
+ * pixel can be animated on its own. Scales fluidly with its container width.
+ */
+import { bitmapPixels, bitmapSize, type Bitmap } from '@/lib/pixel';
+
+interface Props {
+  rows: Bitmap;
+  /** Gap between cells as a fraction of one cell. */
+  gap?: number;
+  class?: string;
+  title?: string;
+  [key: string]: unknown;
+}
+
+const { rows, gap = 0.14, class: className, title, ...rest } = Astro.props;
+const { w, h } = bitmapSize(rows);
+const pixels = bitmapPixels(rows);
+const s = 1 - gap;
+const o = gap / 2;
+---
+
+<svg
+  class:list={['pixel-grid', className]}
+  viewBox={`0 0 ${w} ${h}`}
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+  {...rest}
+>
+  {title && <title>{title}</title>}
+  {pixels.map((p) => <rect x={p.x + o} y={p.y + o} width={s} height={s} data-x={p.x} data-y={p.y} />)}
+</svg>
+
+<style>
+  .pixel-grid {
+    display: block;
+    width: 100%;
+    height: auto;
+    fill: currentColor;
+  }
+</style>

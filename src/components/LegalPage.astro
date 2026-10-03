@@ -1,0 +1,90 @@
+---
+import Base from '@/layouts/Base.astro';
+import Pixel from './ui/Pixel.astro';
+import { ARROW_RIGHT } from '@/lib/sprites';
+import { flipX } from '@/lib/pixel';
+import { localeUrl, type Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const p = dict.privacy;
+const ARROW_LEFT = flipX(ARROW_RIGHT);
+---
+
+<Base dict={dict} title={`${p.title} · Nightloom`} description={p.sections[0]?.text[0]}>
+  <article class="legal container">
+    <header class="legal__head">
+      <a class="legal__back t-mono link" href={localeUrl(dict.locale, '/')} data-transition>
+        <Pixel rows={ARROW_LEFT} cell={2} />
+        {dict.nav.home.split('—').pop()?.trim()}
+      </a>
+      <h1 class="t-h2" data-split="hero">{p.title}</h1>
+      <p class="legal__updated t-mono" data-hero-item>{p.updated}</p>
+    </header>
+    <div class="legal__body">
+      {
+        p.sections.map((s) => (
+          <section class="legal__section" data-reveal>
+            <h2 class="t-h3">{s.title}</h2>
+            {s.text.map((t) => (
+              <p>{t}</p>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    padding-top: calc(var(--header-h) + clamp(32px, 5vw, 72px));
+    padding-bottom: var(--section-y);
+  }
+
+  .legal__head {
+    display: grid;
+    gap: 24px;
+    padding-bottom: clamp(40px, 5vw, 64px);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: clamp(40px, 5vw, 64px);
+  }
+
+  .legal__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: start;
+    font-size: 12px;
+    color: var(--fg-2);
+    margin-bottom: 24px;
+  }
+
+  .legal__back :global(.pixel) {
+    width: 12px;
+  }
+
+  .legal__updated {
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+
+  .legal__body {
+    display: grid;
+    gap: 40px;
+    max-width: 72ch;
+  }
+
+  .legal__section {
+    display: grid;
+    gap: 14px;
+  }
+
+  .legal__section p {
+    color: var(--fg-2);
+    line-height: 1.7;
+  }
+</style>

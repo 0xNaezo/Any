@@ -1,0 +1,13 @@
+---
+import CasePage from '@/components/CasePage.astro';
+import { getDictionary } from '@/i18n';
+
+export function getStaticPaths() {
+  return getDictionary('ru').work.items.map((item) => ({ params: { slug: item.slug } }));
+}
+
+const dict = getDictionary('ru');
+const item = dict.work.items.find((c) => c.slug === Astro.params.slug)!;
+---
+
+<CasePage dict={dict} item={item} />

@@ -1,0 +1,31 @@
+---
+/** Full-screen pixel grid used for page-to-page transitions (see scripts/transitions.ts). */
+---
+
+<div class="pt" data-pt aria-hidden="true"></div>
+
+<style>
+  .pt {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    pointer-events: none;
+  }
+
+  .pt:empty {
+    display: none;
+  }
+
+  .pt :global(i) {
+    background: var(--bg);
+    /* hide hairline seams between cells */
+    box-shadow: 0 0 0 0.6px var(--bg);
+    transform-origin: center;
+  }
+
+  .pt :global(i.is-accent) {
+    background: var(--accent);
+    box-shadow: 0 0 0 0.6px var(--accent);
+  }
+</style>

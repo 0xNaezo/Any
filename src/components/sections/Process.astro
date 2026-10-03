@@ -1,0 +1,186 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import Pixel from '../ui/Pixel.astro';
+import { GHOST } from '@/lib/sprites';
+import { pad2 } from '@/lib/text';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  index: number;
+}
+
+const { dict, index } = Astro.props;
+const p = dict.process;
+---
+
+<section class="section process" id="process" aria-labelledby="process-title">
+  <div class="container">
+    <SectionHead index={index} label={p.label} title={p.title} lead={p.lead} id="process-title" />
+
+    <div class="process__rail" data-process>
+      <div class="process__track" aria-hidden="true">
+        <span class="process__fill" data-process-fill></span>
+        <span class="process__shuttle" data-process-shuttle>
+          <Pixel rows={GHOST} cell={2} />
+        </span>
+      </div>
+      <ol class="process__steps">
+        {
+          p.steps.map((s, i) => (
+            <li class="pstep" data-step>
+              <span class="pstep__node" aria-hidden="true" />
+              <span class="pstep__idx t-pixel">{pad2(i + 1)}</span>
+              <h3 class="pstep__title">{s.title}</h3>
+              <p class="pstep__time t-mono">{s.time}</p>
+              <p class="pstep__text">{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process__rail {
+    --node: 11px;
+    --track-y: 5px;
+    position: relative;
+  }
+
+  .process__track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--track-y);
+    height: 1px;
+    background: var(--line-2);
+  }
+
+  .process__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+
+  .process__shuttle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--fg);
+    transform: translate(-50%, calc(-100% - 10px));
+    will-change: left;
+  }
+
+  .process__steps {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+
+  .pstep {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-right: 8px;
+  }
+
+  .pstep__node {
+    width: var(--node);
+    height: var(--node);
+    background: var(--bg);
+    border: 1px solid var(--fg-3);
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+    transition:
+      background-color 0.3s steps(2),
+      border-color 0.3s steps(2);
+  }
+
+  .pstep.is-active .pstep__node {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .pstep__idx {
+    font-size: 13px;
+    color: var(--fg-4);
+    margin-bottom: 14px;
+    transition: color 0.3s steps(2);
+  }
+
+  .pstep.is-active .pstep__idx {
+    color: var(--accent);
+  }
+
+  .pstep__title {
+    font-size: clamp(19px, 1.5vw, 22px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+
+  .pstep__time {
+    align-self: flex-start;
+    font-size: 11px;
+    color: var(--fg-2);
+    padding: 5px 8px;
+    border: 1px solid var(--line-2);
+    margin-bottom: 16px;
+  }
+
+  .pstep__text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-2);
+  }
+
+  @media (max-width: 1080px) {
+    .process__rail {
+      padding-left: 44px;
+    }
+
+    .process__track {
+      left: 5px;
+      right: auto;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      height: auto;
+    }
+
+    .process__fill {
+      transform-origin: 50% 0;
+      transform: scaleY(0);
+    }
+
+    .process__shuttle {
+      display: none;
+    }
+
+    .process__steps {
+      grid-template-columns: 1fr;
+      row-gap: 40px;
+    }
+
+    .pstep {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .pstep__node {
+      position: absolute;
+      left: -44px;
+      top: 4px;
+      margin: 0;
+    }
+
+    .pstep__text {
+      max-width: 56ch;
+    }
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+import { bitmapSize, bitmapToPath, type Bitmap } from '@/lib/pixel';
+
+interface Props {
+  rows: Bitmap;
+  /** Size of one pixel in CSS px. */
+  cell?: number;
+  class?: string;
+  /** Accessible name. Without it the graphic is decorative. */
+  title?: string;
+  [key: string]: unknown;
+}
+
+const { rows, cell = 2, class: className, title, ...rest } = Astro.props;
+const { w, h } = bitmapSize(rows);
+const d = bitmapToPath(rows);
+---
+
+<svg
+  class:list={['pixel', className]}
+  width={w * cell}
+  height={h * cell}
+  viewBox={`0 0 ${w} ${h}`}
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+  {...rest}
+>
+  {title && <title>{title}</title>}
+  <path d={d}></path>
+</svg>

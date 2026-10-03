@@ -1,0 +1,69 @@
+---
+/** Stacked section intro (label → title → lead) for two-column layouts. */
+import { pad2 } from '@/lib/text';
+
+interface Props {
+  index: number;
+  label: string;
+  title: string;
+  lead?: string;
+  id: string;
+  class?: string;
+  /** Heading tag (h1 on standalone pages). */
+  as?: 'h1' | 'h2';
+}
+
+const { index, label, title, lead, id, class: className, as: Tag = 'h2' } = Astro.props;
+---
+
+<div class:list={['sintro', className]}>
+  <p class="sintro__label t-mono" data-reveal>
+    <span class="sintro__idx t-pixel">{pad2(index)}</span>
+    <span class="sintro__rule" aria-hidden="true"></span>
+    <span data-scramble>{label}</span>
+  </p>
+  <Tag class="t-h2 sintro__title" id={id} data-split>{title}</Tag>
+  {lead && <p class="t-lead sintro__lead" data-reveal>{lead}</p>}
+  <slot />
+</div>
+
+<style>
+  .sintro {
+    display: grid;
+    gap: 28px;
+    align-content: start;
+  }
+
+  .sintro__label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg-2);
+  }
+
+  .sintro__idx {
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+
+  .sintro__rule {
+    width: 28px;
+    height: 1px;
+    background: var(--line-3);
+  }
+
+  .sintro__title {
+    max-width: 13ch;
+  }
+
+  .sintro__lead {
+    max-width: 42ch;
+  }
+
+  @media (max-width: 960px) {
+    .sintro {
+      gap: 20px;
+    }
+  }
+</style>

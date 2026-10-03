@@ -1,0 +1,364 @@
+---
+import Logo from './ui/Logo.astro';
+import Pixel from './ui/Pixel.astro';
+import { ARROW_RIGHT } from '@/lib/sprites';
+import { localeNames, localeUrl, locales, switchLocaleUrl, type Dictionary } from '@/i18n';
+import { site } from '@/config/site';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const locale = dict.locale;
+const home = localeUrl(locale, '/');
+const pathname = Astro.url.pathname;
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <Logo href={home} label={dict.nav.home} />
+
+    <nav class="site-nav" aria-label={dict.nav.menu}>
+      <ul>
+        {
+          dict.nav.links.map((link, i) => (
+            <li>
+              <a href={`${home}#${link.id}`} class="site-nav__link" data-nav-link={link.id}>
+                <span class="site-nav__idx">{String(i + 1).padStart(2, '0')}</span>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <div class="lang" role="group" aria-label={dict.nav.language}>
+        {
+          locales.map((l) => (
+            <a
+              href={switchLocaleUrl(pathname, l)}
+              hreflang={l}
+              lang={l}
+              class:list={['lang__item', { 'is-active': l === locale }]}
+              aria-current={l === locale ? 'true' : undefined}
+              title={localeNames[l].long}
+              data-transition
+            >
+              {localeNames[l].short}
+            </a>
+          ))
+        }
+      </div>
+      <a href={`${home}#contact`} class="btn btn--sm btn--primary site-header__cta">
+        {dict.nav.cta}
+        <Pixel rows={ARROW_RIGHT} cell={2} />
+      </a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span class="visually-hidden" data-menu-label data-open={dict.nav.menu} data-close={dict.nav.close}>{dict.nav.menu}</span>
+        <span class="burger__lines" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" data-menu hidden>
+  <div class="mobile-menu__pixels" data-menu-pixels aria-hidden="true"></div>
+  <div class="mobile-menu__body container" data-menu-body>
+    <nav aria-label={dict.nav.menu}>
+      <ul class="mobile-menu__links">
+        {
+          dict.nav.links.map((link, i) => (
+            <li>
+              <a href={`${home}#${link.id}`} data-menu-link>
+                <span class="mobile-menu__idx t-pixel">{String(i + 1).padStart(2, '0')}</span>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="mobile-menu__footer" data-menu-link-extra>
+      <a href={`${home}#contact`} class="btn btn--primary btn--block" data-menu-link>
+        {dict.nav.cta}
+        <Pixel rows={ARROW_RIGHT} cell={2} />
+      </a>
+      <div class="mobile-menu__contacts t-mono">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href={site.telegram.href} target="_blank" rel="noopener">{site.telegram.handle}</a>
+      </div>
+      <div class="lang lang--lg" role="group" aria-label={dict.nav.language}>
+        {
+          locales.map((l) => (
+            <a
+              href={switchLocaleUrl(pathname, l)}
+              hreflang={l}
+              lang={l}
+              class:list={['lang__item', { 'is-active': l === locale }]}
+              aria-current={l === locale ? 'true' : undefined}
+              data-transition
+            >
+              {localeNames[l].long}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: var(--header-h);
+    transition:
+      transform 0.5s var(--ease-out),
+      background-color 0.3s,
+      border-color 0.3s;
+    border-bottom: 1px solid transparent;
+  }
+
+  .site-header.is-scrolled {
+    background: rgb(8 8 10 / 0.72);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom-color: var(--line);
+  }
+
+  .site-header.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  .site-header__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: clamp(16px, 2.2vw, 36px);
+  }
+
+  .site-nav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--fg-2);
+    transition: color 0.2s steps(2);
+  }
+
+  .site-nav__idx {
+    font-family: var(--font-pixel);
+    font-size: 11px;
+    color: var(--fg-4);
+    transition: color 0.2s steps(2);
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link.is-active {
+    color: var(--fg);
+  }
+
+  .site-nav__link:hover .site-nav__idx,
+  .site-nav__link.is-active .site-nav__idx {
+    color: var(--accent);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .lang {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    border: 1px solid var(--line-2);
+  }
+
+  .lang__item {
+    display: grid;
+    place-items: center;
+    height: 30px;
+    min-width: 36px;
+    padding: 0 8px;
+    color: var(--fg-3);
+    transition:
+      color 0.2s steps(2),
+      background-color 0.2s steps(2);
+  }
+
+  .lang__item + .lang__item {
+    border-left: 1px solid var(--line-2);
+  }
+
+  .lang__item:hover {
+    color: var(--fg);
+  }
+
+  .lang__item.is-active {
+    color: var(--bg);
+    background: var(--fg);
+  }
+
+  .burger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line-3);
+    place-items: center;
+  }
+
+  .burger__lines {
+    position: relative;
+    display: block;
+    width: 16px;
+    height: 8px;
+  }
+
+  .burger__lines i {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--fg);
+    transition: transform 0.3s steps(3);
+  }
+
+  .burger__lines i:first-child {
+    top: 0;
+  }
+
+  .burger__lines i:last-child {
+    bottom: 0;
+  }
+
+  .burger[aria-expanded='true'] .burger__lines i:first-child {
+    transform: translateY(3px) rotate(45deg);
+  }
+
+  .burger[aria-expanded='true'] .burger__lines i:last-child {
+    transform: translateY(-3px) rotate(-45deg);
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    padding-top: var(--header-h);
+    overflow-y: auto;
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu__pixels {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    pointer-events: none;
+  }
+
+  .mobile-menu__pixels :global(i) {
+    background: var(--bg);
+    box-shadow: 0 0 0 0.5px var(--bg);
+  }
+
+  .mobile-menu__body {
+    position: relative;
+    min-height: calc(100svh - var(--header-h));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    padding-block: 32px 28px;
+  }
+
+  .mobile-menu__links {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+
+  .mobile-menu__links a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 18px 0;
+    font-size: clamp(30px, 9vw, 44px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mobile-menu__idx {
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+
+  .mobile-menu__footer {
+    display: grid;
+    gap: 20px;
+  }
+
+  .mobile-menu__contacts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--fg-2);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 13px;
+  }
+
+  .lang--lg {
+    align-self: start;
+    justify-self: start;
+  }
+
+  .lang--lg .lang__item {
+    height: 36px;
+    padding: 0 14px;
+  }
+
+  @media (max-width: 1080px) {
+    .site-nav {
+      display: none;
+    }
+
+    .burger {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .site-header__cta,
+    .site-header__actions > .lang {
+      display: none;
+    }
+  }
+
+  @media (min-width: 1081px) {
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+</style>

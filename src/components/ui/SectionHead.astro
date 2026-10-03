@@ -1,0 +1,82 @@
+---
+import { pad2 } from '@/lib/text';
+
+interface Props {
+  index: number;
+  label: string;
+  title: string;
+  lead?: string;
+  /** Heading id for aria-labelledby. */
+  id: string;
+  class?: string;
+  /** Larger title for closing CTAs. */
+  size?: 'md' | 'xl';
+}
+
+const { index, label, title, lead, id, class: className, size = 'md' } = Astro.props;
+---
+
+<div class:list={['shead grid-12', className]}>
+  <p class="shead__label t-mono" data-reveal>
+    <span class="shead__idx t-pixel">{pad2(index)}</span>
+    <span class="shead__rule" aria-hidden="true"></span>
+    <span data-scramble>{label}</span>
+  </p>
+  <h2 class:list={['shead__title', size === 'xl' ? 't-display shead__title--xl' : 't-h2']} id={id} data-split>{title}</h2>
+  {lead && <p class="shead__lead t-lead" data-reveal>{lead}</p>}
+  <slot />
+</div>
+
+<style>
+  .shead {
+    row-gap: 28px;
+    align-items: end;
+    margin-bottom: clamp(48px, 6vw, 88px);
+  }
+
+  .shead__label {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg-2);
+  }
+
+  .shead__idx {
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+
+  .shead__rule {
+    width: 28px;
+    height: 1px;
+    background: var(--line-3);
+  }
+
+  .shead__title {
+    grid-column: 1 / span 8;
+    max-width: 19ch;
+  }
+
+  .shead__lead {
+    grid-column: 9 / span 4;
+    max-width: 42ch;
+  }
+
+  .shead__title--xl {
+    grid-column: 1 / span 8;
+    max-width: 14ch;
+  }
+
+  @media (max-width: 960px) {
+    .shead__title,
+    .shead__lead {
+      grid-column: 1 / -1;
+    }
+
+    .shead {
+      row-gap: 20px;
+    }
+  }
+</style>

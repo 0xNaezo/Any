@@ -1,0 +1,37 @@
+---
+import Base from '@/layouts/Base.astro';
+import Hero from './sections/Hero.astro';
+import Clients from './sections/Clients.astro';
+import Services from './sections/Services.astro';
+import Work from './sections/Work.astro';
+import Why from './sections/Why.astro';
+import Process from './sections/Process.astro';
+import Team from './sections/Team.astro';
+import Stack from './sections/Stack.astro';
+import Testimonials from './sections/Testimonials.astro';
+import Pricing from './sections/Pricing.astro';
+import Faq from './sections/Faq.astro';
+import Contact from './sections/Contact.astro';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+---
+
+<Base dict={dict}>
+  <Hero dict={dict} />
+  <Clients dict={dict} />
+  <Services dict={dict} index={1} />
+  <Work dict={dict} index={2} />
+  <Why dict={dict} index={3} />
+  <Process dict={dict} index={4} />
+  <Team dict={dict} index={5} />
+  <Stack dict={dict} index={6} />
+  <Testimonials dict={dict} index={7} />
+  <Pricing dict={dict} index={8} />
+  <Faq dict={dict} index={9} />
+  <Contact dict={dict} index={10} />
+</Base>

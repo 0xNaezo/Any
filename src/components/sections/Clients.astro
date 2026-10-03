@@ -1,0 +1,201 @@
+---
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { clients } = Astro.props.dict;
+
+/** Rotating set of tiny pixel marks so placeholder names read like logotypes. */
+const MARKS = [
+  'M0 0h4v4H0z',
+  'M2 0h1v1h1v1h1v1H0V2h1V1h1z',
+  'M0 0h1v4H0zM2 0h1v4H2zM4 0h1v4H4z',
+  'M1 0h2v1h1v2H3v1H1V3H0V1h1z',
+  'M0 3h5v1H0zM1 2h3v1H1zM2 1h1v1H2z',
+  'M0 0h2v2H0zM2 2h2v2H2z',
+];
+const STYLES = ['sans', 'mono', 'pixel', 'wide', 'sans-light', 'mono'];
+
+const items = clients.items.map((name, i) => ({ name, mark: MARKS[i % MARKS.length], style: STYLES[i % STYLES.length] }));
+---
+
+<section class="clients" aria-label={clients.label}>
+  <div class="container clients__inner">
+    <p class="clients__label t-mono">
+      <span class="clients__count t-pixel">{String(items.length).padStart(2, '0')}+</span>
+      {clients.label}
+    </p>
+    <div class="clients__viewport">
+      <div class="clients__track">
+        {
+          [0, 1].map((copy) => (
+            <ul class="clients__list" aria-hidden={copy === 1 ? 'true' : undefined}>
+              {items.map((c) => (
+                <li class:list={['client', `client--${c.style}`]}>
+                  <svg class="client__mark" viewBox="0 0 5 4" aria-hidden="true">
+                    <path d={c.mark} />
+                  </svg>
+                  <span>{c.name}</span>
+                </li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .clients {
+    position: relative;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-top: clamp(-1px, 0px, 0px);
+  }
+
+  .clients__inner {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .clients__label {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: clamp(120px, 14vw, 200px);
+    padding-block: 26px;
+    padding-right: 20px;
+    border-right: 1px solid var(--line);
+    color: var(--fg-3);
+    font-size: 11px;
+  }
+
+  .clients__count {
+    font-size: 22px;
+    line-height: 1;
+    color: var(--fg);
+    letter-spacing: 0;
+  }
+
+  .clients__viewport {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .clients__track {
+    display: flex;
+    width: max-content;
+    height: 100%;
+    animation: marquee 48s linear infinite;
+  }
+
+  .clients:hover .clients__track {
+    animation-play-state: paused;
+  }
+
+  .clients__list {
+    display: flex;
+    align-items: center;
+  }
+
+  .client {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 clamp(28px, 3.4vw, 52px);
+    height: 100%;
+    color: var(--fg-3);
+    font-size: 19px;
+    white-space: nowrap;
+    transition: color 0.3s steps(3);
+  }
+
+  .client:hover {
+    color: var(--fg);
+  }
+
+  .client__mark {
+    width: 15px;
+    height: 12px;
+    fill: currentColor;
+    shape-rendering: crispEdges;
+  }
+
+  .client--sans {
+    font-weight: 600;
+    letter-spacing: -0.04em;
+  }
+
+  .client--sans-light {
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  .client--mono {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .client--pixel {
+    font-family: var(--font-pixel);
+    font-size: 20px;
+  }
+
+  .client--wide {
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .clients__inner {
+      flex-direction: column;
+    }
+
+    .clients__label {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 10px;
+      width: auto;
+      padding: 18px 0 14px;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .clients__count {
+      font-size: 16px;
+    }
+
+    .clients__viewport {
+      height: 72px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clients__track {
+      animation: none;
+    }
+
+    .clients__viewport {
+      overflow-x: auto;
+    }
+  }
+</style>

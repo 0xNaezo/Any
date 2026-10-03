@@ -1,0 +1,38 @@
+---
+import Pixel from './Pixel.astro';
+import { GHOST, WORDMARK } from '@/lib/sprites';
+
+interface Props {
+  href: string;
+  label: string;
+  class?: string;
+}
+
+const { href, label, class: className } = Astro.props;
+---
+
+<a href={href} class:list={['logo', className]} aria-label={label} data-transition>
+  <Pixel rows={GHOST} cell={2} class="logo__ghost" />
+  <Pixel rows={WORDMARK} cell={2} class="logo__word" />
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg);
+  }
+
+  .logo :global(.logo__ghost) {
+    transition: transform 0.4s steps(4);
+  }
+
+  .logo:hover :global(.logo__ghost) {
+    transform: translateY(-2px);
+  }
+
+  .logo:hover :global(.logo__word) {
+    color: var(--fg);
+  }
+</style>

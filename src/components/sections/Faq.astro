@@ -1,0 +1,184 @@
+---
+import SectionIntro from '../ui/SectionIntro.astro';
+import Pixel from '../ui/Pixel.astro';
+import { ARROW_RIGHT } from '@/lib/sprites';
+import { pad2 } from '@/lib/text';
+import { site } from '@/config/site';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  index: number;
+}
+
+const { dict, index } = Astro.props;
+const f = dict.faq;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: f.items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="container faq__grid">
+    <div class="faq__aside">
+      <SectionIntro index={index} label={f.label} title={f.title} lead={f.lead} id="faq-title" class="faq__intro">
+        <a class="link faq__mail t-mono" href={`mailto:${site.email}`}>
+          {site.email}
+          <Pixel rows={ARROW_RIGHT} cell={2} />
+        </a>
+      </SectionIntro>
+    </div>
+
+    <div class="faq__list">
+      {
+        f.items.map((item, i) => (
+          <details class="qa" data-reveal name="faq">
+            <summary class="qa__q">
+              <span class="qa__idx t-pixel">{pad2(i + 1)}</span>
+              <span class="qa__text">{item.q}</span>
+              <span class="qa__icon" aria-hidden="true">
+                <i />
+                <i />
+              </span>
+            </summary>
+            <div class="qa__a">
+              <p>{item.a}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 48px;
+  }
+
+  .faq__aside {
+    grid-column: 1 / span 5;
+  }
+
+  .faq__aside :global(.faq__intro) {
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+  }
+
+  .faq__mail {
+    justify-self: start;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: var(--fg);
+  }
+
+  .faq__mail :global(.pixel) {
+    width: 12px;
+  }
+
+  .faq__list {
+    grid-column: 7 / span 6;
+    border-top: 1px solid var(--line);
+  }
+
+  .qa {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .qa__q {
+    display: grid;
+    grid-template-columns: 36px 1fr 24px;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: clamp(17px, 1.4vw, 20px);
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    transition: color 0.2s steps(2);
+  }
+
+  .qa__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .qa__q:hover {
+    color: var(--fg);
+  }
+
+  .qa__idx {
+    font-size: 12px;
+    color: var(--fg-4);
+    transition: color 0.2s steps(2);
+  }
+
+  .qa[open] .qa__idx,
+  .qa__q:hover .qa__idx {
+    color: var(--accent);
+  }
+
+  .qa__icon {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    justify-self: end;
+  }
+
+  .qa__icon i {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 14px;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.3s steps(3);
+  }
+
+  .qa__icon i:last-child {
+    transform: rotate(90deg);
+  }
+
+  .qa[open] .qa__icon i:last-child {
+    transform: rotate(0deg);
+  }
+
+  .qa__a {
+    overflow: hidden;
+  }
+
+  .qa__a p {
+    padding: 0 40px 28px 48px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--fg-2);
+    max-width: 62ch;
+  }
+
+  @media (max-width: 960px) {
+    .faq__aside,
+    .faq__list {
+      grid-column: 1 / -1;
+    }
+
+    .faq__aside :global(.faq__intro) {
+      position: static;
+    }
+
+    .qa__a p {
+      padding: 0 0 24px 48px;
+    }
+  }
+</style>

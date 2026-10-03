@@ -1,0 +1,113 @@
+---
+import Pixel from '../ui/Pixel.astro';
+import SectionIntro from '../ui/SectionIntro.astro';
+import { ICONS } from '@/lib/sprites';
+import { pad2 } from '@/lib/text';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  index: number;
+}
+
+const { dict, index } = Astro.props;
+const w = dict.why;
+---
+
+<section class="section why" id="why" aria-labelledby="why-title">
+  <div class="container why__grid">
+    <div class="why__aside">
+      <SectionIntro index={index} label={w.label} title={w.title} lead={w.lead} id="why-title" class="why__sticky" />
+    </div>
+
+    <ol class="why__list">
+      {
+        w.items.map((item, i) => (
+          <li class="why__item" data-reveal>
+            <span class="why__num t-pixel">{pad2(i + 1)}</span>
+            <Pixel rows={ICONS[item.icon]} cell={3} class="why__icon" />
+            <div>
+              <h3 class="t-h3 why__item-title">{item.title}</h3>
+              <p class="t-body">{item.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .why__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 48px;
+  }
+
+  .why__aside {
+    grid-column: 1 / span 5;
+  }
+
+  .why__aside :global(.why__sticky) {
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+  }
+
+
+
+
+
+
+  .why__list {
+    grid-column: 7 / span 6;
+    border-top: 1px solid var(--line);
+  }
+
+  .why__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    column-gap: clamp(20px, 2.4vw, 36px);
+    padding: clamp(26px, 3vw, 40px) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .why__num {
+    position: absolute;
+    top: clamp(26px, 3vw, 40px);
+    right: 0;
+    font-size: 12px;
+    color: var(--fg-4);
+  }
+
+  .why__item :global(.why__icon) {
+    color: var(--fg-2);
+    margin-top: 2px;
+    transition: color 0.3s steps(3);
+  }
+
+  .why__item:hover :global(.why__icon) {
+    color: var(--accent);
+  }
+
+  .why__item-title {
+    margin-bottom: 10px;
+    padding-right: 40px;
+  }
+
+  .why__item .t-body {
+    max-width: 50ch;
+  }
+
+  @media (max-width: 960px) {
+    .why__aside,
+    .why__list {
+      grid-column: 1 / -1;
+    }
+
+    .why__aside :global(.why__sticky) {
+      position: static;
+    }
+  }
+</style>

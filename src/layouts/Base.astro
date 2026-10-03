@@ -1,0 +1,135 @@
+---
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource/geist-pixel';
+import '@/styles/global.css';
+
+import geistCyr from '@fontsource-variable/geist/files/geist-cyrillic-wght-normal.woff2?url';
+import geistLat from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import monoLat from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
+
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import PageTransition from '@/components/ui/PageTransition.astro';
+import { site } from '@/config/site';
+import { assetUrl, defaultLocale, locales, switchLocaleUrl, type Dictionary } from '@/i18n';
+
+interface Props {
+  dict: Dictionary;
+  title?: string;
+  description?: string;
+  /** Path to an OG image in /public. */
+  image?: string;
+  noindex?: boolean;
+  /** Extra JSON-LD objects. */
+  schema?: Record<string, unknown>[];
+}
+
+const { dict, title = dict.meta.title, description = dict.meta.description, image, noindex = false, schema = [] } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const canonical = new URL(pathname, site.url).href;
+const ogImage = new URL(assetUrl(image ?? `/og/${dict.locale}/index.png`), site.url).href;
+const alternates = locales.map((l) => ({ lang: l, href: new URL(switchLocaleUrl(pathname, l), site.url).href }));
+const xDefault = new URL(switchLocaleUrl(pathname, defaultLocale), site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.name,
+  url: site.url,
+  logo: new URL(assetUrl('/icon-512.png'), site.url).href,
+  image: ogImage,
+  description: dict.meta.description,
+  email: site.email,
+  foundingDate: String(site.founded),
+  sameAs: site.socials.map((s) => s.href),
+  areaServed: 'Worldwide',
+  knowsAbout: ['Web development', 'Mobile development', 'Backend development', 'UI/UX design', 'DevOps'],
+};
+---
+
+<!doctype html>
+<html lang={dict.htmlLang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {!noindex && alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={xDefault} />}
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta name="theme-color" content="#08080a" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href={assetUrl('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={assetUrl('/favicon-32.png')} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={assetUrl('/apple-touch-icon.png')} />
+    <link rel="manifest" href={assetUrl('/site.webmanifest')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={dict.ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preload" href={dict.locale === 'ru' ? geistCyr : geistLat} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoLat} as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.remove('no-js');
+        d.classList.add('js');
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('motion');
+      })();
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify([organization, ...schema])} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{dict.nav.skip}</a>
+    <div class="frame" aria-hidden="true"></div>
+
+    <Header dict={dict} />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer dict={dict} />
+    <PageTransition />
+
+    <script>
+      import '@/scripts/main';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+</style>
