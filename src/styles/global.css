@@ -39,7 +39,7 @@
   --gutter: clamp(20px, 4vw, 56px);
   --gap: clamp(16px, 1.7vw, 24px);
   --header-h: 68px;
-  --section-y: clamp(104px, 12vw, 184px);
+  --section-y: clamp(96px, 10vw, 156px);
 
   /* type scale */
   --fs-display: clamp(3.25rem, 0.6rem + 8.2vw, 9.5rem);
@@ -408,6 +408,9 @@ html.js:not(.reduced-motion) :is(
 }
 html.js:not(.reduced-motion) [data-line] {
   transform: scaleX(0);
+}
+html.js:not(.reduced-motion) [data-manifesto] > * {
+  opacity: 0.14;
 }
 
 /* SplitText line masks: give descenders and italic overhangs room to breathe */

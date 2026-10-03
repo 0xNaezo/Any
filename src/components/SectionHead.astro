@@ -10,12 +10,14 @@ interface Props {
   titleId?: string;
   /** `split`: title left, lead right (default). `stack`: lead under title (for narrow, sticky columns). */
   layout?: 'split' | 'stack';
+  /** `display`: a full-width, hero-sized title for the closing section. */
+  size?: 'default' | 'display';
 }
 
-const { index, label, meta, title, lead, titleId, layout = 'split' } = Astro.props;
+const { index, label, meta, title, lead, titleId, layout = 'split', size = 'default' } = Astro.props;
 ---
 
-<header class:list={['section-head', `section-head--${layout}`]}>
+<header class:list={['section-head', `section-head--${layout}`, `section-head--${size}`]}>
   <div class="section-head__bar">
     <span class="section-head__line" data-line aria-hidden="true"></span>
     <span class="label section-head__index">({index})</span>
@@ -93,6 +95,24 @@ const { index, label, meta, title, lead, titleId, layout = 'split' } = Astro.pro
     max-width: 34ch;
     justify-self: end;
     padding-bottom: 0.35em;
+  }
+
+  .section-head--display .section-head__title {
+    grid-column: 1 / -1;
+    font-size: clamp(3rem, 0.6rem + 7.6vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: -0.052em;
+    margin-left: -0.04em;
+  }
+  .section-head--display .section-head__title :global(em) {
+    letter-spacing: -0.03em;
+  }
+  @media (min-width: 1024px) {
+    .section-head--display .section-head__aside {
+      grid-column: 7 / -1;
+      justify-self: start;
+      max-width: 40ch;
+    }
   }
 
   .section-head--stack .section-head__title {

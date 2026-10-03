@@ -80,6 +80,37 @@ export function initEyes() {
   }
 }
 
+/** Status board: a tooltip per day on the uptime bars. */
+export function initStatus() {
+  const board = document.querySelector<HTMLElement>('[data-status]');
+  const tip = board?.querySelector<HTMLElement>('[data-status-tip]');
+  if (!board || !tip) return;
+  const date = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const title = document.createTextNode('');
+  const meta = document.createElement('span');
+  tip.append(title, meta);
+
+  board.addEventListener('pointerover', (event) => {
+    const bar = (event.target as Element).closest<HTMLElement>('.status__bar');
+    if (!bar) {
+      tip.hidden = true;
+      return;
+    }
+    const daysAgo = 89 - Number(bar.dataset.day || 0);
+    const degraded = bar.classList.contains('is-degraded');
+    title.textContent = degraded ? 'Degraded performance, resolved' : 'No incidents';
+    meta.textContent = date.format(new Date(Date.now() - daysAgo * 86_400_000));
+    const b = bar.getBoundingClientRect();
+    const r = board.getBoundingClientRect();
+    tip.hidden = false;
+    const half = tip.offsetWidth / 2 + 8;
+    const x = Math.min(Math.max(b.left - r.left + b.width / 2, half), r.width - half);
+    tip.style.left = `${x}px`;
+    tip.style.top = `${b.top - r.top}px`;
+  });
+  board.addEventListener('pointerleave', () => (tip.hidden = true));
+}
+
 /** Copy-to-clipboard buttons. */
 export function initCopy() {
   document.addEventListener('click', async (event) => {

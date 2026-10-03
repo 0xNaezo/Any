@@ -19,8 +19,9 @@ const { featured } = testimonials;
     </div>
 
     <figure class="t__featured">
-      <blockquote class="t__quote" data-scrub-words>
-        <p><span class="t__mark" aria-hidden="true">“</span>{featured.quote}<span aria-hidden="true">”</span></p>
+      <span class="t__mark" aria-hidden="true" data-reveal>“</span>
+      <blockquote class="t__quote">
+        <p data-split>{featured.quote}<span aria-hidden="true">”</span></p>
       </blockquote>
       <figcaption class="t__author" data-reveal>
         <span class="t__avatar" aria-hidden="true">{initials(featured.name)}</span>
@@ -98,6 +99,7 @@ const { featured } = testimonials;
   }
   .t__quote {
     grid-column: 3 / -1;
+    grid-row: 1;
     font-family: var(--font-serif);
     font-size: clamp(1.875rem, 1rem + 2.7vw, 3.5rem);
     line-height: 1.12;
@@ -106,10 +108,15 @@ const { featured } = testimonials;
     text-wrap: pretty;
   }
   .t__mark {
-    display: inline-block;
-    margin-left: -0.42em;
-    width: 0.42em;
-    color: var(--fg-3);
+    grid-column: 1 / 3;
+    grid-row: 1;
+    justify-self: end;
+    margin-top: -0.06em;
+    font-family: var(--font-serif);
+    font-size: clamp(5rem, 2rem + 8vw, 11rem);
+    line-height: 0.8;
+    color: var(--accent);
+    opacity: 0.9;
   }
   .t__featured .t__author {
     grid-column: 3 / -1;
@@ -183,8 +190,12 @@ const { featured } = testimonials;
       grid-column: 1 / -1;
     }
     .t__mark {
-      margin-left: 0;
-      width: auto;
+      grid-column: 1 / -1;
+      justify-self: start;
+      margin-bottom: -0.38em;
+    }
+    .t__quote {
+      grid-row: 2;
     }
     .t__list {
       grid-template-columns: minmax(0, 1fr);

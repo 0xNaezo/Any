@@ -1,0 +1,246 @@
+---
+import GhostMark from './GhostMark.astro';
+import { site } from '../data/site';
+import { initials } from '../lib/utils';
+
+const { manifesto, team, stats } = site;
+
+/* Split the statement into words at build time, so the scroll effect needs no
+   runtime text splitting. *…* runs are set in italic serif. */
+type Token = { kind: 'word'; text: string; em: boolean } | { kind: 'team' } | { kind: 'ghost' };
+const tokens: Token[] = [];
+for (const part of manifesto.text.split(/(\*[^*]+\*)/)) {
+  const em = part.startsWith('*') && part.endsWith('*');
+  const body = em ? part.slice(1, -1) : part;
+  for (const word of body.split(/\s+/).filter(Boolean)) {
+    if (word === '{team}') tokens.push({ kind: 'team' });
+    else if (word === '{ghost}') tokens.push({ kind: 'ghost' });
+    else tokens.push({ kind: 'word', text: word, em });
+  }
+}
+---
+
+<section class="section manifesto" aria-labelledby="manifesto-title">
+  <div class="container">
+    <div class="mf__bar">
+      <span class="mf__line" data-line aria-hidden="true"></span>
+      <h2 id="manifesto-title" class="label mf__label" data-scramble>{manifesto.label}</h2>
+      <p class="label mf__meta">{manifesto.meta}</p>
+    </div>
+
+    <p class="mf__text" data-manifesto>
+      {
+        tokens.map((token) =>
+          token.kind === 'team' ? (
+            <>
+              <span class="mf__media mf__team" aria-hidden="true">
+                {team.members.map((member) => (
+                  <span class="mf__avatar">
+                    <span>{initials(member.name)}</span>
+                  </span>
+                ))}
+              </span>{' '}
+            </>
+          ) : token.kind === 'ghost' ? (
+            <>
+              <span class="mf__media mf__ghost" aria-hidden="true">
+                <GhostMark size="1em" />
+              </span>{' '}
+            </>
+          ) : token.em ? (
+            <>
+              <em class="mf__word">{token.text}</em>{' '}
+            </>
+          ) : (
+            <>
+              <span class="mf__word">{token.text}</span>{' '}
+            </>
+          ),
+        )
+      }
+    </p>
+
+    <div class="mf__sign" data-reveal>
+      <span class="mf__sign-name">{manifesto.signature}</span>
+      <span class="label">{manifesto.signatureRole}</span>
+    </div>
+
+    <dl class="stats">
+      {
+        stats.map((stat) => (
+          <div class="stats__item" data-reveal>
+            <dt class="stats__label">
+              {stat.label.split('\n').map((line, i) => (i === 0 ? line : [<br />, line]))}
+            </dt>
+            <dd class="stats__value">
+              <span data-count={stat.value} data-decimals={stat.decimals}>
+                {stat.value.toFixed(stat.decimals)}
+              </span>
+              <span class="stats__suffix">{stat.suffix}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .mf__bar {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-top: 18px;
+  }
+  .mf__line {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line-2);
+    transform-origin: left center;
+  }
+  .mf__label {
+    color: var(--fg-2);
+  }
+
+  .mf__text {
+    margin-top: clamp(48px, 6vw, 96px);
+    font-size: clamp(2rem, 0.85rem + 3.5vw, 4.5rem);
+    font-weight: 450;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--fg);
+    text-indent: clamp(0px, 16vw, 232px);
+    text-wrap: pretty;
+  }
+  .mf__text em {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+
+  /* inline media sit on the text's x-height, like a word */
+  .mf__media {
+    display: inline-flex;
+    vertical-align: -0.12em;
+    text-indent: 0;
+  }
+  .mf__team {
+    padding-left: 0.2em;
+  }
+  .mf__avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 0.86em;
+    height: 0.86em;
+    margin-left: -0.2em;
+    border-radius: 50%;
+    background:
+      repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.07) 0 1px, transparent 1px 4px),
+      linear-gradient(160deg, #24242b, #121216);
+    box-shadow:
+      0 0 0 0.05em var(--bg),
+      inset 0 0 0 1px var(--line-2);
+    transition: transform 0.6s var(--ease-out);
+  }
+  .mf__avatar span {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-style: italic;
+    font-size: 0.3em;
+    letter-spacing: 0;
+    color: var(--fg);
+  }
+  .mf__team:hover .mf__avatar {
+    transform: translateY(-0.08em);
+  }
+  .mf__team:hover .mf__avatar:nth-child(2) {
+    transition-delay: 40ms;
+  }
+  .mf__team:hover .mf__avatar:nth-child(3) {
+    transition-delay: 80ms;
+  }
+  .mf__team:hover .mf__avatar:nth-child(4) {
+    transition-delay: 120ms;
+  }
+  .mf__ghost {
+    width: 0.86em;
+    height: 0.86em;
+    vertical-align: -0.1em;
+    color: var(--accent);
+  }
+  .mf__ghost :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mf__sign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 18px;
+    margin-top: clamp(32px, 4vw, 56px);
+    padding-left: clamp(0px, 16vw, 232px);
+  }
+  .mf__sign-name {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem);
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--gap);
+    margin-top: clamp(80px, 10vw, 152px);
+  }
+  .stats__item {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .stats__value {
+    display: flex;
+    align-items: baseline;
+    font-size: clamp(3.5rem, 2rem + 4vw, 6.25rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .stats__suffix {
+    margin-left: 0.04em;
+    color: var(--fg-4);
+    letter-spacing: -0.03em;
+  }
+  .stats__label {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--fg-3);
+  }
+
+  @media (max-width: 1023px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 48px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .mf__text {
+      text-indent: 0;
+    }
+    .mf__sign {
+      padding-left: 0;
+    }
+  }
+</style>

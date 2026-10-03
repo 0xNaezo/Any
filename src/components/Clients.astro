@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import { site } from '../data/site';
 import { withBase } from '../lib/utils';
 
-const { clients, stats } = site;
+const { clients } = site;
 
 /* Placeholder glyphs that make the wordmarks feel like real logos. */
 const glyphs: Record<string, string> = {
@@ -31,76 +31,62 @@ const glyphs: Record<string, string> = {
         <Icon name="arrow-up-right" size={14} class="rating__arrow" />
       </a>
     </div>
+  </div>
 
-    <ul class="logos" data-stagger>
-      {
-        clients.logos.map((logo) => (
-          <li class="logos__cell" data-stagger-item>
-            {logo.logo ? (
-              <img class="logos__img" src={withBase(logo.logo)} alt={logo.name} loading="lazy" decoding="async" />
-            ) : (
-              <span class:list={['wordmark', `wordmark--${logo.style}`]}>
-                {glyphs[logo.name] && (
-                  <svg class="wordmark__glyph" viewBox="0 0 20 20" aria-hidden="true">
-                    {glyphs[logo.name] === 'bars' && (
-                      <g fill="currentColor">
-                        <rect x="2" y="4" width="16" height="3" rx="1" />
-                        <rect x="2" y="9" width="11" height="3" rx="1" />
-                        <rect x="2" y="14" width="6" height="3" rx="1" />
-                      </g>
-                    )}
-                    {glyphs[logo.name] === 'triangle' && <path d="M10 2.5 18 17H2Z" fill="currentColor" />}
-                    {glyphs[logo.name] === 'quill' && (
-                      <path d="M17 2.5C9 3.5 4.5 9 3.5 17.5 7 11 10.5 8 17 2.5Z" fill="currentColor" />
-                    )}
-                    {glyphs[logo.name] === 'arrow' && (
-                      <path d="M3 17 17 3M8 3h9v9" fill="none" stroke="currentColor" stroke-width="2.6" />
-                    )}
-                    {glyphs[logo.name] === 'ring' && (
-                      <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="3" />
-                    )}
-                    {glyphs[logo.name] === 'meridian' && (
-                      <g fill="none" stroke="currentColor" stroke-width="1.8">
-                        <circle cx="10" cy="10" r="7.5" />
-                        <path d="M10 2.5v15M2.5 10h15" />
-                      </g>
-                    )}
-                    {glyphs[logo.name] === 'leaf' && (
-                      <path d="M3 17C3 8 8 3 17 3c0 9-5 14-14 14Zm0 0 8-8" fill="currentColor" />
-                    )}
-                    {glyphs[logo.name] === 'parallel' && (
-                      <g fill="currentColor">
-                        <path d="M5 3h4L6 17H2Z" />
-                        <path d="M13 3h4l-3 14h-4Z" />
-                      </g>
-                    )}
-                  </svg>
-                )}
-                <span>{logo.name}</span>
-              </span>
-            )}
-          </li>
-        ))
-      }
-    </ul>
-
-    <dl class="stats">
-      {
-        stats.map((stat) => (
-          <div class="stats__item" data-reveal>
-            <dt class="stats__label">
-              {stat.label.split('\n').map((line, i) => (i === 0 ? line : [<br />, line]))}
-            </dt>
-            <dd class="stats__value">
-              <span data-count={stat.value} data-decimals={stat.decimals}>
-                {stat.value.toFixed(stat.decimals)}
-              </span>
-              <span class="stats__suffix">{stat.suffix}</span>
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
+  <div class="marquee" data-marquee data-reveal>
+    <div class="marquee__track" data-marquee-track>
+      <ul class="marquee__list" data-marquee-list>
+        {
+          clients.logos.map((logo) => (
+            <li class="logo">
+              {logo.logo ? (
+                <img class="logo__img" src={withBase(logo.logo)} alt={logo.name} loading="lazy" decoding="async" />
+              ) : (
+                <span class:list={['wordmark', `wordmark--${logo.style}`]}>
+                  {glyphs[logo.name] && (
+                    <svg class="wordmark__glyph" viewBox="0 0 20 20" aria-hidden="true">
+                      {glyphs[logo.name] === 'bars' && (
+                        <g fill="currentColor">
+                          <rect x="2" y="4" width="16" height="3" rx="1" />
+                          <rect x="2" y="9" width="11" height="3" rx="1" />
+                          <rect x="2" y="14" width="6" height="3" rx="1" />
+                        </g>
+                      )}
+                      {glyphs[logo.name] === 'triangle' && <path d="M10 2.5 18 17H2Z" fill="currentColor" />}
+                      {glyphs[logo.name] === 'quill' && (
+                        <path d="M17 2.5C9 3.5 4.5 9 3.5 17.5 7 11 10.5 8 17 2.5Z" fill="currentColor" />
+                      )}
+                      {glyphs[logo.name] === 'arrow' && (
+                        <path d="M3 17 17 3M8 3h9v9" fill="none" stroke="currentColor" stroke-width="2.6" />
+                      )}
+                      {glyphs[logo.name] === 'ring' && (
+                        <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="3" />
+                      )}
+                      {glyphs[logo.name] === 'meridian' && (
+                        <g fill="none" stroke="currentColor" stroke-width="1.8">
+                          <circle cx="10" cy="10" r="7.5" />
+                          <path d="M10 2.5v15M2.5 10h15" />
+                        </g>
+                      )}
+                      {glyphs[logo.name] === 'leaf' && (
+                        <path d="M3 17C3 8 8 3 17 3c0 9-5 14-14 14Zm0 0 8-8" fill="currentColor" />
+                      )}
+                      {glyphs[logo.name] === 'parallel' && (
+                        <g fill="currentColor">
+                          <path d="M5 3h4L6 17H2Z" />
+                          <path d="M13 3h4l-3 14h-4Z" />
+                        </g>
+                      )}
+                    </svg>
+                  )}
+                  <span>{logo.name}</span>
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -147,34 +133,60 @@ const glyphs: Record<string, string> = {
     transform: translate(2px, -2px);
   }
 
-  .logos {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* Without JS (or with reduced motion) the logos simply wrap.
+     With JS the list becomes an endless, scroll-driven band. */
+  .marquee {
+    position: relative;
     border-block: 1px solid var(--line);
     overflow: hidden;
   }
-  .logos__cell {
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    max-width: none;
+  }
+  .marquee__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
+    padding-inline: var(--gutter);
+  }
+
+  .marquee.is-running {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .marquee.is-running .marquee__track {
+    will-change: transform;
+  }
+  .marquee.is-running .marquee__list {
+    flex-wrap: nowrap;
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .logo {
     display: grid;
     place-items: center;
-    min-height: clamp(96px, 9vw, 132px);
-    padding: 20px;
-    box-shadow:
-      1px 0 0 var(--line),
-      0 1px 0 var(--line);
+    flex: none;
+    height: clamp(96px, 9vw, 128px);
+    padding-inline: clamp(28px, 3.4vw, 52px);
     color: var(--fg-3);
     transition: color 0.5s var(--ease-out);
   }
-  .logos__cell:hover {
+  .logo:hover {
     color: var(--fg);
   }
-  .logos__img {
+  .logo__img {
     max-height: 30px;
     width: auto;
     opacity: 0.6;
     filter: grayscale(1) brightness(1.6);
     transition: opacity 0.5s var(--ease-out);
   }
-  .logos__cell:hover .logos__img {
+  .logo:hover .logo__img {
     opacity: 1;
   }
 
@@ -225,71 +237,13 @@ const glyphs: Record<string, string> = {
     text-transform: uppercase;
   }
 
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: var(--gap);
-    margin-top: clamp(64px, 8vw, 120px);
-  }
-  .stats__item {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
-    gap: 14px;
-    padding-top: 20px;
-    border-top: 1px solid var(--line);
-  }
-  .stats__value {
-    display: flex;
-    align-items: baseline;
-    font-size: clamp(3.5rem, 2rem + 4vw, 6.25rem);
-    font-weight: 400;
-    line-height: 0.9;
-    letter-spacing: -0.055em;
-    color: var(--fg);
-    font-variant-numeric: tabular-nums;
-  }
-  .stats__suffix {
-    margin-left: 0.04em;
-    color: var(--fg-4);
-    letter-spacing: -0.03em;
-  }
-  .stats__label {
-    font-size: 0.875rem;
-    line-height: 1.45;
-    color: var(--fg-3);
-  }
-
-  @media (max-width: 1023px) {
-    .logos {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .logos__cell:nth-child(n + 10) {
-      grid-column: span 3;
-    }
-    .stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 48px;
-    }
-  }
-
   @media (max-width: 639px) {
-    .logos {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .logos__cell:nth-child(n + 10) {
-      grid-column: auto;
-    }
-    .logos__cell {
-      min-height: 88px;
-      padding: 16px 12px;
+    .logo {
+      height: 84px;
+      padding-inline: 22px;
     }
     .wordmark {
-      transform: scale(0.86);
-    }
-    .wordmark--mono {
-      letter-spacing: 0.06em;
-      font-size: 0.8125rem;
+      transform: scale(0.88);
     }
   }
 </style>

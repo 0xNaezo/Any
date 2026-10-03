@@ -28,14 +28,25 @@ canvas{position:absolute;inset:0}
 <div class="title">Small team.<br>Serious <em>software.</em></div>
 <div class="meta"><i></i>Independent software studio</div>
 <script>
+// Same loom as the hero (src/scripts/loom.ts), drawn once: threads lifted over the ghost and lit from the top left.
 const c=document.getElementById('c'),x=c.getContext('2d');x.scale(2,2);
 const W=1200,H=630,TAU=Math.PI*2,clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v,ss=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
-const R=150,gx=900,gTop=96,gh=R*2.4,domeY=gTop+R,amp=R*.12,hemC=gTop+gh-amp,lam=R*.8,soft=R*.17,lift=R*.13;
-const field=(px,py)=>{let d;if(py<domeY){d=Math.hypot(px-gx,py-domeY)-R}else{const s=Math.abs(px-gx)-R,b=py-(hemC+amp*Math.cos((px-gx)/lam*TAU+0.6));d=s>0&&b>0?Math.hypot(s,b):Math.max(s,b)}const e=1-ss(-soft,soft,d);if(e<=0)return 0;return e*(.55+.45*Math.sqrt(clamp(-d/(R*.8))))};
-const eyeY=gTop+R*1.024,erx=R*.145,ery=R*.23,eyes=[gx-R*.36,gx+R*.36];const holeY=eyeY+field(eyes[0],eyeY)*lift;
-const L=10,cols=[];for(let i=0;i<L;i++){const k=i/(L-1);cols.push(`rgba(${Math.round(237-69*k*.45)},${Math.round(237+3*k*.45)},${Math.round(240-36*k*.45)},${(.085+Math.pow(k,1.15)*.8).toFixed(3)})`)}
-const paths=cols.map(()=>new Path2D());const gap=9;
-for(let y0=4;y0<H;y0+=gap){let spans=[0,W];const dy=(y0-holeY)/ery;if(Math.abs(dy)<1){const hw=erx*Math.sqrt(1-dy*dy);spans=[0,eyes[0]-hw,eyes[0]+hw,eyes[1]-hw,eyes[1]+hw,W]}
-for(let k=0;k<spans.length;k+=2){let lv=-1,px=0,py=0,first=true;for(let X=spans[k];;X+=5){const cx=Math.min(X,spans[k+1]);const v=field(cx,y0);const y=y0-v*lift;const l=Math.min(L-1,Math.round(v*(L-1)));if(first){first=false;lv=l;paths[l].moveTo(cx,y)}else if(l!==lv){lv=l;paths[l].moveTo(px,py);paths[l].lineTo(cx,y)}else paths[l].lineTo(cx,y);px=cx;py=y;if(cx>=spans[k+1])break}}}
-x.lineWidth=1;paths.forEach((p,i)=>{x.strokeStyle=cols[i];x.stroke(p)});
+const R=150,gx=905,gTop=92,gh=R*2.4,lift=R*.15;
+const ghost=(px,py)=>{const qx=px-gx,qy=py-gTop,fl=1+.09*ss(R,gh,qy),sx=qx/fl/R,sy=Math.min(qy-R,0)/R,r2=sx*sx+sy*sy,q=1-r2,k=.05;
+  const h=Math.sqrt(Math.max(q,0)+k*Math.log(1+Math.exp(-Math.abs(q)/k))),amp=R*.1,hem=gh-amp+amp*Math.cos(qx/(R*.78)*TAU+.6),fade=1-ss(hem-R*.5,hem,qy);
+  return [h*fade,(1-ss(.86,1.08,Math.sqrt(r2)))*fade]};
+const eyeY=gTop+R*1.03,erx=R*.15,ery=R*.24,eyes=[gx-R*.36,gx+R*.36];
+const Ln=Math.hypot(-.55,-.75,.62),lx=-.55/Ln,ly=-.75/Ln,lz=.62/Ln,e=3,kk=lift*2.8;
+const LV=12,paths=Array.from({length:LV},()=>new Path2D()),cols=[];
+for(let i=0;i<LV;i++){const k=i/(LV-1),t=Math.max(0,k-.62)/.38;cols.push(`rgba(${Math.round(237-69*t*.6)},${Math.round(237+3*t*.6)},${Math.round(240-36*t*.6)},${(.075+Math.pow(k,1.1)*.9).toFixed(3)})`)}
+const gap=8.5;
+for(let y0=4;y0<H;y0+=gap){let lv=-1,px=0,py=0,pen=false;
+  for(let X=0;X<=W;X+=4){const dl=((X-eyes[0])/erx)**2+((y0-eyeY)/ery)**2,dr=((X-eyes[1])/erx)**2+((y0-eyeY)/ery)**2;
+    if(Math.min(dl,dr)<1){pen=false;continue}
+    const [h,m]=ghost(X,y0);let a=.075;
+    if(m>0){const hx=(ghost(X+e,y0)[0]-ghost(X-e,y0)[0])/(2*e),hy=(ghost(X,y0+e)[0]-ghost(X,y0-e)[0])/(2*e),nx=-hx*kk,ny=-hy*kk,nl=Math.hypot(nx,ny,1);
+      const d=Math.max((nx*lx+ny*ly+lz)/nl,0)/lz;a+=m*(.18+.62*Math.pow(d,2.2))}
+    const y=y0-h*lift,l=Math.min(LV-1,Math.round(clamp(a)*(LV-1)));
+    if(!pen){pen=true;lv=l;paths[l].moveTo(X,y)}else if(l!==lv){lv=l;paths[l].moveTo(px,py);paths[l].lineTo(X,y)}else paths[l].lineTo(X,y);px=X;py=y}}
+x.lineWidth=1.25;paths.forEach((p,i)=>{x.strokeStyle=cols[i];x.stroke(p)});
 </script></body></html>

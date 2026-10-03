@@ -35,6 +35,7 @@ const { team } = site;
                 <div class="member__placeholder" aria-hidden="true">
                   <span class="member__threads" />
                   <span class="member__threads member__threads--bust" />
+                  <canvas class="member__canvas" data-portrait={JSON.stringify(member.bust ?? {})} />
                 </div>
               )}
               <span class="member__badge label">{initials(member.name)}</span>
@@ -138,6 +139,23 @@ const { team } = site;
   .member:hover .member__threads--bust {
     opacity: 1;
     transform: translateY(-4px);
+  }
+
+  /* the woven portrait replaces the CSS stand-in once it's drawn */
+  .member__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out);
+  }
+  .member__canvas:global(.is-drawn) {
+    opacity: 1;
+  }
+  .member__placeholder:has(.member__canvas:global(.is-drawn)) .member__threads {
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out);
   }
 
   .member__badge,

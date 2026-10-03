@@ -75,3 +75,6 @@ export function scrollToTarget(target: HTMLElement | number, immediate = false) 
 
 export const stopScroll = () => lenis?.stop();
 export const startScroll = () => lenis?.start();
+
+/** Smooth-scroll velocity in px per frame (0 when smooth scrolling is off). */
+export const scrollVelocity = () => lenis?.velocity ?? 0;

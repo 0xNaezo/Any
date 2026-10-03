@@ -2,6 +2,7 @@
 import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
 import GhostMark from './GhostMark.astro';
+import StatusBoard from './StatusBoard.astro';
 import { site } from '../data/site';
 
 const { principles } = site;
@@ -21,6 +22,8 @@ const { principles } = site;
         <span>{principles.aside}</span>
       </p>
     </SectionHead>
+
+    <StatusBoard />
 
     <ul class="principles__grid" data-stagger>
       {
@@ -55,7 +58,7 @@ const { principles } = site;
   .principles__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: clamp(64px, 8vw, 112px);
+    margin-top: var(--gap);
     border-radius: var(--radius-l);
     box-shadow: inset 0 0 0 1px var(--line);
     overflow: hidden;

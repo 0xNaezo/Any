@@ -135,18 +135,46 @@ export function initScrollAnimations() {
     });
   });
 
-  // ── case studies ──────────────────────────────────────────────────────
-  $$('[data-case]').forEach((card) => {
+  // ── case studies: reveal, then (desktop) stack like a deck ───────────
+  const cases = $$('[data-case]');
+  cases.forEach((card) => {
     const media = card.querySelector<HTMLElement>('.case__media');
     const body = card.querySelector<HTMLElement>('.case__body');
     const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 85%', ...PLAY_ONCE } });
     if (media)
       tl.fromTo(
         media,
-        { clipPath: 'inset(18% 6% 0% 6% round 20px)', opacity: 0 },
+        { clipPath: 'inset(12% 8% 12% 8% round 20px)', opacity: 0 },
         { clipPath: 'inset(0% 0% 0% 0% round 20px)', opacity: 1, duration: 1.6, ease: 'expo.out', clearProps: 'clipPath' },
       );
-    if (body) tl.fromTo(body.children, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, stagger: 0.06, ease: 'power3.out' }, 0.25);
+    if (body)
+      tl.fromTo(
+        body.children,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 1.1, stagger: 0.07, ease: 'power3.out', clearProps: 'transform' },
+        0.2,
+      );
+  });
+
+  gsap.matchMedia().add('(min-width: 1024px)', () => {
+    cases.forEach((card, i) => {
+      const next = cases[i + 1];
+      const inner = card.querySelector<HTMLElement>('.case__card');
+      const shade = card.querySelector<HTMLElement>('.case__shade');
+      if (!next || !inner) return;
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: next,
+            start: 'top bottom',
+            // until the next card docks at its own sticky offset
+            end: () => `top ${parseFloat(getComputedStyle(next).top) || 0}px`,
+            scrub: true,
+          },
+        })
+        .to(inner, { scale: 0.94, ease: 'none' }, 0)
+        .to(shade, { opacity: 0.6, ease: 'none' }, 0);
+    });
   });
 
   $$('[data-parallax]').forEach((layer) => {
@@ -161,24 +189,40 @@ export function initScrollAnimations() {
     );
   });
 
-  // ── testimonial: words light up as you read ───────────────────────────
-  $$('[data-scrub-words]').forEach((quote) => {
-    SplitText.create(quote, {
-      type: 'words',
-      autoSplit: true,
-      onSplit: (self) =>
-        gsap.fromTo(
-          self.words,
-          { opacity: 0.16 },
-          {
-            opacity: 1,
-            stagger: 0.06,
-            ease: 'none',
-            scrollTrigger: { trigger: quote, start: 'top 78%', end: 'bottom 52%', scrub: 0.6 },
-          },
-        ),
+  // ── status board: uptime bars grow in, left to right ─────────────────
+  $$('[data-status]').forEach((board) => {
+    $$('.status__bars', board).forEach((row, r) => {
+      gsap.fromTo(
+        row.children,
+        { scaleY: 0.12, opacity: 0.25 },
+        {
+          scaleY: 1,
+          opacity: 1,
+          duration: 0.9,
+          ease: 'expo.out',
+          stagger: 0.007,
+          delay: r * 0.09,
+          clearProps: 'transform,opacity',
+          scrollTrigger: { trigger: board, start: 'top 72%', ...PLAY_ONCE },
+        },
+      );
     });
   });
+
+  // ── manifesto: the statement lights up word by word as you read ───────
+  const manifesto = document.querySelector<HTMLElement>('[data-manifesto]');
+  if (manifesto) {
+    gsap.fromTo(
+      manifesto.children,
+      { opacity: 0.14 },
+      {
+        opacity: 1,
+        stagger: 0.1,
+        ease: 'none',
+        scrollTrigger: { trigger: manifesto, start: 'top 78%', end: 'bottom 48%', scrub: 0.6 },
+      },
+    );
+  }
 
   // ── process: thread fills, steps light up, counter follows ───────────
   const process = document.querySelector<HTMLElement>('[data-process]');

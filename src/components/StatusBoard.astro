@@ -1,0 +1,264 @@
+---
+import { site } from '../data/site';
+
+const { status } = site.principles;
+const DAYS = 90;
+---
+
+<div class="status" data-status data-reveal>
+  <div class="status__head">
+    <p class="status__state">
+      <span class="dot" aria-hidden="true"></span>
+      <span>{status.title}</span>
+    </p>
+    <p class="label status__label">{status.label}</p>
+    <p class="label status__time">
+      Checked <span class="mono" data-clock data-timezone={site.location.timezone}>--:--</span>
+      {site.location.city}
+    </p>
+  </div>
+
+  <ul class="status__rows">
+    {
+      status.services.map((service) => (
+        <li class="status__row">
+          <div class="status__name">
+            <span class="status__client">{service.name}</span>
+            <span class="status__part">{service.part}</span>
+          </div>
+          <p class="status__uptime">
+            <span class="mono">{service.uptime}</span>
+            <span class="label">uptime</span>
+          </p>
+          <p class="sr-only">
+            {service.uptime} uptime over the last {DAYS} days
+            {service.degraded.length > 0
+              ? `, ${service.degraded.length} ${service.degraded.length === 1 ? 'day' : 'days'} with degraded performance.`
+              : ', no incidents.'}
+          </p>
+          <div class="status__bars" aria-hidden="true">
+            {Array.from({ length: DAYS }, (_, day) => (
+              <span class:list={['status__bar', { 'is-degraded': service.degraded.includes(day) }]} data-day={day} />
+            ))}
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="status__axis label" aria-hidden="true">
+    <span>{DAYS} days ago</span>
+    <span class="status__axis-line"></span>
+    <span>Today</span>
+  </div>
+
+  <dl class="status__metrics">
+    {
+      status.metrics.map((metric) => (
+        <div class="status__metric">
+          <dt class="label">{metric.label}</dt>
+          <dd>{metric.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <div class="status__tip" data-status-tip hidden></div>
+</div>
+
+<style>
+  .status {
+    position: relative;
+    margin-top: clamp(64px, 8vw, 112px);
+    border-radius: var(--radius-l);
+    background:
+      radial-gradient(90% 120% at 0% 0%, rgb(var(--accent-rgb) / 0.045), transparent 55%),
+      linear-gradient(180deg, #111115, #0c0c0f);
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .status__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 28px;
+    padding: 22px clamp(20px, 3vw, 36px);
+    border-bottom: 1px solid var(--line);
+  }
+  .status__state {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--fg);
+  }
+  .status__label {
+    flex: 1 1 auto;
+  }
+  .status__time {
+    display: inline-flex;
+    gap: 8px;
+  }
+
+  .status__rows {
+    display: grid;
+    padding: 8px clamp(20px, 3vw, 36px) 0;
+  }
+  .status__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 12px 24px;
+    padding-block: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .status__row:last-child {
+    border-bottom: 0;
+  }
+  .status__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+  }
+  .status__client {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .status__part {
+    font-size: 0.875rem;
+    color: var(--fg-3);
+  }
+  .status__uptime {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .status__uptime .mono {
+    font-size: 0.9375rem;
+    color: var(--fg);
+  }
+
+  .status__bars {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(90, minmax(0, 1fr));
+    gap: 3px;
+    height: 26px;
+  }
+  .status__bar {
+    border-radius: 1.5px;
+    background: rgb(var(--accent-rgb) / 0.5);
+    transform-origin: 50% 100%;
+    transition:
+      background-color 0.2s,
+      transform 0.3s var(--ease-out);
+  }
+  .status__bar.is-degraded {
+    background: var(--amber);
+  }
+  .status__bar:hover {
+    background: var(--accent);
+    transform: scaleY(1.12);
+  }
+  .status__bar.is-degraded:hover {
+    background: #ffd994;
+  }
+
+  .status__axis {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 6px clamp(20px, 3vw, 36px) 24px;
+  }
+  .status__axis-line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .status__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .status__metric {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 24px clamp(20px, 3vw, 36px) 28px;
+    box-shadow: -1px 0 0 var(--line);
+  }
+  .status__metric:first-child {
+    box-shadow: none;
+  }
+  .status__metric dd {
+    font-size: clamp(1.75rem, 1.2rem + 1.4vw, 2.625rem);
+    font-weight: 450;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--fg);
+  }
+
+  .status__tip {
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #1d1d23;
+    box-shadow:
+      inset 0 0 0 1px var(--line-2),
+      0 12px 32px rgb(0 0 0 / 0.5);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--fg);
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, calc(-100% - 10px));
+  }
+  .status__tip :global(span) {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  @media (max-width: 767px) {
+    /* the last 45 days are plenty on a phone */
+    .status__bars {
+      grid-template-columns: repeat(45, minmax(0, 1fr));
+      gap: 2px;
+      height: 26px;
+    }
+    .status__bar:nth-child(-n + 45) {
+      display: none;
+    }
+    .status__axis span:first-child {
+      font-size: 0;
+    }
+    .status__axis span:first-child::after {
+      content: '45 days ago';
+      font-size: var(--fs-mono);
+    }
+    .status__metrics {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .status__metric {
+      box-shadow: 0 -1px 0 var(--line);
+    }
+    .status__label {
+      order: 3;
+      flex-basis: 100%;
+    }
+  }
+</style>

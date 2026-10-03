@@ -12,6 +12,8 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+import type { Bust } from '../scripts/portraits';
+
 export type Visual = 'ledger' | 'freight' | 'store' | 'docs';
 
 export interface CaseStudy {
@@ -29,6 +31,8 @@ export interface CaseStudy {
   image?: string;
   /** Optional link to the live product or a full case study. */
   href?: string;
+  /** Status badge on the card. Defaults to 'In production'. */
+  status?: string;
 }
 
 export interface TeamMember {
@@ -39,6 +43,8 @@ export interface TeamMember {
   city: string;
   /** Optional portrait, e.g. '/team/mark.jpg' (put the file in /public/team). Square or 4:5 works best. */
   photo?: string;
+  /** Silhouette of the woven placeholder shown until there's a photo. */
+  bust?: Bust;
   links: { label: string; href: string }[];
 }
 
@@ -100,10 +106,12 @@ export const site = {
     lead: 'Nightloom is four senior engineers who design, build and maintain web products — for founders and teams who would rather do it once, and do it right.',
     primary: { label: 'Start a project', href: '#contact' },
     secondary: { label: 'See our work', href: '#work' },
+    /** Small hint under the ghost (desktop only); fades out once the visitor moves the cursor. */
+    hint: 'Run your cursor through the threads',
     facts: [
       { label: 'Response time', value: 'Under 24 hours' },
       { label: 'Next opening', value: 'November 2026' },
-      { label: 'Working with', value: 'EU · UK · US' },
+      { label: 'Client rating', value: '4.9 / 5 · 32 reviews' },
     ],
   },
 
@@ -125,6 +133,18 @@ export const site = {
     rating: { score: '4.9', count: '32 verified reviews', source: 'Clutch', href: 'https://clutch.co' },
   },
 
+  /**
+   * The big statement after the client logos. Words light up as you scroll.
+   * {team} → the four of you as small avatars, {ghost} → the logo glyph.
+   */
+  manifesto: {
+    label: 'The studio',
+    meta: 'Est. 2018 · Four people',
+    text: 'We’re four senior engineers {team} who have shipped together since 2018. No account managers, no juniors behind the curtain, no hand-offs. The people on your first call are the people who design, build and run your product {ghost} — and stay with it *long after launch.*',
+    signature: 'Mark, Elena, Daniel & Ivan',
+    signatureRole: 'The Nightloom team',
+  },
+
   stats: [
     { value: 8, decimals: 0, suffix: '', label: 'Years shipping\ntogether' },
     { value: 60, decimals: 0, suffix: '+', label: 'Products launched\nto production' },
@@ -138,6 +158,8 @@ export const site = {
     meta: '2024 — 2026',
     title: 'Selected work, *still in production.*',
     lead: 'A few recent projects we can talk about publicly. Most of our work is under NDA — we’re happy to walk you through more of it on a call.',
+    more: 'More work under NDA — fintech, health and B2B platforms.',
+    moreCta: 'Ask for the full portfolio',
     cases: [
       {
         client: 'Ledgerly',
@@ -335,6 +357,26 @@ export const site = {
     meta: 'Written into every contract',
     title: 'We don’t ghost.',
     aside: 'The only ghost on this team is the one in our logo. Here’s what you can count on instead.',
+    /**
+     * Status board: products you built and still run. `degraded` lists days
+     * (0 = 89 days ago … 89 = today) that get an amber bar.
+     */
+    status: {
+      title: 'All systems operational',
+      label: 'Products we built and still run for clients',
+      window: 'Last 90 days',
+      services: [
+        { name: 'Ledgerly', part: 'API & forecasting', uptime: '99.99%', degraded: [61] },
+        { name: 'Atlas Freight', part: 'Dispatch platform', uptime: '99.98%', degraded: [23, 24] },
+        { name: 'Verso', part: 'Storefront & CMS', uptime: '100%', degraded: [] as number[] },
+        { name: 'Quill', part: 'Review pipeline', uptime: '99.97%', degraded: [47, 82] },
+      ],
+      metrics: [
+        { value: '1h 40m', label: 'Median first reply to clients' },
+        { value: '0', label: 'Critical incidents in 2026' },
+        { value: '24/7', label: 'On-call for retainer clients' },
+      ],
+    },
     items: [
       {
         icon: 'reply',
@@ -382,6 +424,7 @@ export const site = {
         experience: '12 years',
         focus: 'Architecture, backend, the hard conversations',
         city: 'Belgrade',
+        bust: { hair: 'short', beard: true },
         links: [
           { label: 'GitHub', href: 'https://github.com/' },
           { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
@@ -393,6 +436,7 @@ export const site = {
         experience: '9 years',
         focus: 'Interfaces, design systems, motion',
         city: 'Lisbon',
+        bust: { hair: 'long' },
         links: [
           { label: 'Dribbble', href: 'https://dribbble.com/' },
           { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
@@ -404,6 +448,7 @@ export const site = {
         experience: '11 years',
         focus: 'Cloud, databases, reliability, cost',
         city: 'Warsaw',
+        bust: { hair: 'curly', glasses: true },
         links: [
           { label: 'GitHub', href: 'https://github.com/' },
           { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
@@ -415,6 +460,7 @@ export const site = {
         experience: '8 years',
         focus: 'Product features, AI integrations',
         city: 'Tbilisi',
+        bust: { hair: 'bun', shoulders: 1.05 },
         links: [
           { label: 'GitHub', href: 'https://github.com/' },
           { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
@@ -525,7 +571,7 @@ export const site = {
     index: '08',
     label: 'Contact',
     meta: 'Reply within 1 business day',
-    title: 'Have a project *in mind?*',
+    title: 'Let’s build something *that lasts.*',
     lead: 'Tell us a little about it. One of us — not a sales rep — will reply within one business day, usually much sooner.',
     form: {
       /**
