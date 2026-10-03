@@ -1,0 +1,32 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  /** show the animated arrow chip */
+  arrow?: boolean;
+  magnetic?: boolean;
+}
+
+const { href, variant = 'primary', size = 'md', arrow = false, magnetic = false, class: className, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn--${variant}`, size !== 'md' && `btn--${size}`, className]}
+  data-magnetic={magnetic ? '' : undefined}
+  {...rest}
+>
+  <span class="btn-label" data-magnetic-inner><slot /></span>
+  {
+    arrow && (
+      <span class="btn-chip" aria-hidden="true">
+        <Icon name="arrow-right" size={14} strokeWidth={2} />
+        <Icon name="arrow-right" size={14} strokeWidth={2} />
+      </span>
+    )
+  }
+</a>

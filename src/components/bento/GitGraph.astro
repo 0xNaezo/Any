@@ -1,0 +1,123 @@
+---
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  repo: string;
+}
+
+const { repo } = Astro.props;
+const mainCommits = [14, 64, 128, 236, 286];
+const featCommits = [108, 158, 196];
+---
+
+<div class="git" data-git>
+  <div class="git-repo">
+    <span class="git-repo-icon"><Icon name="lock" size={14} /></span>
+    <span class="git-repo-name mono">{repo}</span>
+    <span class="git-repo-badge">Owner: you</span>
+  </div>
+  <svg class="git-graph" viewBox="0 0 300 104" aria-hidden="true">
+    <path class="git-line git-line--main" d="M14 28H286" pathLength="1" data-git-line></path>
+    <path class="git-line git-line--feat" d="M64 28C84 28 84 76 108 76H196C220 76 220 28 236 28" pathLength="1" data-git-line></path>
+    {mainCommits.map((x, i) => <circle class:list={['git-dot', i === 3 && 'git-dot--merge']} cx={x} cy="28" r={i === 3 ? 6 : 4.5} data-git-dot />)}
+    {featCommits.map((x) => <circle class="git-dot git-dot--feat" cx={x} cy="76" r="4.5" data-git-dot />)}
+    <text x="14" y="12" class="git-label">main</text>
+    <text x="108" y="99" class="git-label">feat/billing</text>
+    <text x="236" y="12" class="git-label git-label--accent" text-anchor="middle">merged ✓</text>
+  </svg>
+</div>
+
+<style>
+  .git {
+    display: grid;
+    gap: 1rem;
+    padding: 1.1rem 1.1rem 0.9rem;
+    border-radius: 18px;
+    background: rgb(0 0 0 / 0.25);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .git-repo {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    font-size: 0.8rem;
+  }
+
+  .git-repo-icon {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    color: var(--text-2);
+    background: rgb(255 255 255 / 0.05);
+    flex: none;
+  }
+
+  .git-repo-name {
+    font-size: 0.75rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .git-repo-badge {
+    margin-left: auto;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    color: var(--ok);
+    background: rgb(var(--ok-rgb) / 0.1);
+    box-shadow: inset 0 0 0 1px rgb(var(--ok-rgb) / 0.25);
+    white-space: nowrap;
+  }
+
+  .git-graph {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .git-line {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .git-line--main {
+    stroke: rgb(255 255 255 / 0.35);
+  }
+
+  .git-line--feat {
+    stroke: var(--accent);
+    filter: drop-shadow(0 0 6px rgb(var(--accent-rgb) / 0.6));
+  }
+
+  .git-dot {
+    fill: #0c0c13;
+    stroke: rgb(255 255 255 / 0.7);
+    stroke-width: 2;
+  }
+
+  .git-dot--feat {
+    stroke: var(--accent);
+  }
+
+  .git-dot--merge {
+    fill: var(--accent);
+    stroke: #fff;
+  }
+
+  .git-label {
+    font-family: var(--font-mono-stack);
+    font-size: 9px;
+    fill: var(--text-3);
+  }
+
+  .git-label--accent {
+    fill: var(--accent);
+  }
+</style>

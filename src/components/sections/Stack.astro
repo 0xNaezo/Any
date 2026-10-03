@@ -1,0 +1,103 @@
+---
+import { stack } from '../../content/site';
+---
+
+<section class="stack" aria-labelledby="stack-title">
+  <div class="container stack-head" data-reveal>
+    <p class="eyebrow"><span class="eyebrow-rule" aria-hidden="true"></span>{stack.label}</p>
+    <h2 id="stack-title" class="stack-title">{stack.title}</h2>
+  </div>
+
+  <div class="stack-rows" data-reveal>
+    {
+      stack.rows.map((row, r) => (
+        <div class:list={['marquee', r % 2 === 1 && 'marquee--reverse']} style={`--duration:${52 + r * 8}s`}>
+          {[0, 1].map((copy) => (
+            <ul class="marquee-track" role="list" aria-hidden={copy === 1 ? 'true' : undefined}>
+              {row.map((tech) => (
+                <li class="stack-item">
+                  <span class="stack-dot" aria-hidden="true" />
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .stack {
+    position: relative;
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    border-block: 1px solid var(--line);
+    background:
+      radial-gradient(60% 120% at 50% 0%, rgb(var(--accent-rgb) / 0.05), transparent 70%),
+      var(--bg-2);
+  }
+
+  .stack-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    margin-bottom: 2.2rem;
+  }
+
+  .stack-title {
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--text-2);
+  }
+
+  .stack-rows {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .stack-rows .marquee {
+    --gap: 0.75rem;
+  }
+
+  .marquee-track {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .stack-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: 46px;
+    padding: 0 1.15rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.025);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: 0.95rem;
+    color: var(--text-2);
+    white-space: nowrap;
+    transition:
+      color 0.3s,
+      box-shadow 0.3s,
+      background-color 0.3s;
+  }
+
+  .stack-item:hover {
+    color: var(--text);
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+
+  .stack-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--grad-accent);
+    box-shadow: 0 0 8px rgb(var(--accent-rgb) / 0.6);
+  }
+</style>

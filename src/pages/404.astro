@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/sections/Header.astro';
+import Footer from '../components/sections/Footer.astro';
+import Button from '../components/ui/Button.astro';
+import { GHOST_BODY, GHOST_EYES } from '../lib/ghost';
+import { site } from '../content/site';
+---
+
+<Base title={`Page not found — ${site.name}`} noindex>
+  <Header />
+  <main id="main" class="nf">
+    <div class="nf-glow" aria-hidden="true"></div>
+    <div class="container nf-inner">
+      <svg class="nf-ghost" viewBox="0 0 32 32" aria-hidden="true">
+        <defs>
+          <linearGradient id="nf-grad" x1="22" y1="5" x2="8" y2="29" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#ffffff"></stop>
+            <stop offset="0.5" stop-color="#e4deff"></stop>
+            <stop offset="1" stop-color="#9d8bff"></stop>
+          </linearGradient>
+        </defs>
+        <path fill="url(#nf-grad)" d={GHOST_BODY}></path>
+        {GHOST_EYES.map((e) => <ellipse cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry} fill="#0a0912" />)}
+        <ellipse cx="17.6" cy="20.2" rx="1.1" ry="1.4" fill="#0a0912"></ellipse>
+      </svg>
+      <p class="eyebrow"><span class="eyebrow-index">404</span><span class="eyebrow-rule"></span>Page not found</p>
+      <h1 class="h-section">This page has <em>vanished into the night.</em></h1>
+      <p class="lead">It may have moved, or it never existed. Either way, it’s not haunting this URL anymore.</p>
+      <div class="nf-ctas">
+        <Button href="/" arrow>Back to homepage</Button>
+        <Button href="/#contact" variant="ghost">Contact us</Button>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .nf {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    padding: calc(var(--nav-h) + 4rem) 0 5rem;
+    overflow: clip;
+  }
+
+  .nf-glow {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    width: min(90vw, 900px);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.16), transparent 70%);
+    pointer-events: none;
+  }
+
+  .nf-inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1.4rem;
+    text-align: center;
+  }
+
+  .nf-inner .lead {
+    margin-inline: auto;
+  }
+
+  .nf-ghost {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 40px rgb(var(--accent-rgb) / 0.55));
+    animation: nf-float 3.4s ease-in-out infinite;
+  }
+
+  @keyframes nf-float {
+    50% {
+      transform: translateY(-12px) rotate(-4deg);
+    }
+  }
+
+  .nf-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+</style>

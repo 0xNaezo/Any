@@ -1,0 +1,221 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
+import { process, site } from '../../content/site';
+---
+
+<section class="section process" id="process" aria-labelledby="process-title">
+  <div class="container process-grid">
+    <div class="process-aside">
+      <div class="process-sticky">
+        <SectionHeader index="04" eyebrow={process.eyebrow} title={process.title} lead={process.lead} headingId="process-title">
+          <div class="process-cta" data-reveal>
+            <Button href="#contact" variant="ghost" arrow>Book a free discovery call</Button>
+            <span class="process-cta-note">Or email <a class="link" href={`mailto:${site.email}`}>{site.email}</a></span>
+          </div>
+        </SectionHeader>
+      </div>
+    </div>
+
+    <div class="process-steps" data-process>
+      <div class="process-line" aria-hidden="true">
+        <span class="process-line-fill" data-process-fill></span>
+      </div>
+      <ol role="list">
+        {
+          process.steps.map((step, i) => (
+            <li class="step" data-step>
+              <span class="step-node" aria-hidden="true">
+                <span>{String(i + 1).padStart(2, '0')}</span>
+              </span>
+              <div class="step-body">
+                <div class="step-top">
+                  <h3 class="h-card">{step.title}</h3>
+                  <span class="step-meta mono">{step.meta}</span>
+                </div>
+                <p>{step.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    background:
+      radial-gradient(50% 40% at 0% 50%, rgb(var(--accent-rgb) / 0.06), transparent 70%),
+      transparent;
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .process-sticky {
+    position: sticky;
+    top: calc(var(--nav-h) + 3rem);
+  }
+
+  .process-sticky :global(.section-head) {
+    margin-bottom: 0;
+  }
+
+  .process-cta {
+    display: grid;
+    justify-items: start;
+    gap: 0.9rem;
+    margin-top: 0.8rem;
+  }
+
+  .process-cta-note {
+    font-size: 0.85rem;
+    color: var(--text-3);
+  }
+
+  .process-steps {
+    position: relative;
+  }
+
+  .process-steps ol {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .process-line {
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    left: 21px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line-2);
+    overflow: hidden;
+  }
+
+  .process-line-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.8);
+    transform-origin: top center;
+    transform: scaleY(0);
+  }
+
+  .no-js .process-line-fill,
+  html:not(.js-anim) .process-line-fill {
+    transform: none;
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .step:last-child {
+    padding-bottom: 0;
+  }
+
+  .step-node {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+    font-family: var(--font-mono-stack);
+    font-size: 0.72rem;
+    color: var(--text-3);
+    transition:
+      box-shadow 0.6s var(--ease-out),
+      color 0.6s var(--ease-out);
+  }
+
+  .step-node::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--accent-rgb) / 0.4);
+    opacity: 0;
+    transform: scale(0.7);
+    transition:
+      opacity 0.6s var(--ease-out),
+      transform 0.6s var(--ease-out);
+  }
+
+  .step.is-active .step-node {
+    color: #0b0b12;
+    background: linear-gradient(180deg, #fff, #d9d1ff);
+    box-shadow: 0 0 24px rgb(var(--accent-rgb) / 0.7);
+  }
+
+  .step.is-active .step-node::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .step-body {
+    padding-top: 0.55rem;
+  }
+
+  .step-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .step-meta {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgb(var(--accent-rgb) / 0.08);
+    box-shadow: inset 0 0 0 1px rgb(var(--accent-rgb) / 0.2);
+  }
+
+  .step-body p {
+    color: var(--text-2);
+    max-width: 34rem;
+    transition: color 0.6s var(--ease-out);
+  }
+
+  .step h3 {
+    transition: color 0.6s var(--ease-out);
+  }
+
+  .js-anim .step:not(.is-active) h3 {
+    color: var(--text-2);
+  }
+
+  .js-anim .step:not(.is-active) .step-body p {
+    color: var(--text-3);
+  }
+
+  @media (max-width: 900px) {
+    .process-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .process-sticky {
+      position: static;
+    }
+  }
+</style>

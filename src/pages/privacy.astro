@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/sections/Header.astro';
+import Footer from '../components/sections/Footer.astro';
+import { site } from '../content/site';
+
+const updated = 'October 1, 2026';
+---
+
+<Base title={`Privacy policy — ${site.name}`} description={`How ${site.name} handles the personal data you share with us.`}>
+  <Header />
+  <main id="main" class="legal">
+    <div class="container legal-inner">
+      <p class="eyebrow"><span class="eyebrow-index">Legal</span><span class="eyebrow-rule"></span>Last updated {updated}</p>
+      <h1 class="h-section">Privacy <em>policy</em></h1>
+      <p class="lead">
+        Placeholder text — replace it with a policy reviewed for your jurisdiction before going live. The short version: we collect
+        as little as possible and never sell your data.
+      </p>
+
+      <div class="legal-body">
+        <h2>What we collect</h2>
+        <p>
+          When you use the contact form or email us, we receive the details you choose to share — typically your name, email
+          address, company and information about your project. This website does not use advertising or tracking cookies.
+        </p>
+
+        <h2>How we use it</h2>
+        <p>
+          We use your details only to reply to your enquiry, prepare a proposal and, if we work together, to deliver the project.
+          We don’t sell, rent or share your information with third parties for marketing.
+        </p>
+
+        <h2>Service providers</h2>
+        <p>
+          Form submissions are processed by our form provider and stored in our email workspace. Both act as data processors under
+          appropriate data-processing agreements.
+        </p>
+
+        <h2>How long we keep it</h2>
+        <p>
+          Enquiries that don’t turn into a project are deleted within 12 months. Client records are kept for as long as required
+          by accounting and tax law.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+          You can ask us to access, correct, export or delete your personal data at any time. Just write to
+          <a class="link" href={`mailto:${site.email}`}>{site.email}</a> and we’ll respond within 30 days.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal {
+    padding: calc(var(--nav-h) + clamp(3rem, 8vw, 6rem)) 0 var(--section-y);
+  }
+
+  .legal-inner {
+    display: grid;
+    gap: 1.4rem;
+    max-width: calc(46rem + var(--gutter) * 2);
+  }
+
+  .legal-body {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .legal-body h2 {
+    margin: 2.2rem 0 0.8rem;
+    font-size: 1.25rem;
+    font-weight: 550;
+  }
+
+  .legal-body h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-body p {
+    color: var(--text-2);
+    line-height: 1.75;
+  }
+</style>

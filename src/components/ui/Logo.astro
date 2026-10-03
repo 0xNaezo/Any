@@ -1,0 +1,80 @@
+---
+import { GHOST_BODY, GHOST_EYES } from '../../lib/ghost';
+
+interface Props {
+  size?: number;
+  wordmark?: boolean;
+  class?: string;
+}
+
+const { size = 28, wordmark = true, class: className } = Astro.props;
+// unique gradient id per instance (several logos can live on one page)
+const gid = `ghost-grad-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<span class:list={['logo', className]}>
+  <svg class="logo-mark" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+    <defs>
+      <linearGradient id={gid} x1="22" y1="5" x2="8" y2="29" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#ffffff"></stop>
+        <stop offset="0.5" stop-color="#e4deff"></stop>
+        <stop offset="1" stop-color="#9d8bff"></stop>
+      </linearGradient>
+    </defs>
+    <path fill={`url(#${gid})`} d={GHOST_BODY}></path>
+    <g class="logo-eyes">
+      {GHOST_EYES.map((e) => <ellipse cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry} />)}
+    </g>
+  </svg>
+  {wordmark && <span class="logo-word">Nightloom</span>}
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text);
+  }
+
+  .logo-mark {
+    flex: none;
+    overflow: visible;
+    filter: drop-shadow(0 0 10px rgb(var(--accent-rgb) / 0.45));
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .logo-eyes {
+    fill: #0a0912;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .logo-word {
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  :global(a:hover) > .logo .logo-mark,
+  .logo:hover .logo-mark {
+    transform: translateY(-2px) rotate(-4deg);
+  }
+
+  :global(a:hover) > .logo .logo-eyes,
+  .logo:hover .logo-eyes {
+    animation: blink 0.5s var(--ease-in-out);
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      transform: scaleY(1);
+    }
+    45%,
+    55% {
+      transform: scaleY(0.1);
+    }
+  }
+</style>

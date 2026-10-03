@@ -1,0 +1,302 @@
+---
+import Logo from '../ui/Logo.astro';
+import Icon from '../ui/Icon.astro';
+import { footer, site } from '../../content/site';
+import { GHOST_BODY, GHOST_EYES } from '../../lib/ghost';
+import { formatClock } from '../../lib/time';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" aria-labelledby="footer-title">
+  <h2 id="footer-title" class="visually-hidden">Site footer</h2>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" aria-label={`${site.name} — home`}><Logo size={30} /></a>
+        <p>{footer.tagline}</p>
+        <a class="pill footer-status" href="/#contact">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>{site.availability.label}</span>
+        </a>
+      </div>
+
+      <nav class="footer-cols" aria-label="Footer">
+        {
+          footer.columns.map((col) => (
+            <div>
+              <p class="footer-col-title mono">{col.title}</p>
+              <ul role="list">
+                {col.links.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+        <div>
+          <p class="footer-col-title mono">Connect</p>
+          <ul role="list">
+            {
+              site.socials.map((s) => (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer">
+                    <Icon name={s.icon} size={15} />
+                    {s.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a href={`mailto:${site.email}`}>
+                <Icon name="mail" size={15} />
+                Email
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {footer.copyright}</p>
+      <p class="footer-clock">
+        <Icon name="clock" size={15} />
+        <span>
+          It’s <time data-clock={site.timezone.iana}>{formatClock(site.timezone.iana)}</time>{' '}
+          {site.timezone.label} at the studio · {site.location}
+        </span>
+      </p>
+      <a class="footer-up" href="#top" data-scroll-top>
+        Back to top
+        <span class="footer-up-icon"><Icon name="arrow-up" size={14} strokeWidth={2} /></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-wordmark" aria-hidden="true">
+    <div class="footer-peek" data-peek>
+      <svg viewBox="0 0 32 32">
+        <defs>
+          <linearGradient id="peek-grad" x1="22" y1="5" x2="8" y2="29" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#ffffff"></stop>
+            <stop offset="0.5" stop-color="#e4deff"></stop>
+            <stop offset="1" stop-color="#9d8bff"></stop>
+          </linearGradient>
+        </defs>
+        <path fill="url(#peek-grad)" d={GHOST_BODY}></path>
+        <g class="footer-peek-eyes">
+          {GHOST_EYES.map((e) => <ellipse cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry} fill="#0a0912" />)}
+        </g>
+      </svg>
+    </div>
+    <span class="footer-word" data-wordmark>Nightloom</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-top: clamp(4rem, 3rem + 4vw, 6rem);
+    border-top: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--bg-2), var(--bg) 40%);
+    overflow: hidden;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 3rem;
+    padding-bottom: clamp(3rem, 5vw, 4.5rem);
+  }
+
+  .footer-brand {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    gap: 1.25rem;
+  }
+
+  .footer-brand p {
+    max-width: 22rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .footer-status {
+    margin-top: 0.4rem;
+    transition: box-shadow 0.3s;
+  }
+
+  .footer-status:hover {
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .footer-col-title {
+    margin-bottom: 1.1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .footer-cols ul {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .footer-cols a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.92rem;
+    color: var(--text-2);
+    transition: color 0.3s;
+  }
+
+  .footer-cols a:hover {
+    color: var(--text);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding-block: 1.6rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.82rem;
+    color: var(--text-3);
+  }
+
+  .footer-clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer-clock time {
+    color: var(--text-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .footer-up {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text-2);
+    transition: color 0.3s;
+  }
+
+  .footer-up-icon {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition:
+      transform 0.4s var(--ease-out),
+      background-color 0.3s;
+  }
+
+  .footer-up:hover {
+    color: var(--text);
+  }
+
+  .footer-up:hover .footer-up-icon {
+    transform: translateY(-3px);
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  /* ── Giant wordmark ─────────────────────────────────────── */
+  .footer-wordmark {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(0.5rem, 2vw, 1.5rem);
+    height: 0.74em;
+    font-size: clamp(5rem, 21.5vw, 22rem);
+    line-height: 1;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .footer-word {
+    display: block;
+    font-weight: 600;
+    letter-spacing: -0.065em;
+    white-space: nowrap;
+    background: linear-gradient(180deg, rgb(238 238 244 / 0.16) 0%, rgb(167 152 255 / 0.1) 45%, rgb(5 5 8 / 0) 78%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.06em;
+  }
+
+  .footer-peek {
+    position: absolute;
+    right: 7%;
+    bottom: -0.085em;
+    z-index: 1;
+    width: max(0.26em, 52px);
+    filter: drop-shadow(0 0 30px rgb(var(--accent-rgb) / 0.45));
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  .footer-peek svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .footer-peek-eyes {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: peek-blink 5s infinite;
+  }
+
+  @keyframes peek-blink {
+    0%,
+    92%,
+    100% {
+      transform: scaleY(1);
+    }
+    95% {
+      transform: scaleY(0.1);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .footer-top {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .footer-cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer-cols > div:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .footer-cols > div:last-child ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

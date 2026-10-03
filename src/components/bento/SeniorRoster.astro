@@ -1,0 +1,139 @@
+---
+interface Props {
+  roster: { name: string; role: string; years: number }[];
+}
+
+const { roster } = Astro.props;
+const max = Math.max(12, ...roster.map((r) => r.years));
+const avg = roster.reduce((sum, r) => sum + r.years, 0) / roster.length;
+---
+
+<div class="roster" data-roster>
+  <div class="roster-head">
+    <span class="roster-avg">
+      <span data-counter data-to={avg.toFixed(1)} data-decimals="1">{avg.toFixed(1)}</span>
+      <small>yrs</small>
+    </span>
+    <span class="roster-avg-label">average experience<br />across the team</span>
+  </div>
+  <ul class="roster-list" role="list">
+    {
+      roster.map((r) => (
+        <li>
+          <span class="roster-who">
+            <strong>{r.name}</strong>
+            <span>{r.role}</span>
+          </span>
+          <span class="roster-track" aria-hidden="true">
+            <span class="roster-bar" style={`--w:${(r.years / max).toFixed(3)}`} data-roster-bar />
+          </span>
+          <span class="roster-years mono">{r.years}y</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .roster {
+    display: grid;
+    gap: 1.4rem;
+    padding: 1.3rem;
+    border-radius: 18px;
+    background: rgb(0 0 0 / 0.25);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .roster-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .roster-avg {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: 2.6rem;
+    font-weight: 540;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .roster-avg small {
+    font-size: 0.95rem;
+    letter-spacing: -0.02em;
+  }
+
+  .roster-avg-label {
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--text-3);
+  }
+
+  .roster-list {
+    display: grid;
+    gap: 0.85rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .roster-list li {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr) 2.2rem;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .roster-who {
+    display: grid;
+    line-height: 1.25;
+    min-width: 0;
+  }
+
+  .roster-who strong {
+    font-size: 0.88rem;
+    font-weight: 520;
+  }
+
+  .roster-who span {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .roster-track {
+    height: 6px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.05);
+    overflow: hidden;
+  }
+
+  .roster-bar {
+    display: block;
+    height: 100%;
+    width: calc(var(--w) * 100%);
+    border-radius: inherit;
+    background: var(--grad-accent);
+    box-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.5);
+    transform-origin: left center;
+  }
+
+  .roster-years {
+    font-size: 0.75rem;
+    color: var(--text-2);
+    text-align: right;
+  }
+
+  @media (max-width: 420px) {
+    .roster-list li {
+      grid-template-columns: 6.5rem minmax(0, 1fr) 2rem;
+    }
+  }
+</style>

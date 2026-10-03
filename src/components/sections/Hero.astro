@@ -1,0 +1,480 @@
+---
+import { Image } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { hero, team } from '../../content/site';
+import { GHOST_EYES, ghostOutline } from '../../lib/ghost';
+
+const initial = ghostOutline(0);
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title" data-hero>
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-glow hero-glow--a"></div>
+    <div class="hero-glow hero-glow--b"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-stars"></div>
+  </div>
+
+  <canvas class="hero-threads" data-threads aria-hidden="true"></canvas>
+
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <a class="pill hero-badge" href={hero.primaryCta.href} data-hero-item>
+        <span class="status-dot" aria-hidden="true"></span>
+        <strong>{hero.badge.label}</strong>
+        <span class="hero-badge-sep" aria-hidden="true"></span>
+        <span>{hero.badge.detail}</span>
+        <Icon name="arrow-right" size={14} class="hero-badge-arrow" />
+      </a>
+
+      <h1 id="hero-title" class="h-display hero-title" data-hero-title set:html={hero.title} />
+
+      <p class="lead hero-lead" data-hero-item>{hero.lead}</p>
+
+      <div class="hero-ctas" data-hero-item>
+        <Button href={hero.primaryCta.href} size="lg" arrow magnetic>{hero.primaryCta.label}</Button>
+        <Button href={hero.secondaryCta.href} size="lg" variant="ghost">{hero.secondaryCta.label}</Button>
+      </div>
+
+      <div class="hero-proof" data-hero-item>
+        <ul class="hero-avatars" role="list">
+          {
+            team.members.map((m) => (
+              <li>
+                <Image src={m.photo} alt="" width={40} height={40} loading="eager" />
+              </li>
+            ))
+          }
+        </ul>
+        <div class="hero-proof-text">
+          <div class="hero-stars-row">
+            {Array.from({ length: 5 }, () => <Icon name="star" size={14} />)}
+            <strong><span class="visually-hidden">Rated </span>{hero.proof.rating}</strong>
+          </div>
+          <p>{hero.proof.text}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-ghost" data-ghost aria-hidden="true">
+      <div class="hero-ghost-aura"></div>
+      <div class="hero-ghost-inner" data-ghost-inner>
+        <svg class="hero-ghost-svg" viewBox="0 0 32 32" data-ghost-svg>
+          <defs>
+            <path id="ghost-shape" d={initial.d} data-ghost-shape></path>
+            <linearGradient id="ghost-fill" x1="20" y1="5" x2="8" y2="29" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#ffffff"></stop>
+              <stop offset="0.45" stop-color="#ebe6ff"></stop>
+              <stop offset="1" stop-color="#a798ff"></stop>
+            </linearGradient>
+            <radialGradient id="ghost-shade" cx="12" cy="10" r="20" gradientUnits="userSpaceOnUse">
+              <stop offset="0.55" stop-color="#8f7cff" stop-opacity="0"></stop>
+              <stop offset="1" stop-color="#5d48f0" stop-opacity="0.55"></stop>
+            </radialGradient>
+            <radialGradient id="ghost-light" cx="12.5" cy="9" r="6" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#ffffff" stop-opacity="0.9"></stop>
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0"></stop>
+            </radialGradient>
+            <linearGradient id="ghost-fade-grad" x1="16" y1="14" x2="3" y2="29" gradientUnits="userSpaceOnUse">
+              <stop offset="0.55" stop-color="#fff"></stop>
+              <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+            </linearGradient>
+            <mask id="ghost-fade" maskUnits="userSpaceOnUse" x="-4" y="0" width="40" height="34">
+              <rect x="-4" y="0" width="40" height="34" fill="url(#ghost-fade-grad)"></rect>
+            </mask>
+          </defs>
+          <g mask="url(#ghost-fade)">
+            <use href="#ghost-shape" fill="url(#ghost-fill)"></use>
+            <use href="#ghost-shape" fill="url(#ghost-shade)"></use>
+            <use href="#ghost-shape" fill="url(#ghost-light)"></use>
+          </g>
+          <g data-ghost-look>
+            <g class="hero-ghost-eyes" data-ghost-eyes>
+              {
+                GHOST_EYES.map((e) => (
+                  <>
+                    <ellipse cx={e.cx} cy={e.cy} rx={e.rx} ry={e.ry} fill="#0b0a14" />
+                    <circle cx={e.cx + 0.5} cy={e.cy - 0.9} r="0.42" fill="#fff" opacity="0.9" />
+                  </>
+                ))
+              }
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="container hero-stats-wrap">
+    <dl class="hero-stats" data-hero-stats data-hero-item>
+      {
+        hero.stats.map((s) => (
+          <div class="hero-stat">
+            <dt>{s.label}</dt>
+            <dd>
+              <span data-counter data-to={s.value}>
+                {s.value}
+              </span>
+              {s.suffix && <span class="hero-stat-suffix">{s.suffix}</span>}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: max(100svh, 760px);
+    padding-top: calc(var(--nav-h) + clamp(2.5rem, 7vh, 5.5rem));
+    overflow: clip;
+  }
+
+  /* ── Background ─────────────────────────────────────────── */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(20px);
+  }
+
+  .hero-glow--a {
+    top: -18%;
+    right: -10%;
+    width: min(70vw, 980px);
+    aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.16), rgb(var(--accent-rgb) / 0.05) 50%, transparent 72%);
+  }
+
+  .hero-glow--b {
+    bottom: -30%;
+    left: -15%;
+    width: min(60vw, 820px);
+    aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgb(var(--accent-2-rgb) / 0.08), transparent 70%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 72px 72px;
+    background-position: center top;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 60% 30%, #000 10%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 70% at 60% 30%, #000 10%, transparent 75%);
+  }
+
+  .hero-stars {
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 28% 8%, #cfc7ff 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 44% 22%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 58% 6%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 66% 31%, #bdf2fa 50%, transparent 51%),
+      radial-gradient(1.4px 1.4px at 79% 12%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 91% 27%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 86% 48%, #cfc7ff 50%, transparent 51%),
+      radial-gradient(1px 1px at 52% 44%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 6% 40%, #fff 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 35% 37%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 72% 58%, #fff 50%, transparent 51%);
+    animation: twinkle 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from {
+      opacity: 0.25;
+    }
+    to {
+      opacity: 0.6;
+    }
+  }
+
+  .hero-threads {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* ── Copy ───────────────────────────────────────────────── */
+  .hero-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    justify-items: start;
+    max-width: 55rem;
+  }
+
+  .hero-badge {
+    margin-bottom: clamp(1.5rem, 1rem + 1.5vw, 2.2rem);
+    transition:
+      box-shadow 0.4s var(--ease-out),
+      background-color 0.4s var(--ease-out);
+  }
+
+  .hero-badge:hover {
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+
+  .hero-badge-sep {
+    width: 1px;
+    height: 12px;
+    background: var(--line-3);
+  }
+
+  .hero-badge :global(.hero-badge-arrow) {
+    color: var(--text-3);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .hero-badge:hover :global(.hero-badge-arrow) {
+    transform: translateX(3px);
+    color: var(--text);
+  }
+
+  .hero-title {
+    max-width: 13.5em;
+  }
+
+  .hero-lead {
+    margin-top: clamp(1.4rem, 1rem + 1.2vw, 2rem);
+    max-width: 36rem;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: clamp(1.8rem, 1.4rem + 1.2vw, 2.6rem);
+  }
+
+  .hero-proof {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+  }
+
+  .hero-avatars {
+    display: flex;
+    padding-left: 10px;
+  }
+
+  .hero-avatars li {
+    margin-left: -10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 0 2px var(--bg);
+    background: var(--surface-2);
+  }
+
+  .hero-avatars img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-proof-text p {
+    font-size: 0.85rem;
+    color: var(--text-3);
+    line-height: 1.4;
+  }
+
+  .hero-stars-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #ffd27a;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .hero-stars-row strong {
+    margin-left: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 560;
+    color: var(--text);
+  }
+
+  /* ── Ghost ──────────────────────────────────────────────── */
+  .hero-ghost {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    right: clamp(0rem, 5vw, 5rem);
+    width: clamp(170px, 19vw, 290px);
+    aspect-ratio: 1;
+    margin-top: calc(clamp(170px, 19vw, 290px) * -0.62);
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero-ghost-aura {
+    position: absolute;
+    inset: -45%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.3), rgb(var(--accent-rgb) / 0.08) 55%, transparent 75%);
+    pointer-events: none;
+  }
+
+  .hero-ghost-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .hero-ghost-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* ── Stats ──────────────────────────────────────────────── */
+  .hero-stats-wrap {
+    position: relative;
+    z-index: 2;
+    padding-top: clamp(3rem, 6vh, 5rem);
+    padding-bottom: clamp(1.5rem, 4vh, 2.5rem);
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.35rem;
+    padding: 1.6rem 1.5rem 0.5rem 0;
+  }
+
+  .hero-stat + .hero-stat {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .hero-stat dt {
+    font-size: 0.85rem;
+    color: var(--text-3);
+  }
+
+  .hero-stat dd {
+    margin: 0;
+    font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.75rem);
+    font-weight: 520;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero-stat-suffix {
+    color: var(--text-3);
+    font-size: 0.7em;
+    letter-spacing: -0.03em;
+    margin-left: 0.04em;
+  }
+
+  /* ── Intro: hidden until hero.ts takes over (JS + motion only) ── */
+  :global(.js-anim:not(.hero-ready)) [data-hero-item],
+  :global(.js-anim:not(.hero-ready)) .hero-ghost-inner {
+    opacity: 0;
+  }
+
+  :global(.js-anim:not(.hero-ready)) .hero-title {
+    visibility: hidden;
+  }
+
+  :global(.js-anim:not(.hero-ready) [data-nav] .nav-bar) {
+    opacity: 0;
+  }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 1100px) {
+    .hero-title {
+      max-width: 11em;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .hero {
+      min-height: auto;
+    }
+
+    .hero-inner {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .hero-ghost {
+      position: relative;
+      top: auto;
+      right: auto;
+      align-self: flex-end;
+      width: clamp(120px, 30vw, 190px);
+      margin: -0.5rem clamp(0.5rem, 6vw, 3rem) 0 0;
+    }
+
+    .hero-stats-wrap {
+      padding-top: 0.5rem;
+    }
+
+    .hero-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-stat:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .hero-stat:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+
+    .hero-stat {
+      padding: 1.3rem 1rem 1.1rem 0;
+    }
+
+    .hero-stat + .hero-stat {
+      padding-left: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-ctas :global(.btn) {
+      flex: 1 1 auto;
+    }
+  }
+</style>

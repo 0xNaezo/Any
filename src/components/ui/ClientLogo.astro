@@ -1,0 +1,133 @@
+---
+/**
+ * Placeholder client wordmarks — replace with your clients' real SVG logos
+ * (white/monochrome versions look best in the marquee).
+ */
+interface Props {
+  name: string;
+  mark: string;
+}
+
+const { name, mark } = Astro.props;
+---
+
+<span class:list={['client', `client--${mark}`]}>
+  {
+    mark === 'ledger' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="13" width="4" height="8" rx="1.2" />
+        <rect x="10" y="8" width="4" height="13" rx="1.2" />
+        <rect x="17" y="3" width="4" height="18" rx="1.2" />
+      </svg>
+    )
+  }
+  {
+    mark === 'pulse' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 12h4l2.5-6 4 13 3-9 1.5 2H22" />
+      </svg>
+    )
+  }
+  {
+    mark === 'relay' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <path d="M4 15a6 6 0 0 1 6-6h10M16 5l4 4-4 4" />
+        <path d="M20 9v0" />
+      </svg>
+    )
+  }
+  {
+    mark === 'peak' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 20 9.5 6l4 7 2.5-4L22 20Z" />
+      </svg>
+    )
+  }
+  {
+    mark === 'orbit' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+        <ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-25 12 12)" />
+        <circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none" />
+      </svg>
+    )
+  }
+  {
+    mark === 'quanta' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="6" cy="6" r="2.6" />
+        <circle cx="12" cy="6" r="2.6" opacity=".55" />
+        <circle cx="18" cy="6" r="2.6" opacity=".3" />
+        <circle cx="6" cy="12" r="2.6" opacity=".55" />
+        <circle cx="12" cy="12" r="2.6" />
+        <circle cx="18" cy="12" r="2.6" opacity=".55" />
+        <circle cx="12" cy="18" r="2.6" opacity=".3" />
+        <circle cx="18" cy="18" r="2.6" />
+      </svg>
+    )
+  }
+  {
+    mark === 'leaf' && (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.5 3.5C11 3.5 4 8.5 4 15.5c0 1.6.4 3 1 4.2C7 13 12 9.5 16 8c-4.5 2.5-8 6.5-9.6 12.3 1.2.8 2.7 1.2 4.1 1.2 6.8 0 10-7.5 10-18Z" />
+      </svg>
+    )
+  }
+  <span class="client-name">{name}</span>
+</span>
+
+<style>
+  .client {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: rgb(238 238 244 / 0.55);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    transition: color 0.4s var(--ease-out);
+  }
+
+  .client:hover {
+    color: rgb(238 238 244 / 0.95);
+  }
+
+  .client svg {
+    width: 1.35em;
+    height: 1.35em;
+    fill: currentColor;
+    flex: none;
+  }
+
+  .client--atelier .client-name {
+    font-family: var(--font-serif-stack);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.55rem;
+    letter-spacing: -0.01em;
+  }
+
+  .client--quanta .client-name {
+    font-family: var(--font-mono-stack);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+  }
+
+  .client--peak .client-name {
+    font-weight: 450;
+    letter-spacing: -0.02em;
+  }
+
+  .client--leaf .client-name {
+    font-family: var(--font-serif-stack);
+    font-size: 1.45rem;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .client--pulse .client-name {
+    font-weight: 700;
+    letter-spacing: -0.05em;
+  }
+</style>

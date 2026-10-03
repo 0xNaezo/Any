@@ -1,0 +1,25 @@
+---
+interface Props {
+  index: string;
+  eyebrow: string;
+  /** may contain <em> for the accent */
+  title: string;
+  lead?: string;
+  layout?: 'stack' | 'split' | 'center';
+  headingId?: string;
+  class?: string;
+}
+
+const { index, eyebrow, title, lead, layout = 'stack', headingId, class: className } = Astro.props;
+---
+
+<header class:list={['section-head', layout !== 'stack' && `section-head--${layout}`, className]}>
+  <p class="eyebrow" data-reveal>
+    <span class="eyebrow-index">{index}</span>
+    <span class="eyebrow-rule" aria-hidden="true"></span>
+    <span data-scramble>{eyebrow}</span>
+  </p>
+  <h2 class="h-section" id={headingId} data-split set:html={title} />
+  {lead && <p class="lead" data-reveal>{lead}</p>}
+  <slot />
+</header>

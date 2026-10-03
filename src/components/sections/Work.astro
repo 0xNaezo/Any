@@ -1,0 +1,349 @@
+---
+import { Image } from 'astro:assets';
+import SectionHeader from '../ui/SectionHeader.astro';
+import Icon from '../ui/Icon.astro';
+import Button from '../ui/Button.astro';
+import { work } from '../../content/site';
+
+const total = String(work.projects.length).padStart(2, '0');
+---
+
+<section class="section work" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <SectionHeader
+      index="02"
+      eyebrow={work.eyebrow}
+      title={work.title}
+      lead={work.lead}
+      layout="split"
+      headingId="work-title"
+    />
+
+    <div class="work-list" data-work>
+      {
+        work.projects.map((p, i) => (
+          <article class="case" style={`--accent:${p.accent};--i:${i}`} data-case aria-labelledby={`case-${i}`}>
+            <div class="case-card card" data-case-card>
+              <div class="case-info">
+                <div class="case-meta">
+                  <span class="case-num mono">
+                    {String(i + 1).padStart(2, '0')} / {total}
+                  </span>
+                  <ul class="tags" role="list">
+                    {p.tags.map((t) => (
+                      <li class="tag">{t}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div class="case-body">
+                  <p class="case-client">
+                    <span class="case-client-dot" aria-hidden="true" />
+                    {p.name}
+                  </p>
+                  <h3 class="case-title" id={`case-${i}`}>
+                    {p.title}
+                  </h3>
+                  <p class="case-summary">{p.summary}</p>
+                </div>
+
+                <dl class="case-results">
+                  {p.results.map((r) => (
+                    <div>
+                      <dt>{r.label}</dt>
+                      <dd>{r.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                <div class="case-foot">
+                  <ul class="case-stack" role="list" aria-label="Tech stack">
+                    {p.stack.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ul>
+                  <a class="case-link" href={p.href}>
+                    Discuss a similar project
+                    <Icon name="arrow-up-right" size={16} />
+                  </a>
+                </div>
+              </div>
+
+              <div class="case-visual">
+                <div class="case-glow" aria-hidden="true" />
+                <div class="case-frame">
+                  <Image
+                    src={p.image}
+                    alt={p.imageAlt}
+                    widths={[640, 960, 1280]}
+                    sizes="(max-width: 900px) 92vw, 640px"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <div class="case-shade" data-case-shade aria-hidden="true" />
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="work-cta" data-reveal>
+      <p>Want to see more? We’ll walk you through relevant projects on a call.</p>
+      <Button href={work.cta.href} variant="ghost" arrow>{work.cta.label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .work-list {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .case-card {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(80% 90% at 100% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 60%),
+      linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(255 255 255 / 0.01)),
+      var(--surface);
+    transform-origin: 50% 0%;
+    will-change: transform;
+  }
+
+  /* ── Info column ────────────────────────────────────────── */
+  .case-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    min-width: 0;
+  }
+
+  .case-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  .case-num {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+  }
+
+  .case-body {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .case-client {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.9rem;
+    font-weight: 520;
+    color: var(--text);
+  }
+
+  .case-client-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .case-title {
+    font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 550;
+  }
+
+  .case-summary {
+    color: var(--text-2);
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .case-results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .case-results div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.3rem;
+  }
+
+  .case-results dt {
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--text-3);
+  }
+
+  .case-results dd {
+    margin: 0;
+    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem);
+    font-weight: 540;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .case-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .case-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono-stack);
+    font-size: 0.75rem;
+    color: var(--text-3);
+  }
+
+  .case-stack li + li::before {
+    content: '·';
+    margin-right: 0.9rem;
+    color: var(--line-3);
+  }
+
+  .case-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: color 0.3s;
+  }
+
+  .case-link :global(svg) {
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .case-link:hover {
+    color: var(--accent);
+  }
+
+  .case-link:hover :global(svg) {
+    transform: translate(2px, -2px);
+  }
+
+  /* ── Visual column ──────────────────────────────────────── */
+  .case-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+  }
+
+  .case-glow {
+    position: absolute;
+    inset: 8% 6%;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.22;
+    filter: blur(70px);
+  }
+
+  .case-frame {
+    position: relative;
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #0b0b12;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.09),
+      0 1px 0 0 rgb(255 255 255 / 0.12) inset,
+      0 40px 80px -30px rgb(0 0 0 / 0.9);
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .case-frame :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .case-card:hover .case-frame {
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  .case-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    background: #050508;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .work-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding: 1.4rem 1.6rem;
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--line-2);
+  }
+
+  .work-cta p {
+    color: var(--text-2);
+  }
+
+  /* Sticky stacking on roomy screens only — cards must fit the viewport */
+  @media (min-width: 901px) and (min-height: 700px) {
+    .case {
+      position: sticky;
+      top: calc(var(--nav-h) + 1.5rem + var(--i) * 14px);
+    }
+
+    .case-card {
+      min-height: min(600px, calc(100svh - var(--nav-h) - 6rem));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .case-card {
+      grid-template-columns: 1fr;
+    }
+
+    .case-visual {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .case-results {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 1.1rem;
+    }
+
+    .case-results div:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

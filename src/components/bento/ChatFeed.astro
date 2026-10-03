@@ -1,0 +1,190 @@
+---
+interface Props {
+  channel: string;
+  messages: { from: string; time: string; text: string; self?: boolean }[];
+}
+
+const { channel, messages } = Astro.props;
+const hue: Record<string, string> = {
+  Daniel: 'linear-gradient(135deg,#a798ff,#6c5cf5)',
+  Mira: 'linear-gradient(135deg,#f5b0d9,#c06fd8)',
+  Leo: 'linear-gradient(135deg,#7fe3f2,#3f9fd8)',
+  Ava: 'linear-gradient(135deg,#8ff0b9,#36b37e)',
+};
+---
+
+<div class="chat" data-chat>
+  <div class="chat-head">
+    <span class="chat-channel"><span class="chat-hash">#</span>{channel.replace(/^#/, '')}</span>
+    <span class="chat-online"><span class="chat-online-dot"></span>5 online</span>
+  </div>
+  <ul class="chat-list" role="list">
+    {
+      messages.map((m) => (
+        <li class:list={['msg', m.self && 'msg--self']} data-msg>
+          <span class="msg-avatar" style={`background:${m.self ? 'linear-gradient(135deg,#3a3a4d,#24242f)' : (hue[m.from] ?? hue.Daniel)}`}>
+            {m.from[0]}
+          </span>
+          <div class="msg-body">
+            <p class="msg-meta">
+              <strong>{m.from}</strong>
+              <time>{m.time}</time>
+            </p>
+            <p class="msg-text">{m.text}</p>
+          </div>
+        </li>
+      ))
+    }
+    <li class="msg msg--typing" data-msg>
+      <span class="msg-avatar" style={`background:${hue.Ava}`}>A</span>
+      <div class="msg-body">
+        <p class="msg-meta"><strong>Ava</strong> <span>is typing</span></p>
+        <span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<style>
+  .chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 18px;
+    background: rgb(0 0 0 / 0.28);
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow: hidden;
+  }
+
+  .chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.82rem;
+  }
+
+  .chat-channel {
+    font-weight: 520;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-hash {
+    margin-right: 0.15rem;
+    color: var(--text-3);
+  }
+
+  .chat-online {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+
+  .chat-online-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 8px rgb(var(--ok-rgb) / 0.8);
+  }
+
+  .chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.1rem;
+    margin: 0;
+    list-style: none;
+  }
+
+  .msg {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 0.7rem;
+    align-items: start;
+  }
+
+  .msg-avatar {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #0b0b12;
+  }
+
+  .msg--self .msg-avatar {
+    color: var(--text);
+  }
+
+  .msg-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .msg-meta strong {
+    font-weight: 560;
+  }
+
+  .msg-meta time,
+  .msg-meta span {
+    font-size: 0.7rem;
+    color: var(--text-3);
+  }
+
+  .msg-text {
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+
+  .typing {
+    display: inline-flex;
+    gap: 4px;
+    padding: 0.55rem 0.7rem;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .typing i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-2);
+    animation: typing 1.2s ease-in-out infinite;
+  }
+
+  .typing i:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .typing i:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes typing {
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.4;
+    }
+    30% {
+      transform: translateY(-3px);
+      opacity: 1;
+    }
+  }
+</style>
