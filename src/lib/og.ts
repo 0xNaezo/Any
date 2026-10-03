@@ -9,6 +9,7 @@ import { Resvg } from '@resvg/resvg-js';
 import { bitmapToPath, bitmapSize, type Bitmap } from './pixel';
 import { GHOST, WORDMARK } from './sprites';
 import { bayer, clamp, ghostEyes, ghostTone, makeGhost, moonAlpha, rng, threadPath } from './ghost-geometry';
+import { splitUnit } from './text';
 import type { CaseStudy, Dictionary } from '@/i18n/types';
 
 const W = 1200;
@@ -211,8 +212,10 @@ export function renderCaseOg(dict: Dictionary, item: CaseStudy, index: number, d
     h(
       'div',
       { display: 'flex', gap: 0, marginTop: 18, borderTop: `1px solid ${C.line}` },
-      ...item.metrics.map((m, i) =>
-        h(
+      ...item.metrics.map((m, i) => {
+        // The pixel face has no Cyrillic or ₽ — units go in the regular font.
+        const { num, unit } = splitUnit(m.value);
+        return h(
           'div',
           {
             display: 'flex',
@@ -223,10 +226,15 @@ export function renderCaseOg(dict: Dictionary, item: CaseStudy, index: number, d
             paddingLeft: i ? 16 : 0,
             borderLeft: i ? `1px solid ${C.line}` : 'none',
           },
-          h('div', { display: 'flex', fontFamily: 'Geist Pixel', fontSize: 40, color: C.fg }, m.value),
+          h(
+            'div',
+            { display: 'flex', alignItems: 'baseline', gap: 8 },
+            h('div', { display: 'flex', fontFamily: 'Geist Pixel', fontSize: 40, color: C.fg }, num),
+            ...(unit ? [h('div', { display: 'flex', fontSize: 18, fontWeight: 500, color: C.fg3 }, unit)] : []),
+          ),
           h('div', { display: 'flex', fontSize: 15, color: C.fg3, lineHeight: 1.3 }, m.label),
-        ),
-      ),
+        );
+      }),
     ),
   );
   const label = `· ${String(index + 1).padStart(2, '0')}/${String(dict.work.items.length).padStart(2, '0')} · ${item.industry.toUpperCase()}`;

@@ -2,7 +2,8 @@
  * Contact form: inline validation, JSON POST to `site.form.endpoint`
  * (Formspree / Web3Forms / your API), or a pre-filled mailto: fallback.
  */
-const CONTACT_RE = /^(?:[^\s@]+@[^\s@]+\.[^\s@]{2,}|@?[a-zA-Z0-9_]{4,32}|\+?[\d\s()-]{7,20})$/;
+// email | Telegram @username (5–32 chars, starts with a letter) | phone
+const CONTACT_RE = /^(?:[^\s@]+@[^\s@]+\.[^\s@]{2,}|@?[a-zA-Z][a-zA-Z0-9_]{4,31}|\+?[\d\s()-]{7,20})$/;
 
 export function initContactForm() {
   document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach(setup);
@@ -14,7 +15,9 @@ function setup(form: HTMLFormElement) {
   const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]');
   const errorBox = form.querySelector<HTMLElement>('[data-form-error]');
   const success = form.querySelector<HTMLElement>('[data-form-success]');
+  const successTitle = form.querySelector<HTMLElement>('[data-success-title]');
   const successText = form.querySelector<HTMLElement>('[data-success-text]');
+  const successDirect = form.querySelector<HTMLElement>('[data-success-direct]');
   const idleLabel = submitLabel?.textContent ?? '';
 
   const fields = {
@@ -63,9 +66,11 @@ function setup(form: HTMLFormElement) {
     };
   };
 
-  const showSuccess = (text?: string) => {
+  const showSuccess = (fallback?: { title?: string; text?: string }) => {
     if (!success) return;
-    if (text && successText) successText.textContent = text;
+    if (fallback?.title && successTitle) successTitle.textContent = fallback.title;
+    if (fallback?.text && successText) successText.textContent = fallback.text;
+    if (successDirect) successDirect.hidden = !fallback;
     success.hidden = false;
     success.focus({ preventScroll: true });
   };
@@ -106,7 +111,7 @@ function setup(form: HTMLFormElement) {
       const text = payload.message ? `${meta.join('\n')}\n\n${payload.message}` : meta.join('\n');
       const href = `mailto:${d.email}?subject=${encodeURIComponent(d.subject ?? '')}&body=${encodeURIComponent(text)}`;
       window.location.href = href;
-      showSuccess(d.msgFallback);
+      showSuccess({ title: d.msgFallbackTitle, text: d.msgFallback });
       return;
     }
 

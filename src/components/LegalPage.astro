@@ -21,8 +21,10 @@ const ARROW_LEFT = flipX(ARROW_RIGHT);
         <Pixel rows={ARROW_LEFT} cell={2} />
         {dict.nav.home.split('—').pop()?.trim()}
       </a>
-      <h1 class="t-h2" data-split="hero">{p.title}</h1>
-      <p class="legal__updated t-mono" data-hero-item>{p.updated}</p>
+      <h1 class="t-h2">
+        <span class="mask-line"><span>{p.title}</span></span>
+      </h1>
+      <p class="legal__updated t-mono" data-hero-item style="--i: 1">{p.updated}</p>
     </header>
     <div class="legal__body">
       {

@@ -2,14 +2,15 @@
 /** Generated UI illustration — logistics dispatch with a live map. Decorative only. */
 import MockBrowser from './MockBrowser.astro';
 import { bitmapToPath } from '@/lib/pixel';
-import { TRUCK } from '@/lib/sprites';
+import { ARROW_RIGHT, TRUCK } from '@/lib/sprites';
 
 const orders = [
-  { id: 'CG-4821', route: 'Hub 3 → Retail Park', eta: '14:20', p: 72, on: true },
-  { id: 'CG-4819', route: 'Port 2 → Warehouse 7', eta: '14:55', p: 45 },
-  { id: 'CG-4816', route: 'Hub 1 → City Center', eta: '15:10', p: 30 },
-  { id: 'CG-4812', route: 'Warehouse 7 → Mall', eta: '16:40', p: 12 },
+  { id: 'CG-4821', from: 'Hub 3', to: 'Retail Park', eta: '14:20', p: 72, on: true },
+  { id: 'CG-4819', from: 'Port 2', to: 'Warehouse 7', eta: '14:55', p: 45 },
+  { id: 'CG-4816', from: 'Hub 1', to: 'City Center', eta: '15:10', p: 30 },
+  { id: 'CG-4812', from: 'Warehouse 7', to: 'Mall', eta: '16:40', p: 12 },
 ];
+const arrow = bitmapToPath(ARROW_RIGHT);
 
 // Manhattan-style route (map units)
 const route = 'M18 78 H40 V62 H66 V48 H92 V30 H124 V20 H142';
@@ -30,7 +31,11 @@ const truck = bitmapToPath(TRUCK);
                 <span class="lg__id">#{o.id}</span>
                 <span class="lg__eta">ETA {o.eta}</span>
               </div>
-              <p class="lg__route">{o.route}</p>
+              <p class="lg__route">
+                {o.from}
+                <svg viewBox="0 0 7 5" aria-hidden="true"><path d={arrow} /></svg>
+                {o.to}
+              </p>
               <div class="lg__bar">
                 <i style={`width:${o.p}%`} />
               </div>
@@ -139,7 +144,6 @@ const truck = bitmapToPath(TRUCK);
     font-style: normal;
     font-family: var(--font-mono);
     margin-left: 0.3em;
-    opacity: 0.7;
   }
 
   .lg__orders {
@@ -170,7 +174,7 @@ const truck = bitmapToPath(TRUCK);
   }
 
   .lg__eta {
-    color: rgb(255 255 255 / 0.4);
+    color: rgb(255 255 255 / 0.48);
   }
 
   .lg__order.is-on .lg__eta {
@@ -184,6 +188,15 @@ const truck = bitmapToPath(TRUCK);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .lg__route svg {
+    width: 0.85em;
+    height: auto;
+    margin: 0 0.2em;
+    fill: currentColor;
+    shape-rendering: crispEdges;
+    vertical-align: 0.05em;
   }
 
   .lg__bar {
@@ -304,7 +317,7 @@ const truck = bitmapToPath(TRUCK);
     align-items: center;
     font-family: var(--font-mono);
     font-size: 0.85em;
-    color: rgb(255 255 255 / 0.45);
+    color: rgb(255 255 255 / 0.5);
   }
 
   .lg__live {

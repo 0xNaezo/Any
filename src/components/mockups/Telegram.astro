@@ -5,21 +5,21 @@ import { CUP } from '@/lib/sprites';
 
 const cup = bitmapToPath(CUP);
 const items = [
-  { n: 'Flat white', p: '240', on: true },
-  { n: 'Cappuccino', p: '220' },
-  { n: 'Raf vanilla', p: '280' },
-  { n: 'Cold brew', p: '260' },
+  { n: 'Flat white', p: '3.40', on: true },
+  { n: 'Cappuccino', p: '3.20' },
+  { n: 'Raf vanilla', p: '3.90' },
+  { n: 'Cold brew', p: '3.60' },
 ];
 ---
 
 <div class="tg">
   <div class="tg__phone">
     <div class="tg__screen">
-      <div class="tg__status"><span>9:41</span><span class="tg__notch"></span><span>●●●</span></div>
+      <div class="tg__status"><span>9:41</span><span class="tg__notch"></span><span>•••</span></div>
       <div class="tg__header">
         <span class="tg__close">×</span>
         <span class="tg__name">Kofeyna<em>mini app</em></span>
-        <span class="tg__more">⋯</span>
+        <span class="tg__more">•••</span>
       </div>
       <div class="tg__app">
         <div class="tg__pickup">
@@ -36,7 +36,7 @@ const items = [
                 </svg>
                 <span class="tg__item-name">{it.n}</span>
                 <span class="tg__item-row">
-                  <span>{it.p} ₽</span>
+                  <span>${it.p}</span>
                   <i>{it.on ? '1' : '+'}</i>
                 </span>
               </li>
@@ -49,7 +49,7 @@ const items = [
           <b>5 / 8</b>
         </div>
       </div>
-      <div class="tg__main-btn">Order · 240 ₽</div>
+      <div class="tg__main-btn">Order · $3.40</div>
     </div>
   </div>
 
@@ -132,7 +132,9 @@ const items = [
   .tg__close,
   .tg__more {
     color: rgb(255 255 255 / 0.5);
-    width: 1.5em;
+    min-width: 1.5em;
+    text-align: right;
+    letter-spacing: -0.05em;
   }
 
   .tg__more {
@@ -149,7 +151,7 @@ const items = [
   .tg__name em {
     font-style: normal;
     font-size: 0.75em;
-    color: rgb(255 255 255 / 0.4);
+    color: rgb(255 255 255 / 0.48);
     font-weight: 400;
   }
 
@@ -346,7 +348,7 @@ const items = [
 
   .tg__stat p {
     font-size: 0.9em;
-    color: rgb(255 255 255 / 0.45);
+    color: rgb(255 255 255 / 0.5);
   }
 
   .tg__stat strong {

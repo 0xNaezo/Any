@@ -35,7 +35,7 @@ const initials = (name: string) =>
                 <p>{r.text}</p>
               </blockquote>
               <figcaption class="review__author">
-                <span class="review__ava t-pixel" aria-hidden="true">
+                <span class="review__ava" aria-hidden="true">
                   {initials(r.author)}
                 </span>
                 <span>
@@ -132,7 +132,9 @@ const initials = (name: string) =>
     place-items: center;
     width: 44px;
     height: 44px;
-    font-size: 15px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
     color: var(--fg);
     border: 1px solid var(--line-3);
     background: repeating-conic-gradient(rgb(255 255 255 / 0.05) 0 25%, transparent 0 50%) 0 0 / 4px 4px;

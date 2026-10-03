@@ -3,6 +3,7 @@ import SectionHead from '../ui/SectionHead.astro';
 import Pixel from '../ui/Pixel.astro';
 import Mockup from '../mockups/Mockup.astro';
 import { ARROW_RIGHT, ICONS } from '@/lib/sprites';
+import PixelValue from '../ui/PixelValue.astro';
 import { pad2 } from '@/lib/text';
 import { localeUrl, type Dictionary } from '@/i18n';
 
@@ -48,7 +49,9 @@ const total = pad2(w.items.length);
                     {c.metrics.map((m) => (
                       <div class="case__metric">
                         <dt>{m.label}</dt>
-                        <dd class="t-pixel">{m.value}</dd>
+                        <dd class="t-pixel">
+                          <PixelValue value={m.value} />
+                        </dd>
                       </div>
                     ))}
                   </dl>

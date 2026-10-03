@@ -33,6 +33,7 @@ const f = c.form;
         data-msg-invalid={f.invalid}
         data-msg-sending={f.sending}
         data-msg-fallback={f.mailFallback}
+        data-msg-fallback-title={f.mailFallbackTitle}
       >
         <div class="form__row">
           <div class="field">
@@ -111,10 +112,17 @@ const f = c.form;
           {f.error} <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
         </p>
 
-        <div class="form__success" data-form-success hidden tabindex="-1">
+        <div class="form__success" data-form-success hidden tabindex="-1" role="group" aria-labelledby="cf-success-title" aria-describedby="cf-success-text">
           <Pixel rows={GHOST} cell={4} class="form__success-ghost" />
-          <p class="form__success-title t-h3">{f.success}</p>
-          <p class="form__success-text t-body" data-success-text>{f.successText}</p>
+          <p class="form__success-title t-h3" id="cf-success-title" data-success-title>{f.success}</p>
+          <p class="form__success-text t-body" id="cf-success-text" data-success-text>{f.successText}</p>
+          <div class="form__success-direct" data-success-direct hidden>
+            <p class="t-body">{f.mailFallbackDirect}</p>
+            <p class="form__success-links t-mono">
+              <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
+              <a class="link" href={site.telegram.href} target="_blank" rel="noopener noreferrer">Telegram {site.telegram.handle}</a>
+            </p>
+          </div>
         </div>
       </form>
 
@@ -418,6 +426,26 @@ const f = c.form;
 
   .form__success-text {
     max-width: 44ch;
+  }
+
+  .form__success-direct {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--fg-3);
+  }
+
+  .form__success-direct[hidden] {
+    display: none;
+  }
+
+  .form__success-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    font-size: 14px;
   }
 
   .contact__aside {

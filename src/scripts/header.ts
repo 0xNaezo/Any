@@ -75,6 +75,8 @@ export function initHeader(opts: { reducedMotion: boolean; onMenuToggle?: (open:
     toggle.setAttribute('aria-expanded', String(open));
     if (label) label.textContent = (open ? label.dataset.close : label.dataset.open) ?? '';
     document.documentElement.classList.toggle('menu-open', open);
+    // Keep keyboard and screen-reader focus inside the menu while it covers the page.
+    document.querySelectorAll<HTMLElement>('main, footer, .skip-link').forEach((el) => (el.inert = open));
     opts.onMenuToggle?.(open);
     tl?.kill();
 
@@ -90,7 +92,7 @@ export function initHeader(opts: { reducedMotion: boolean; onMenuToggle?: (open:
       }
       tl = gsap
         .timeline()
-        .fromTo(cells, { opacity: 0 }, { opacity: 1, duration: 0.01, stagger: { each: 0.004, from: 'random' } })
+        .fromTo(cells, { opacity: 0 }, { opacity: 1, duration: 0.01, stagger: { amount: 0.36, from: 'random' } })
         .fromTo(links, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.04 }, '-=0.2');
     } else {
       const cells = pixels.children;
@@ -101,7 +103,7 @@ export function initHeader(opts: { reducedMotion: boolean; onMenuToggle?: (open:
       tl = gsap
         .timeline({ onComplete: () => (menu.hidden = true) })
         .to(links, { opacity: 0, duration: 0.2 })
-        .to(cells, { opacity: 0, duration: 0.01, stagger: { each: 0.003, from: 'random' } }, '<0.05');
+        .to(cells, { opacity: 0, duration: 0.01, stagger: { amount: 0.28, from: 'random' } }, '<0.05');
     }
   };
 

@@ -64,7 +64,7 @@ const pathname = Astro.url.pathname;
   </div>
 </header>
 
-<div class="mobile-menu" id="mobile-menu" data-menu hidden>
+<div class="mobile-menu" id="mobile-menu" data-menu hidden role="dialog" aria-label={dict.nav.menu}>
   <div class="mobile-menu__pixels" data-menu-pixels aria-hidden="true"></div>
   <div class="mobile-menu__body container" data-menu-body>
     <nav aria-label={dict.nav.menu}>
@@ -160,7 +160,7 @@ const pathname = Astro.url.pathname;
   .site-nav__idx {
     font-family: var(--font-pixel);
     font-size: 11px;
-    color: var(--fg-4);
+    color: var(--fg-3);
     transition: color 0.2s steps(2);
   }
 

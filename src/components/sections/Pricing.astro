@@ -1,6 +1,7 @@
 ---
 import SectionHead from '../ui/SectionHead.astro';
 import Pixel from '../ui/Pixel.astro';
+import PixelValue from '../ui/PixelValue.astro';
 import { ARROW_RIGHT, CHECK } from '@/lib/sprites';
 import { pad2 } from '@/lib/text';
 import type { Dictionary } from '@/i18n';
@@ -30,7 +31,9 @@ const p = dict.pricing;
             </div>
             <p class="plan__price">
               <span class="plan__from t-mono">{p.from}</span>
-              <span class="plan__amount">{plan.price}</span>
+              <span class="plan__amount t-pixel">
+                <PixelValue value={plan.price} />
+              </span>
               {plan.unit && <span class="plan__unit t-mono">{plan.unit}</span>}
             </p>
             <ul class="plan__features">
@@ -95,7 +98,7 @@ const p = dict.pricing;
 
   .plan__idx {
     font-size: 12px;
-    color: var(--fg-4);
+    color: var(--fg-3);
   }
 
   .plan--featured .plan__idx {
@@ -127,7 +130,6 @@ const p = dict.pricing;
   }
 
   .plan__amount {
-    font-family: var(--font-pixel);
     font-size: clamp(30px, 2.8vw, 42px);
     line-height: 1;
     color: var(--fg);

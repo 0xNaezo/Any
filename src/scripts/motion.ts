@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
 
-const SCRAMBLE_CHARS = '░▒▓█01<>/\\_-+=*#';
+const SCRAMBLE_CHARS = '01<>/\\_-+=*#[]';
 let lenis: Lenis | null = null;
 
 export function getLenis() {
@@ -82,37 +82,15 @@ function countUp(el: HTMLElement, delay = 0) {
   });
 }
 
-/** Above-the-fold intro: headline lines, supporting items, scene and stats. */
+/**
+ * Above-the-fold extras. The intro itself (title lines, copy, scene) is pure CSS so it
+ * starts with the first paint; the script only adds the status scramble and stat counters.
+ */
 function heroIntro() {
-  const title = document.querySelector<HTMLElement>('[data-split="hero"]');
-  const items = document.querySelectorAll<HTMLElement>('[data-hero-item]');
-  const scene = document.querySelector<HTMLElement>('[data-hero-scene]');
-  const stats = document.querySelectorAll<HTMLElement>('[data-hero-stat]');
-
-  if (items.length) gsap.set(items, { opacity: 0, y: 18 });
-  if (scene) gsap.set(scene, { opacity: 0 });
-  if (stats.length) gsap.set(stats, { opacity: 0 });
-
-  const tl = gsap.timeline({ delay: 0.1 });
-  if (title) {
-    SplitText.create(title, {
-      type: 'lines',
-      mask: 'lines',
-      linesClass: 'split-line',
-      autoSplit: true,
-      reduceWhiteSpace: false,
-      onSplit(self) {
-        gsap.set(title, { visibility: 'visible' });
-        return gsap.from(self.lines, { yPercent: 105, duration: 1.3, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
-      },
-    });
-  }
-  if (items.length) tl.to(items, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08 }, 0.35);
-  if (scene) tl.to(scene, { opacity: 1, duration: 0.6, ease: 'steps(4)' }, 0.2);
-
   const status = document.querySelector<HTMLElement>('.hero__status span:last-child');
-  if (status) tl.add(scramble(status), 0.35);
+  if (status) scramble(status, 0.45);
 
+  const stats = document.querySelectorAll<HTMLElement>('[data-hero-stat]');
   const statsBox = document.querySelector('.hero__stats');
   if (statsBox && stats.length) {
     ScrollTrigger.create({
@@ -130,9 +108,24 @@ function heroIntro() {
   }
 }
 
-function sectionMotion() {
-  document.querySelectorAll<HTMLElement>('[data-split]:not([data-split="hero"])').forEach((el) => splitLines(el));
+/** Splits headings into lines only when they come near the viewport — splitting needs layout. */
+function lazySplit() {
+  const headings = document.querySelectorAll<HTMLElement>('[data-split]');
+  if (!headings.length) return;
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        splitLines(e.target as HTMLElement);
+      });
+    },
+    { rootMargin: '0px 0px 50% 0px' },
+  );
+  headings.forEach((el) => io.observe(el));
+}
 
+function sectionMotion() {
   document.querySelectorAll<HTMLElement>('[data-scramble]').forEach((el) => {
     ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => scramble(el) });
   });
@@ -312,15 +305,30 @@ export function initMotion({ reducedMotion }: { reducedMotion: boolean }) {
   try {
     initSmoothScroll();
     heroIntro();
-    sectionMotion();
-    caseStack();
-    processRail();
-    terminal();
-    accordions();
-    // Recalculate trigger positions once fonts have settled.
-    document.fonts?.ready.then(() => ScrollTrigger.refresh());
   } catch (err) {
     console.error(err);
     showAll();
+    return;
   }
+
+  // Below-the-fold setup runs one step per task so the main thread stays responsive
+  // while the intro plays (one long task here used to block input on slower phones).
+  const steps = [lazySplit, sectionMotion, caseStack, processRail, terminal, accordions];
+  const next = () => {
+    const step = steps.shift();
+    if (!step) {
+      // Recalculate trigger positions once everything exists and fonts have settled.
+      void document.fonts?.ready.then(() => ScrollTrigger.refresh());
+      return;
+    }
+    try {
+      step();
+    } catch (err) {
+      console.error(err);
+      showAll();
+      return;
+    }
+    setTimeout(next, 0);
+  };
+  setTimeout(next, 0);
 }

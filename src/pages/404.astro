@@ -16,9 +16,11 @@ const code = word('404');
       <div class="nf__code"><PixelGrid rows={code} /></div>
       <div class="nf__ghost"><Pixel rows={GHOST} cell={10} /></div>
     </div>
-    <h1 class="t-h2" data-split="hero">{dict.notFound.title}</h1>
-    <p class="t-lead" data-hero-item>{dict.notFound.text}</p>
-    <div class="nf__actions" data-hero-item>
+    <h1 class="t-h2">
+      <span class="mask-line"><span>{dict.notFound.title}</span></span>
+    </h1>
+    <p class="t-lead" data-hero-item style="--i: 1">{dict.notFound.text}</p>
+    <div class="nf__actions" data-hero-item style="--i: 2">
       <a class="btn btn--primary" href={localeUrl('ru', '/')}>
         {dict.notFound.back}
         <Pixel rows={ARROW_RIGHT} cell={2} />

@@ -2,7 +2,7 @@
 import Pixel from '../ui/Pixel.astro';
 import GhostScene from '../ui/GhostScene.astro';
 import { ARROW_RIGHT, ARROW_DOWN } from '@/lib/sprites';
-import { emphasize } from '@/lib/text';
+import { emphasize, needsFallback } from '@/lib/text';
 import type { Dictionary } from '@/i18n';
 
 interface Props {
@@ -16,18 +16,24 @@ const { hero, status } = dict;
 <section class="hero" id="top" aria-labelledby="hero-title">
   <div class="container hero__grid">
     <div class="hero__content">
-      <p class="hero__status t-mono" data-hero-item>
+      <p class="hero__status t-mono" data-hero-item style="--i: 0">
         <span class="status-dot"></span>
         <span>{status.available}</span>
       </p>
 
-      <h1 class="hero__title t-display" id="hero-title" data-split="hero">
-        {hero.title.map((line) => <span class="hero__line" set:html={emphasize(line)} />)}
+      <h1 class="hero__title t-display" id="hero-title">
+        {
+          hero.title.map((line, i) => (
+            <span class="mask-line">
+              <span style={`--i: ${i}`} set:html={emphasize(line)} />
+            </span>
+          ))
+        }
       </h1>
 
-      <p class="hero__lead t-lead" data-hero-item>{hero.lead}</p>
+      <p class="hero__lead t-lead" data-hero-item style="--i: 1">{hero.lead}</p>
 
-      <div class="hero__ctas" data-hero-item>
+      <div class="hero__ctas" data-hero-item style="--i: 2">
         <a href="#contact" class="btn btn--primary">
           {hero.primary}
           <Pixel rows={ARROW_RIGHT} cell={2} />
@@ -38,7 +44,7 @@ const { hero, status } = dict;
         </a>
       </div>
 
-      <p class="hero__note t-mono" data-hero-item>{hero.note}</p>
+      <p class="hero__note t-mono" data-hero-item style="--i: 3">{hero.note}</p>
     </div>
 
     <div class="hero__scene" data-hero-scene>
@@ -53,9 +59,9 @@ const { hero, status } = dict;
           <div class="stat" data-hero-stat>
             <dt class="stat__label">{s.label}</dt>
             <dd class="stat__value t-pixel">
-              {s.prefix && <span class="stat__affix">{s.prefix}</span>}
+              {s.prefix && <span class:list={['stat__affix', { unit: needsFallback(s.prefix) }]}>{s.prefix}</span>}
               <span data-count={s.value}>{s.value}</span>
-              {s.suffix && <span class="stat__affix">{s.suffix}</span>}
+              {s.suffix && <span class:list={['stat__affix', { unit: needsFallback(s.suffix) }]}>{s.suffix}</span>}
             </dd>
           </div>
         ))

@@ -193,7 +193,11 @@ export interface Dictionary {
       required: string;
       invalid: string;
       mailSubject: string;
+      /** Shown when no form endpoint is configured and the mail app is opened instead. */
+      mailFallbackTitle: string;
       mailFallback: string;
+      /** Lead-in for the direct contact links under the fallback message. */
+      mailFallbackDirect: string;
     };
   };
 

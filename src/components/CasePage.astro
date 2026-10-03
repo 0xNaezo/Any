@@ -4,6 +4,7 @@ import Pixel from './ui/Pixel.astro';
 import Mockup from './mockups/Mockup.astro';
 import { ARROW_RIGHT, CHECK, QUOTE } from '@/lib/sprites';
 import { flipX } from '@/lib/pixel';
+import PixelValue from './ui/PixelValue.astro';
 import { pad2 } from '@/lib/text';
 import { localeUrl, type Dictionary } from '@/i18n';
 import type { CaseStudy } from '@/i18n/types';
@@ -46,15 +47,17 @@ const story = [
         <Pixel rows={ARROW_LEFT} cell={2} />
         {cs.back}
       </a>
-      <p class="cp-label t-mono" data-hero-item>
+      <p class="cp-label t-mono" data-hero-item style="--i: 0">
         <span class="t-pixel accent">{pad2(index + 1)}</span> / {pad2(work.items.length)} · {item.industry} · {item.year}
       </p>
-      <h1 class="t-display cp-title" data-split="hero">{item.name}</h1>
+      <h1 class="t-display cp-title">
+        <span class="mask-line"><span>{item.name}</span></span>
+      </h1>
       <div class="cp-intro grid-12">
-        <p class="cp-kind t-h3" data-hero-item>{item.kind}</p>
-        <p class="cp-summary t-lead" data-hero-item>{item.summary}</p>
+        <p class="cp-kind t-h3" data-hero-item style="--i: 1">{item.kind}</p>
+        <p class="cp-summary t-lead" data-hero-item style="--i: 2">{item.summary}</p>
       </div>
-      <dl class="cp-meta" data-hero-item>
+      <dl class="cp-meta" data-hero-item style="--i: 3">
         <div><dt class="t-mono">{work.labels.client}</dt><dd>{item.client}</dd></div>
         <div><dt class="t-mono">{work.labels.industry}</dt><dd>{item.industry}</dd></div>
         <div><dt class="t-mono">{work.labels.year}</dt><dd>{item.year}</dd></div>
@@ -78,7 +81,9 @@ const story = [
           item.metrics.map((m) => (
             <div class="cp-metric" data-reveal>
               <dt>{m.label}</dt>
-              <dd class="t-pixel">{m.value}</dd>
+              <dd class="t-pixel">
+                <PixelValue value={m.value} />
+              </dd>
             </div>
           ))
         }
@@ -156,7 +161,10 @@ const story = [
     <nav class="section cp-next" aria-label={cs.next}>
       <a class="container cp-next__link" href={localeUrl(dict.locale, `/work/${next.slug}/`)} data-transition>
         <span class="cp-next__text">
-          <span class="t-mono cp-next__label">{cs.next} →</span>
+          <span class="t-mono cp-next__label">
+            {cs.next}
+            <Pixel rows={ARROW_RIGHT} cell={2} />
+          </span>
           <span class="cp-next__name">{next.name}</span>
           <span class="cp-next__kind">{next.kind}</span>
         </span>
@@ -412,6 +420,9 @@ const story = [
   }
 
   .cp-next__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     font-size: 12px;
     color: var(--fg-3);
   }

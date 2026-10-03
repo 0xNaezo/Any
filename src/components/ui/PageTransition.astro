@@ -17,6 +17,20 @@
     display: none;
   }
 
+  /* Arriving after a transition: stay covered until the script builds the cells
+     (the failsafe uncovers the page even if scripts never run). */
+  :global(.pt-arrive) .pt:empty {
+    display: block;
+    background: var(--bg);
+    animation: pt-failsafe 0s linear 1.5s forwards;
+  }
+
+  @keyframes pt-failsafe {
+    to {
+      visibility: hidden;
+    }
+  }
+
   .pt :global(i) {
     background: var(--bg);
     /* hide hairline seams between cells */

@@ -1,6 +1,7 @@
 ---
 /** Generated UI illustration — therapy app on two phones. Decorative only. */
 import { bitmapToPath } from '@/lib/pixel';
+import { STAR } from '@/lib/sprites';
 
 const therapists = [
   { n: 'Dr. Anna Reyes', t: 'Anxiety · Burnout', r: '4.9', s: 'Today 18:00' },
@@ -27,12 +28,13 @@ const FACE = [
   '##############',
 ];
 const face = bitmapToPath(FACE);
+const star = bitmapToPath(STAR);
 ---
 
 <div class="mo">
   <div class="mo__phone mo__phone--a">
     <div class="mo__screen">
-      <div class="mo__status"><span>9:41</span><span class="mo__notch"></span><span>●●●</span></div>
+      <div class="mo__status"><span>9:41</span><span class="mo__notch"></span><span>•••</span></div>
       <p class="mo__hello">Good evening, Kate</p>
       <p class="mo__h">Find your therapist</p>
       <div class="mo__search">Search by topic…</div>
@@ -46,7 +48,10 @@ const face = bitmapToPath(FACE);
                 <b>{t.n}</b>
                 <em>{t.t}</em>
                 <span class="mo__meta">
-                  <span>★ {t.r}</span>
+                  <span class="mo__rating">
+                    <svg viewBox="0 0 5 5" aria-hidden="true"><path d={star} /></svg>
+                    {t.r}
+                  </span>
                   <span>{t.s}</span>
                 </span>
               </span>
@@ -60,7 +65,7 @@ const face = bitmapToPath(FACE);
 
   <div class="mo__phone mo__phone--b">
     <div class="mo__screen mo__screen--call">
-      <div class="mo__status"><span>9:41</span><span class="mo__notch"></span><span>●●●</span></div>
+      <div class="mo__status"><span>9:41</span><span class="mo__notch"></span><span>•••</span></div>
       <div class="mo__call-top">
         <span class="mo__rec"><i></i>24:13</span>
         <span>Encrypted</span>
@@ -138,7 +143,7 @@ const face = bitmapToPath(FACE);
 
   .mo__hello {
     font-size: 0.85em;
-    color: rgb(255 255 255 / 0.45);
+    color: rgb(255 255 255 / 0.5);
     margin-top: 0.4em;
   }
 
@@ -153,7 +158,7 @@ const face = bitmapToPath(FACE);
   .mo__search {
     padding: 0.7em 0.9em;
     font-size: 0.8em;
-    color: rgb(255 255 255 / 0.35);
+    color: rgb(255 255 255 / 0.46);
     border: 1px solid rgb(255 255 255 / 0.1);
   }
 
@@ -214,7 +219,7 @@ const face = bitmapToPath(FACE);
 
   .mo__info em {
     font-style: normal;
-    color: rgb(255 255 255 / 0.45);
+    color: rgb(255 255 255 / 0.5);
   }
 
   .mo__meta {
@@ -225,6 +230,19 @@ const face = bitmapToPath(FACE);
     font-size: 0.85em;
     color: rgb(255 255 255 / 0.5);
     margin-top: 0.2em;
+  }
+
+  .mo__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+
+  .mo__rating svg {
+    width: 0.8em;
+    height: 0.8em;
+    fill: currentColor;
+    shape-rendering: crispEdges;
   }
 
   .mo__card.is-on .mo__meta span:last-child {
@@ -312,7 +330,7 @@ const face = bitmapToPath(FACE);
   .mo__note {
     font-size: 0.72em;
     text-align: center;
-    color: rgb(255 255 255 / 0.45);
+    color: rgb(255 255 255 / 0.5);
     margin-top: -0.6em;
   }
 

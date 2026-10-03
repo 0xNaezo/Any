@@ -202,7 +202,7 @@ const en: Dictionary = {
         summary:
           'A mobile app for online sessions with therapists: matching, video sessions, scheduling and subscriptions.',
         metrics: [
-          { value: '4.8★', label: 'store rating' },
+          { value: '4.8/5', label: 'store rating' },
           { value: '120k', label: 'installs in year one' },
           { value: '+35%', label: 'day-30 retention' },
         ],
@@ -529,9 +529,11 @@ const en: Dictionary = {
       successText: 'Thank you! We will get back to you within one business day — usually much sooner.',
       error: 'Something went wrong. Please write to us directly:',
       required: 'This field is required',
-      invalid: 'Enter an email or a Telegram @username',
+      invalid: 'Enter an email, a Telegram @username or a phone number',
       mailSubject: 'New project request — Nightloom',
+      mailFallbackTitle: 'Almost there',
       mailFallback: 'We’ve opened your email app with a pre-filled message — just hit send.',
+      mailFallbackDirect: 'Nothing opened? Write to us directly:',
     },
   },
 

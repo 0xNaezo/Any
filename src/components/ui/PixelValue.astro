@@ -1,0 +1,12 @@
+---
+/** A value set in the pixel face; a trailing word or currency ("нед.", "₽") falls back to the regular font. */
+import { splitUnit } from '@/lib/text';
+
+interface Props {
+  value: string;
+}
+
+const { num, unit } = splitUnit(Astro.props.value);
+---
+
+{num}{unit && <span class="unit">{unit}</span>}

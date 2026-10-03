@@ -6,7 +6,10 @@ import '@/styles/global.css';
 
 import geistCyr from '@fontsource-variable/geist/files/geist-cyrillic-wght-normal.woff2?url';
 import geistLat from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import geistLatExt from '@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2?url';
+import monoCyr from '@fontsource-variable/geist-mono/files/geist-mono-cyrillic-wght-normal.woff2?url';
 import monoLat from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
+import pixelLat from '@fontsource/geist-pixel/files/geist-pixel-latin-400-normal.woff2?url';
 
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
@@ -32,6 +35,10 @@ const canonical = new URL(pathname, site.url).href;
 const ogImage = new URL(assetUrl(image ?? `/og/${dict.locale}/index.png`), site.url).href;
 const alternates = locales.map((l) => ({ lang: l, href: new URL(switchLocaleUrl(pathname, l), site.url).href }));
 const xDefault = new URL(switchLocaleUrl(pathname, defaultLocale), site.url).href;
+
+// Every subset the page renders with, so text is laid out once instead of after each late font
+// (latin-ext only carries ₽, which appears in RU pricing).
+const fontPreloads = dict.locale === 'ru' ? [geistCyr, geistLat, geistLatExt, monoCyr, monoLat, pixelLat] : [geistLat, monoLat, pixelLat];
 
 const organization = {
   '@context': 'https://schema.org',
@@ -82,15 +89,22 @@ const organization = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="preload" href={dict.locale === 'ru' ? geistCyr : geistLat} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={monoLat} as="font" type="font/woff2" crossorigin />
+    {fontPreloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
 
     <script is:inline>
       (function () {
         var d = document.documentElement;
         d.classList.remove('no-js');
         d.classList.add('js');
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('motion');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('motion');
+        try {
+          if (sessionStorage.getItem('nl:transition')) d.classList.add('pt-arrive');
+        } catch (e) {}
+        // Failsafe: if the script bundle never runs, show everything without animation.
+        setTimeout(function () {
+          if (!window.__nl) d.classList.remove('motion', 'pt-arrive');
+        }, 4000);
       })();
     </script>
 
