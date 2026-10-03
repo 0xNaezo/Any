@@ -31,9 +31,8 @@ export const site = {
 
   form: {
     /**
-     * Where the contact form POSTs its data (JSON).
-     * Works out of the box with Formspree (https://formspree.io/f/xxxx), Web3Forms, Getform,
-     * or your own endpoint / serverless function.
+     * Where the contact form POSTs its data as JSON — e.g. a Formspree form
+     * (https://formspree.io/f/xxxx) or your own endpoint / serverless function.
      * Leave empty — the form will open the visitor's mail client with a pre-filled letter instead.
      */
     endpoint: '',

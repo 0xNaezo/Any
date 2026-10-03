@@ -35,23 +35,27 @@ const pathname = Astro.url.pathname;
     </nav>
 
     <div class="site-header__actions">
-      <div class="lang" role="group" aria-label={dict.nav.language}>
-        {
-          locales.map((l) => (
-            <a
-              href={switchLocaleUrl(pathname, l)}
-              hreflang={l}
-              lang={l}
-              class:list={['lang__item', { 'is-active': l === locale }]}
-              aria-current={l === locale ? 'true' : undefined}
-              title={localeNames[l].long}
-              data-transition
-            >
-              {localeNames[l].short}
-            </a>
-          ))
-        }
-      </div>
+      {
+        locales.length > 1 && (
+          <div class="lang" role="group" aria-label={dict.nav.language}>
+            {
+              locales.map((l) => (
+                <a
+                  href={switchLocaleUrl(pathname, l)}
+                  hreflang={l}
+                  lang={l}
+                  class:list={['lang__item', { 'is-active': l === locale }]}
+                  aria-current={l === locale ? 'true' : undefined}
+                  title={localeNames[l].long}
+                  data-transition
+                >
+                  {localeNames[l].short}
+                </a>
+              ))
+            }
+          </div>
+        )
+      }
       <a href={`${home}#contact`} class="btn btn--sm btn--primary site-header__cta">
         {dict.nav.cta}
         <Pixel rows={ARROW_RIGHT} cell={2} />
@@ -90,22 +94,26 @@ const pathname = Astro.url.pathname;
         <a href={`mailto:${site.email}`}>{site.email}</a>
         <a href={site.telegram.href} target="_blank" rel="noopener">{site.telegram.handle}</a>
       </div>
-      <div class="lang lang--lg" role="group" aria-label={dict.nav.language}>
-        {
-          locales.map((l) => (
-            <a
-              href={switchLocaleUrl(pathname, l)}
-              hreflang={l}
-              lang={l}
-              class:list={['lang__item', { 'is-active': l === locale }]}
-              aria-current={l === locale ? 'true' : undefined}
-              data-transition
-            >
-              {localeNames[l].long}
-            </a>
-          ))
-        }
-      </div>
+      {
+        locales.length > 1 && (
+          <div class="lang lang--lg" role="group" aria-label={dict.nav.language}>
+            {
+              locales.map((l) => (
+                <a
+                  href={switchLocaleUrl(pathname, l)}
+                  hreflang={l}
+                  lang={l}
+                  class:list={['lang__item', { 'is-active': l === locale }]}
+                  aria-current={l === locale ? 'true' : undefined}
+                  data-transition
+                >
+                  {localeNames[l].long}
+                </a>
+              ))
+            }
+          </div>
+        )
+      }
     </div>
   </div>
 </div>

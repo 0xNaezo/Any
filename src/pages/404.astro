@@ -3,10 +3,11 @@ import Base from '@/layouts/Base.astro';
 import Pixel from '@/components/ui/Pixel.astro';
 import PixelGrid from '@/components/ui/PixelGrid.astro';
 import { ARROW_RIGHT, GHOST, word } from '@/lib/sprites';
-import { getDictionary, localeUrl } from '@/i18n';
+import { defaultLocale, getDictionary, localeNames, localeUrl, locales } from '@/i18n';
 
-const dict = getDictionary('ru');
-const en = getDictionary('en');
+// One 404 for the whole site: copy in the default language, plus a way home in the others.
+const dict = getDictionary(defaultLocale);
+const others = locales.filter((l) => l !== defaultLocale);
 const code = word('404');
 ---
 
@@ -21,13 +22,17 @@ const code = word('404');
     </h1>
     <p class="t-lead" data-hero-item style="--i: 1">{dict.notFound.text}</p>
     <div class="nf__actions" data-hero-item style="--i: 2">
-      <a class="btn btn--primary" href={localeUrl('ru', '/')}>
+      <a class="btn btn--primary" href={localeUrl(defaultLocale, '/')}>
         {dict.notFound.back}
         <Pixel rows={ARROW_RIGHT} cell={2} />
       </a>
-      <a class="btn" href={localeUrl('en', '/')} lang="en">
-        {en.notFound.back} (EN)
-      </a>
+      {
+        others.map((l) => (
+          <a class="btn" href={localeUrl(l, '/')} lang={l}>
+            {getDictionary(l).notFound.back} ({localeNames[l].short})
+          </a>
+        ))
+      }
     </div>
   </section>
 </Base>
