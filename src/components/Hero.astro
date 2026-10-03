@@ -1,0 +1,345 @@
+---
+import Button from './Button.astro';
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+}
+const { t } = Astro.props;
+
+// Placeholder client wordmarks — swap for real logos (SVG) when you have permission to show them.
+const clients = [
+  { name: 'Halcyon', style: 'halcyon' },
+  { name: 'Lumen Health', style: 'lumen' },
+  { name: 'morrow', style: 'morrow' },
+  { name: 'ARCWELL', style: 'arcwell' },
+  { name: 'Solenne', style: 'solenne' },
+  { name: 'Verity', style: 'verity' },
+];
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__inner container">
+    <div class="hero__meta">
+      <span class="label label--bright" data-hero-fade>{t.hero.eyebrow}</span>
+      <span class="hero__meta-rule" data-hero-line aria-hidden="true"></span>
+      <span class="label" data-hero-fade>{t.hero.location}</span>
+    </div>
+
+    <h1 class="h1 hero__title" id="hero-title" data-hero-title set:html={t.hero.title} />
+
+    <div class="hero__row">
+      <p class="lede hero__lede" data-hero-fade>{t.hero.lede}</p>
+      <div class="hero__actions" data-hero-fade>
+        <Button href="#contact">{t.hero.primary}</Button>
+        <Button href="#work" variant="ghost" icon="arrow-down">{t.hero.secondary}</Button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__foot container">
+    <div class="hero__clients">
+      <span class="label hero__clients-label" data-hero-fade>{t.hero.clientsLabel}</span>
+      <ul class="hero__logos">
+        {
+          clients.map((c) => (
+            <li class={`wm wm--${c.style}`} data-hero-logo>
+              {c.style === 'halcyon' && <span class="wm__mark wm__mark--ring" aria-hidden="true" />}
+              {c.style === 'arcwell' && <span class="wm__mark wm__mark--diamond" aria-hidden="true" />}
+              <span>{c.name}</span>
+              {c.style === 'verity' && <sup aria-hidden="true">°</sup>}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <a href="#manifesto" class="hero__scroll" data-hero-fade aria-label={t.hero.scroll}>
+      <span class="label">{t.hero.scroll}</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--nav-h) + 6vh);
+  }
+
+  .hero__inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: clamp(2.5rem, 1rem + 5vh, 5.5rem);
+  }
+
+  .hero__meta {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: clamp(1.75rem, 1rem + 2.4vh, 3rem);
+    max-width: 46rem;
+  }
+
+  .hero__meta-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line-2);
+    transform-origin: left;
+    min-width: 2rem;
+  }
+
+  .hero__title {
+    max-width: 14ch;
+  }
+
+  .hero__title :global(em) {
+    padding-right: 0.04em;
+  }
+
+  .hero__row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 2rem;
+    align-items: end;
+    margin-top: clamp(2rem, 1rem + 3.5vh, 3.75rem);
+  }
+
+  .hero__lede {
+    grid-column: 1 / span 5;
+  }
+
+  .hero__actions {
+    grid-column: 8 / span 5;
+    justify-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero__foot {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    gap: 2rem;
+  }
+
+  .hero__foot::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+    right: var(--gutter);
+    height: 1px;
+    background: var(--line);
+  }
+
+  .hero__clients {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 0.5rem + 2vw, 3rem);
+    padding-block: 1.6rem 1.9rem;
+    min-width: 0;
+  }
+
+  .hero__clients-label {
+    flex: none;
+    max-width: 16ch;
+  }
+
+  .hero__logos {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(1.25rem, 0.5rem + 2vw, 3rem);
+    min-width: 0;
+  }
+
+  .wm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--bone-2);
+    opacity: 0.62;
+    white-space: nowrap;
+    transition: opacity 0.5s var(--ease-out);
+    line-height: 1;
+  }
+
+  .wm:hover {
+    opacity: 1;
+  }
+
+  .wm--halcyon {
+    font-family: var(--f-text);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .wm--lumen {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.45rem;
+    letter-spacing: -0.01em;
+  }
+
+  .wm--morrow {
+    font-family: var(--f-text);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.05em;
+  }
+
+  .wm--arcwell {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.22em;
+  }
+
+  .wm--solenne {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .wm--verity {
+    font-family: var(--f-text);
+    font-weight: 300;
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+  }
+
+  .wm--verity sup {
+    font-size: 0.8em;
+    margin-left: -0.3rem;
+    color: var(--gold);
+  }
+
+  .wm__mark {
+    display: block;
+    flex: none;
+  }
+
+  .wm__mark--ring {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    box-shadow: inset 0 0 0 2.5px var(--ink-1), inset 0 0 0 6px currentColor;
+  }
+
+  .wm__mark--diamond {
+    width: 9px;
+    height: 9px;
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+
+  .hero__scroll {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.9rem;
+    padding: 1.6rem 0 1.9rem;
+    width: 4.5rem;
+  }
+
+  .hero__scroll-line {
+    position: relative;
+    width: 1px;
+    height: 42px;
+    background: var(--line-2);
+    overflow: hidden;
+  }
+
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -40%;
+    width: 1px;
+    height: 40%;
+    background: linear-gradient(transparent, var(--gold));
+    animation: nl-drip 2.6s var(--ease-in-out) infinite;
+  }
+
+  @keyframes nl-drip {
+    0% {
+      top: -40%;
+    }
+    70%,
+    100% {
+      top: 110%;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .hero__lede {
+      grid-column: 1 / span 7;
+    }
+    .hero__actions {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+    .hero__logos {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      row-gap: 1.1rem;
+    }
+    .wm:nth-child(n + 5) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero {
+      padding-top: calc(var(--nav-h) + 3vh);
+    }
+    .hero__meta {
+      flex-wrap: wrap;
+      gap: 0.4rem 1rem;
+    }
+    .hero__meta-rule {
+      display: none;
+    }
+    .hero__meta .label + .label {
+      width: 100%;
+    }
+    .hero__lede {
+      grid-column: 1 / -1;
+    }
+    .hero__clients {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.1rem;
+    }
+    .hero__clients-label {
+      max-width: none;
+    }
+    .hero__logos {
+      gap: 1.1rem 1.6rem;
+    }
+    .wm:nth-child(n + 4) {
+      display: none;
+    }
+    .hero__scroll {
+      display: none;
+    }
+  }
+</style>

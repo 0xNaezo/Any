@@ -1,0 +1,533 @@
+---
+import SectionHead from './SectionHead.astro';
+import CaseArt from './CaseArt.astro';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+  index: string;
+}
+const { t, index } = Astro.props;
+const w = t.work;
+---
+
+<section class="section work" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <SectionHead index={index} label={w.label} aside={w.aside} title={w.title} intro={w.intro} id="work-title" />
+
+    <div class="work__grid">
+      {
+        w.items.map((c, i) => (
+          <article class="case" data-reveal-group>
+            <div class="case__media ticks" data-case-media>
+              <div class="case__frame" data-parallax data-case-source={c.id}>
+                {c.image ? <img src={c.image} alt="" loading="lazy" decoding="async" /> : <CaseArt variant={c.art} />}
+              </div>
+              <span class="case__cursor" aria-hidden="true">
+                {w.open}
+                <Icon name="arrow-up-right" />
+              </span>
+            </div>
+            <div class="case__meta">
+              <div class="case__line">
+                <span class="label">{String(i + 1).padStart(2, '0')}</span>
+                <span class="thread" aria-hidden="true" />
+                <span class="label">{c.year}</span>
+              </div>
+              <div class="case__head">
+                <h3 class="h3 case__client">
+                  <button type="button" class="case__open" data-case-open={c.id} aria-haspopup="dialog">
+                    {c.client}
+                    <span class="visually-hidden"> — {w.open}</span>
+                  </button>
+                </h3>
+                <div class="case__metric">
+                  <span class="case__value">{c.metric.value}</span>
+                  <span class="label">{c.metric.label}</span>
+                </div>
+              </div>
+              <p class="case__title">{c.title}</p>
+              <ul class="tags">
+                {c.tags.map((tag) => (
+                  <li class="tag">{tag}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="work__note label" data-reveal>{w.note}</p>
+  </div>
+
+  {
+    w.items.map((c) => (
+      <dialog class="drawer" data-case-dialog={c.id} aria-labelledby={`case-${c.id}-title`}>
+        <div class="drawer__panel" data-lenis-prevent>
+          <header class="drawer__head">
+            <span class="label">
+              {c.year} · {c.tags[0]}
+            </span>
+            <button type="button" class="drawer__close" data-case-close aria-label={t.a11y.close}>
+              <Icon name="close" />
+            </button>
+          </header>
+          <div class="drawer__body">
+            <h3 class="h2 drawer__title" id={`case-${c.id}-title`}>{c.client}</h3>
+            <p class="drawer__subtitle">{c.title}</p>
+            <div class="drawer__art ticks" data-case-art={c.id}>
+              {c.image && <img src={c.image} alt="" loading="lazy" decoding="async" />}
+            </div>
+            <p class="lede drawer__summary">{c.summary}</p>
+
+            <dl class="drawer__results">
+              {c.results.map((r) => (
+                <div>
+                  <dt class="label">{r.label}</dt>
+                  <dd>{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div class="drawer__story">
+              <section>
+                <h4 class="label label--bright">{w.labels.challenge}</h4>
+                <p>{c.challenge}</p>
+              </section>
+              <section>
+                <h4 class="label label--bright">{w.labels.approach}</h4>
+                <p>{c.approach}</p>
+              </section>
+            </div>
+
+            <dl class="drawer__facts">
+              <div>
+                <dt class="label">{w.labels.duration}</dt>
+                <dd>{c.duration}</dd>
+              </div>
+              <div>
+                <dt class="label">{w.labels.team}</dt>
+                <dd>{c.team}</dd>
+              </div>
+              <div>
+                <dt class="label">{w.labels.year}</dt>
+                <dd>{c.year}</dd>
+              </div>
+              <div class="drawer__stack">
+                <dt class="label">{w.labels.stack}</dt>
+                <dd>
+                  <ul class="tags">
+                    {c.stack.map((s) => (
+                      <li class="tag">{s}</li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            </dl>
+
+            <div class="drawer__actions">
+              <Button href="#contact" data-case-cta>
+                {w.labels.discuss}
+              </Button>
+              {c.url && (
+                <Button href={c.url} variant="ghost" icon="arrow-up-right">
+                  {w.labels.visit}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </dialog>
+    ))
+  }
+</section>
+
+<style>
+  .work__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: clamp(4rem, 2rem + 6vw, 8rem);
+  }
+
+  .case {
+    position: relative;
+    container-type: inline-size;
+  }
+
+  .case:nth-child(4n + 1) {
+    grid-column: 1 / span 7;
+  }
+  .case:nth-child(4n + 2) {
+    grid-column: 9 / span 4;
+    margin-top: clamp(6rem, 3rem + 10vw, 16rem);
+  }
+  .case:nth-child(4n + 3) {
+    grid-column: 2 / span 5;
+  }
+  .case:nth-child(4n + 4) {
+    grid-column: 7 / span 6;
+    margin-top: clamp(4rem, 2rem + 6vw, 10rem);
+  }
+
+  .case__media {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .case__frame {
+    position: absolute;
+    inset: -6% 0;
+    transition: transform 1.4s var(--ease-out);
+  }
+
+  .case__frame :global(svg),
+  .case__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.6s var(--ease-out), filter 1.2s var(--ease-out);
+    filter: saturate(0.85) brightness(0.92);
+  }
+
+  .case:hover .case__frame :global(svg),
+  .case:hover .case__frame img {
+    transform: scale(1.035);
+    filter: saturate(1) brightness(1);
+  }
+
+  .case__cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 40px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: var(--bone);
+    color: var(--ink-1);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.5s var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .case__cursor :global(svg) {
+    width: 12px;
+    height: 12px;
+  }
+
+  :global(.case.is-hover) .case__cursor {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  @media (hover: none) {
+    .case__cursor {
+      display: none;
+    }
+  }
+
+  .case__meta {
+    display: grid;
+    gap: 1rem;
+    padding-top: 1.5rem;
+  }
+
+  .case__line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .case__line .thread {
+    flex: 1;
+  }
+
+  .case__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .case__client {
+    font-size: clamp(2rem, 1.5rem + 1.6vw, 3rem);
+  }
+
+  .case__open {
+    font: inherit;
+    letter-spacing: inherit;
+    text-align: left;
+  }
+
+  .case__open::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+  }
+
+  .case__open:focus-visible {
+    outline: none;
+  }
+
+  .case:has(.case__open:focus-visible) .case__media {
+    outline: 1px solid var(--gold);
+    outline-offset: 4px;
+  }
+
+  .case__metric {
+    display: grid;
+    justify-items: end;
+    gap: 0.3rem;
+    text-align: right;
+    padding-top: 0.4rem;
+  }
+
+  .case__value {
+    font-family: var(--f-display);
+    font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem);
+    line-height: 1;
+    color: var(--gold-2);
+    white-space: nowrap;
+  }
+
+  .case__title {
+    color: var(--bone-2);
+    max-width: 36ch;
+  }
+
+  .work__note {
+    margin-top: clamp(4rem, 2rem + 5vw, 7rem);
+    max-width: 52ch;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  @container (max-width: 520px) {
+    .case__head {
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .case__metric {
+      justify-items: start;
+      text-align: left;
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .case:nth-child(n) {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+    .case:nth-child(even) {
+      grid-column: 3 / -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .case:nth-child(n) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* ---------- case drawer ---------- */
+
+  .drawer {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(760px, 100vw);
+    height: 100%;
+    max-width: 100vw;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--bone);
+    overflow: visible;
+  }
+
+  .drawer::backdrop {
+    background: rgb(5 6 8 / 0.62);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out);
+  }
+
+  :global(.drawer.is-open)::backdrop {
+    opacity: 1;
+  }
+
+  .drawer__panel {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--ink-2);
+    border-left: 1px solid var(--line-2);
+    transform: translateX(104%);
+    transition: transform 0.8s var(--ease-out);
+  }
+
+  :global(.drawer.is-open) .drawer__panel {
+    transform: none;
+  }
+
+  .drawer__head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+    background: rgb(12 13 17 / 0.96);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .drawer__close {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    transition:
+      border-color 0.4s,
+      transform 0.6s var(--ease-out);
+  }
+
+  .drawer__close:hover {
+    border-color: var(--line-3);
+    transform: rotate(90deg);
+  }
+
+  .drawer__body {
+    display: grid;
+    gap: 2.25rem;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem) 4rem;
+  }
+
+  .drawer__title {
+    font-size: clamp(3rem, 2rem + 4vw, 5rem);
+  }
+
+  .drawer__subtitle {
+    margin-top: -1.25rem;
+    color: var(--bone-2);
+    font-size: var(--fs-lede);
+  }
+
+  .drawer__art {
+    aspect-ratio: 5 / 4;
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .drawer__art :global(img),
+  .drawer__art :global(svg) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .drawer__summary {
+    max-width: none;
+  }
+
+  .drawer__results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block: 1px solid var(--line);
+  }
+
+  .drawer__results > div {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    padding: 1.4rem 1.2rem 1.4rem 0;
+  }
+
+  .drawer__results > div + div {
+    padding-left: 1.2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .drawer__results dd {
+    order: -1;
+    font-family: var(--f-display);
+    font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.2rem);
+    line-height: 1.05;
+    color: var(--gold-2);
+  }
+
+  .drawer__story {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .drawer__story section {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .drawer__story p {
+    color: var(--bone-2);
+    line-height: 1.7;
+  }
+
+  .drawer__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 1.2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .drawer__facts > div {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+
+  .drawer__stack {
+    grid-column: 1 / -1;
+  }
+
+  .drawer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 560px) {
+    .drawer__results {
+      grid-template-columns: 1fr;
+    }
+    .drawer__results > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+  }
+</style>

@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import { site } from '../site.config';
+import { getContent, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getContent(locale);
+const p = t.privacy;
+
+const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const email = `<a class="link" href="mailto:${site.email}">${site.email}</a>`;
+/** Plain text in, HTML out: fills in the company details and links the email. */
+const fill = (text: string) =>
+  escape(text)
+    .replaceAll('{company}', escape(site.legal.company))
+    .replaceAll('{address}', escape(site.legal.address))
+    .replaceAll('{registration}', escape(site.legal.registration))
+    .replaceAll('{email}', email);
+---
+
+<Base locale={locale} page="privacy" title={p.meta.title} description={p.meta.description}>
+  <Header locale={locale} page="privacy" />
+  <main id="main" class="legal">
+    <div class="container">
+      <header class="legal__head">
+        <div class="legal__meta">
+          <span class="label label--bright" data-hero-fade>{p.label}</span>
+          <span class="thread" data-hero-line aria-hidden="true"></span>
+          <span class="label" data-hero-fade>{p.updated}</span>
+        </div>
+        <h1 class="h2 legal__title" data-hero-title set:html={p.title} />
+        <p class="lede legal__intro" data-hero-fade>{p.intro}</p>
+      </header>
+
+      <ol class="legal__list">
+        {
+          p.sections.map((s, i) => (
+            <li class="legal__item" data-reveal>
+              <span class="label">{String(i + 1).padStart(2, '0')}</span>
+              <h2 class="legal__h">{s.title}</h2>
+              <div class="legal__text">
+                {s.text.map((para) => (
+                  <p set:html={fill(para)} />
+                ))}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="legal__ask" data-reveal>
+        <p class="h3">{p.questions}</p>
+        <a class="link legal__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+  </main>
+  <Footer locale={locale} page="privacy" />
+</Base>
+
+<style>
+  .legal {
+    padding-top: calc(var(--nav-h) + clamp(3.5rem, 2rem + 6vw, 8rem));
+    padding-bottom: var(--section-y);
+  }
+
+  .legal__head {
+    display: grid;
+    gap: clamp(1.75rem, 1rem + 2vw, 3rem);
+    margin-bottom: clamp(4rem, 2.5rem + 5vw, 7.5rem);
+  }
+
+  .legal__meta {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .legal__meta .thread {
+    flex: 1;
+  }
+
+  .legal__title {
+    max-width: 13ch;
+  }
+
+  .legal__intro {
+    max-width: 40ch;
+  }
+
+  .legal__list {
+    border-top: 1px solid var(--line);
+  }
+
+  .legal__item {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    row-gap: 1rem;
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .legal__item > .label {
+    grid-column: 1 / span 1;
+    padding-top: 0.55rem;
+  }
+
+  .legal__h {
+    grid-column: 2 / span 4;
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: var(--fs-m);
+    line-height: 1.1;
+  }
+
+  .legal__text {
+    grid-column: 7 / span 6;
+    display: grid;
+    gap: 1rem;
+    color: var(--bone-2);
+    line-height: 1.7;
+    max-width: 60ch;
+    padding-top: 0.35rem;
+  }
+
+  .legal__text :global(a) {
+    color: var(--bone);
+  }
+
+  .legal__ask {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  .legal__mail {
+    font-family: var(--f-display);
+    font-size: var(--fs-m);
+    line-height: 1.2;
+    color: var(--gold-2);
+  }
+
+  @media (max-width: 640px) {
+    .legal__meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .legal__meta .thread {
+      display: none;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .legal__item > .label {
+      grid-column: 1 / -1;
+      padding-top: 0;
+    }
+    .legal__h,
+    .legal__text {
+      grid-column: 1 / -1;
+    }
+    .legal__text {
+      padding-top: 0;
+    }
+  }
+</style>

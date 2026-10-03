@@ -1,0 +1,213 @@
+---
+import SectionHead from './SectionHead.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+  index: string;
+}
+const { t, index } = Astro.props;
+const e = t.engagement;
+---
+
+<section class="section engagement" id="engagement" aria-labelledby="engagement-title">
+  <div class="container">
+    <SectionHead index={index} label={e.label} title={e.title} intro={e.intro} id="engagement-title" />
+
+    <ul class="plans">
+      {
+        e.plans.map((plan, i) => (
+          <li class:list={['plan', plan.featured && 'plan--featured']} data-reveal>
+            <div class="plan__head">
+              <span class="label">{String(i + 1).padStart(2, '0')}</span>
+              {plan.featured && <span class="plan__badge">{e.popular}</span>}
+            </div>
+            <h3 class="plan__name">{plan.name}</h3>
+            <p class="plan__tagline">{plan.tagline}</p>
+            <div class="plan__price">
+              <span class="plan__amount">{plan.price}</span>
+              <span class="label">{plan.period}</span>
+            </div>
+            <p class="plan__text">{plan.text}</p>
+            <ul class="plan__features">
+              {plan.features.map((f) => (
+                <li>
+                  <Icon name="check" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Button
+              href="#contact"
+              variant={plan.featured ? 'primary' : 'ghost'}
+              class="plan__cta"
+              data-prefill={e.prefill.replace('{item}', plan.name)}
+            >
+              {plan.cta}
+            </Button>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="plans__note" data-reveal>
+      <span class="plans__seal" aria-hidden="true"><Icon name="check" /></span>
+      {e.note}
+    </p>
+  </div>
+</section>
+
+<style>
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--col-gap);
+  }
+
+  /* Subgrid keeps names, prices and buttons on the same lines across cards. */
+  .plan {
+    position: relative;
+    display: grid;
+    grid-row: span 7;
+    grid-template-rows: subgrid;
+    row-gap: 1.25rem;
+    align-content: start;
+    padding: clamp(1.75rem, 1rem + 2vw, 2.75rem);
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgb(235 231 223 / 0.025), transparent 40%);
+    transition: border-color 0.6s var(--ease-out);
+  }
+
+  .plan:hover {
+    border-color: var(--line-2);
+  }
+
+  .plan--featured {
+    border-color: rgb(201 180 138 / 0.35);
+    background:
+      radial-gradient(120% 60% at 50% 0%, rgb(201 180 138 / 0.09), transparent 70%),
+      var(--ink-2);
+  }
+
+  .plan--featured:hover {
+    border-color: rgb(201 180 138 / 0.55);
+  }
+
+  .plan__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 26px;
+  }
+
+  .plan__badge {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    background: rgb(201 180 138 / 0.14);
+    color: var(--gold-2);
+    font-family: var(--f-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .plan__name {
+    align-self: end;
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 1.5rem + 1.2vw, 2.75rem);
+    line-height: 1;
+  }
+
+  .plan__tagline {
+    color: var(--bone-2);
+    margin-top: -0.5rem;
+  }
+
+  .plan__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    padding-block: 1.25rem;
+    border-block: 1px solid var(--line);
+  }
+
+  .plan__amount {
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(2.4rem, 1.8rem + 1.6vw, 3.4rem);
+    line-height: 1;
+    color: var(--gold-2);
+    letter-spacing: -0.01em;
+  }
+
+  .plan__text {
+    color: var(--bone-2);
+    font-size: var(--fs-s);
+  }
+
+  .plan__features {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .plan__features li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-size: var(--fs-s);
+  }
+
+  .plan__features :global(svg) {
+    width: 14px;
+    height: 14px;
+    margin-top: 0.3em;
+    flex: none;
+    color: var(--gold);
+  }
+
+  .plan :global(.plan__cta) {
+    justify-self: start;
+    align-self: end;
+  }
+
+  .plans__note {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    color: var(--bone-2);
+    font-size: var(--fs-s);
+  }
+
+  .plans__seal {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid rgb(201 180 138 / 0.4);
+    color: var(--gold);
+  }
+
+  .plans__seal :global(svg) {
+    width: 13px;
+    height: 13px;
+  }
+
+  @media (max-width: 1024px) {
+    .plans {
+      grid-template-columns: 1fr;
+      max-width: 40rem;
+    }
+  }
+</style>

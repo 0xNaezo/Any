@@ -1,0 +1,265 @@
+---
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+  index: string;
+}
+const { t, index } = Astro.props;
+const holes = 32;
+---
+
+<section class="loom" id="manifesto" aria-labelledby="loom-title" data-loom>
+  <div class="loom__pin">
+    <div class="loom__shade" aria-hidden="true"></div>
+    <div class="loom__content container">
+      <div class="loom__head">
+        <span class="label label--bright">{index}</span>
+        <span class="label" id="loom-title">{t.loom.label}</span>
+      </div>
+
+      <ol class="loom__chapters">
+        {
+          t.loom.chapters.map((c, i) => (
+            <li class="loom__chapter" data-chapter={i}>
+              <span class="label loom__kicker">
+                <span class="loom__num">{String(i + 1).padStart(2, '0')}</span>
+                {c.kicker}
+              </span>
+              <p class="loom__title" set:html={c.title} />
+              <p class="loom__text">{c.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="loom__progress" aria-hidden="true">
+        <span class="label" data-loom-status data-weaving={t.loom.hud.weaving} data-woven={t.loom.hud.woven}>
+          {t.loom.hud.weaving}
+        </span>
+        <span class="loom__bar"><span data-loom-bar></span></span>
+        <span class="label" data-loom-percent>0%</span>
+      </div>
+    </div>
+
+    <div class="loom__hud" aria-hidden="true">
+      <div class="loom__hud-row">
+        <span class="label">{t.loom.hud.card}</span>
+        <span class="label label--bright" data-hud-card>000</span>
+      </div>
+      <div class="loom__card">
+        {Array.from({ length: holes }, () => <i />)}
+      </div>
+      <div class="loom__hud-row">
+        <span class="label">{t.loom.hud.warp} <b data-hud-warp>—</b></span>
+        <span class="label">{t.loom.hud.weft} <b data-hud-weft>—</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .loom {
+    position: relative;
+    z-index: 1;
+    height: 400vh;
+  }
+
+  .loom__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .loom__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgb(8 9 12 / 0.78) 0%, rgb(8 9 12 / 0.5) 34%, rgb(8 9 12 / 0) 58%);
+  }
+
+  .loom__content {
+    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding-top: calc(var(--nav-h) + 3vh);
+    padding-bottom: clamp(1.5rem, 1rem + 2vh, 2.5rem);
+  }
+
+  .loom__head {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .loom__chapters {
+    display: grid;
+    align-items: center;
+    max-width: min(34rem, 44vw);
+  }
+
+  .loom__chapter {
+    grid-area: 1 / 1;
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  :global(.js) .loom__chapter {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loom__kicker {
+    display: inline-flex;
+    gap: 1rem;
+    color: var(--gold);
+  }
+
+  .loom__num {
+    color: var(--bone-3);
+  }
+
+  .loom__title {
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 1.4rem + 3.6vw, 5.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.016em;
+    text-wrap: balance;
+  }
+
+  .loom__title :global(em) {
+    font-style: italic;
+    color: var(--gold-2);
+  }
+
+  .loom__text {
+    color: var(--bone-2);
+    font-size: var(--fs-lede);
+    line-height: 1.6;
+    max-width: 30rem;
+  }
+
+  .loom__progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: min(34rem, 44vw);
+  }
+
+  .loom__bar {
+    position: relative;
+    flex: 1;
+    height: 1px;
+    background: var(--line-2);
+  }
+
+  .loom__bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .loom__hud {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(1.5rem, 1rem + 2vh, 2.5rem);
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.9rem 1rem;
+    background: rgb(8 9 12 / 0.55);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .loom__hud-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .loom__hud b {
+    font-weight: 400;
+    color: var(--bone-2);
+  }
+
+  .loom__card {
+    display: grid;
+    grid-template-columns: repeat(32, 5px);
+    gap: 3px;
+    padding: 0.55rem 0.6rem;
+    background: rgb(201 180 138 / 0.07);
+    border-radius: 2px;
+  }
+
+  .loom__card i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    border: 1px solid rgb(201 180 138 / 0.28);
+    transition: background-color 0.25s, border-color 0.25s;
+  }
+
+  .loom__card :global(i.on) {
+    background: var(--gold-2);
+    border-color: var(--gold-2);
+  }
+
+  /* No JS / reduced motion: no pinning, chapters read as a list */
+  :global(.no-js) .loom,
+  :global(.loom-static) .loom {
+    height: auto;
+  }
+
+  :global(.no-js) .loom__pin,
+  :global(.loom-static) .loom__pin {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  :global(.no-js) .loom__chapters,
+  :global(.loom-static) .loom__chapters {
+    gap: 4rem;
+    padding-block: 4rem;
+  }
+
+  :global(.no-js) .loom__chapter,
+  :global(.loom-static) .loom__chapter {
+    grid-area: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  :global(.no-js) .loom__progress,
+  :global(.loom-static) .loom__progress,
+  :global(.no-js) .loom__hud,
+  :global(.loom-static) .loom__hud {
+    display: none;
+  }
+
+  @media (max-width: 760px) {
+    .loom__shade {
+      background: linear-gradient(0deg, rgb(8 9 12 / 0.92) 0%, rgb(8 9 12 / 0.75) 42%, rgb(8 9 12 / 0) 62%);
+    }
+    .loom__content {
+      grid-template-rows: auto 1fr auto;
+    }
+    .loom__chapters {
+      max-width: none;
+      align-items: end;
+      padding-bottom: 1.5rem;
+    }
+    .loom__progress {
+      max-width: none;
+    }
+    .loom__hud {
+      display: none;
+    }
+  }
+</style>

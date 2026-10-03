@@ -1,0 +1,219 @@
+---
+import Icon from './Icon.astro';
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+  index: string;
+}
+const { t, index } = Astro.props;
+const q = t.testimonials;
+const total = String(q.items.length).padStart(2, '0');
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .map((p) => p[0])
+    .join('')
+    .slice(0, 2);
+---
+
+<section class="section testimonials" id="clients" aria-labelledby="clients-title">
+  <div class="container">
+    <div class="sh__top">
+      <span class="label label--bright" data-reveal>{index}</span>
+      <h2 class="label" id="clients-title" data-reveal>{q.label}</h2>
+      <span class="thread" data-line aria-hidden="true"></span>
+      <span class="label" data-reveal><span data-quote-current>01</span> / {total}</span>
+    </div>
+
+    <div class="quotes" data-quotes aria-roledescription="carousel" aria-labelledby="clients-title">
+      <span class="quotes__mark" aria-hidden="true">“</span>
+      <div class="quotes__stage" aria-live="off" data-quotes-live>
+        {
+          q.items.map((item, i) => (
+            <figure
+              class:list={['quote', i === 0 && 'is-active']}
+              data-quote
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} / ${q.items.length}`}
+              aria-hidden={i === 0 ? undefined : 'true'}
+            >
+              <blockquote class="quote__text" data-quote-text>
+                <p>{item.quote}</p>
+              </blockquote>
+              <figcaption class="quote__by">
+                <span class="quote__avatar" aria-hidden="true">
+                  {initials(item.name)}
+                </span>
+                <span class="quote__who">
+                  <span class="quote__name">{item.name}</span>
+                  <span class="label">
+                    {item.role}, {item.company}
+                  </span>
+                </span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      <div class="quotes__nav">
+        <button type="button" class="quotes__btn" data-quote-prev aria-label={q.prev}>
+          <Icon name="chevron-left" />
+        </button>
+        <button type="button" class="quotes__btn" data-quote-next aria-label={q.next}>
+          <Icon name="chevron-right" />
+        </button>
+        <span class="quotes__progress" aria-hidden="true"><span data-quote-progress></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials {
+    overflow: hidden;
+  }
+
+  .testimonials .sh__top {
+    margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+
+  .quotes {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+
+  .quotes__mark {
+    grid-column: 1 / span 2;
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: clamp(8rem, 5rem + 10vw, 16rem);
+    line-height: 0.7;
+    color: var(--gold);
+    opacity: 0.55;
+    user-select: none;
+  }
+
+  .quotes__stage {
+    grid-column: 3 / span 10;
+    display: grid;
+  }
+
+  .quote {
+    grid-area: 1 / 1;
+    display: grid;
+    align-content: start;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.9s var(--ease-out),
+      visibility 0s linear 0.9s;
+  }
+
+  .quote.is-active {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.9s var(--ease-out),
+      visibility 0s;
+  }
+
+  .quote__text {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(2rem, 1.2rem + 2.8vw, 4.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    max-width: 29ch;
+    text-wrap: balance;
+  }
+
+  .quote__by {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .quote__avatar {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--gold-2);
+    background: radial-gradient(circle at 30% 25%, rgb(201 180 138 / 0.14), transparent 70%);
+  }
+
+  .quote__who {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .quote__name {
+    font-size: 1.05rem;
+  }
+
+  .quotes__nav {
+    grid-column: 3 / span 10;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .quotes__btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    transition:
+      border-color 0.4s,
+      background-color 0.4s;
+  }
+
+  .quotes__btn:hover {
+    border-color: var(--line-3);
+    background: rgb(235 231 223 / 0.04);
+  }
+
+  .quotes__progress {
+    position: relative;
+    flex: 1;
+    max-width: 18rem;
+    height: 1px;
+    margin-left: 1rem;
+    background: var(--line-2);
+  }
+
+  .quotes__progress span {
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (max-width: 760px) {
+    .quotes__mark {
+      grid-column: 1 / -1;
+      height: 0.5em;
+    }
+    .quotes__stage,
+    .quotes__nav {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

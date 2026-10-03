@@ -1,0 +1,176 @@
+---
+import SectionHead from './SectionHead.astro';
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+  index: string;
+}
+const { t, index } = Astro.props;
+const p = t.process;
+---
+
+<section class="section process" id="process" aria-labelledby="process-title">
+  <div class="container">
+    <SectionHead index={index} label={p.label} title={p.title} intro={p.intro} id="process-title" />
+
+    <div class="proc" data-process>
+      <div class="proc__rail" aria-hidden="true">
+        <span class="proc__fill" data-process-fill></span>
+      </div>
+      <ol class="proc__steps">
+        {
+          p.steps.map((step, i) => (
+            <li class="proc__step" data-reveal data-process-step>
+              <span class="proc__node" aria-hidden="true" />
+              <div class="proc__top">
+                <span class="label label--bright">{String(i + 1).padStart(2, '0')}</span>
+                <span class="label proc__dur">{step.duration}</span>
+              </div>
+              <h3 class="h3 proc__title">{step.title}</h3>
+              <p class="proc__text">{step.text}</p>
+              <ul class="proc__deliv">
+                {step.deliverables.map((d) => (
+                  <li>{d}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    background: linear-gradient(180deg, var(--ink-1), var(--ink-2) 30%, var(--ink-2) 70%, var(--ink-1));
+  }
+
+  .proc {
+    position: relative;
+  }
+
+  .proc__rail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--line-2);
+  }
+
+  .proc__fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--line-3), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .proc__steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+
+  .proc__step {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    padding-top: 2.75rem;
+  }
+
+  .proc__node {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--ink-2);
+    border: 1px solid var(--line-3);
+    transition:
+      background-color 0.6s var(--ease-out),
+      border-color 0.6s var(--ease-out),
+      box-shadow 0.6s var(--ease-out);
+  }
+
+  :global(.proc__step.is-lit) .proc__node {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 5px rgb(201 180 138 / 0.12);
+  }
+
+  .proc__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .proc__dur {
+    color: var(--gold);
+  }
+
+  .proc__title {
+    font-size: clamp(1.9rem, 1.4rem + 1.4vw, 2.6rem);
+  }
+
+  .proc__text {
+    color: var(--bone-2);
+    max-width: 34ch;
+  }
+
+  .proc__deliv {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--line-2);
+  }
+
+  .proc__deliv li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--fs-s);
+    color: var(--bone-2);
+  }
+
+  .proc__deliv li::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--bone-4);
+    flex: none;
+  }
+
+  @media (max-width: 960px) {
+    .proc__rail {
+      left: 4px;
+      right: auto;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      height: auto;
+    }
+    .proc__fill {
+      transform: scaleY(0);
+      transform-origin: top;
+      background: linear-gradient(180deg, var(--line-3), var(--gold));
+    }
+    .proc__steps {
+      grid-template-columns: 1fr;
+      row-gap: 3.5rem;
+    }
+    .proc__step {
+      padding-top: 0;
+      padding-left: 2.5rem;
+    }
+    .proc__node {
+      top: 0.2rem;
+      left: 0;
+    }
+  }
+</style>

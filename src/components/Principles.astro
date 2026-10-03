@@ -1,0 +1,164 @@
+---
+import SectionHead from './SectionHead.astro';
+import type { Content } from '../i18n';
+
+interface Props {
+  t: Content;
+  index: string;
+}
+const { t, index } = Astro.props;
+const p = t.principles;
+const fmt = (v: number, d = 0) =>
+  new Intl.NumberFormat(t.htmlLang, { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+---
+
+<section class="section principles" id="why" aria-labelledby="why-title">
+  <div class="container">
+    <SectionHead index={index} label={p.label} title={p.title} id="why-title" />
+
+    <dl class="stats">
+      {
+        p.stats.map((s) => (
+          <div class="stat" data-reveal>
+            <dt class="label">{s.label}</dt>
+            <dd class="stat__value">
+              {s.prefix}
+              <span data-count={s.value} data-decimals={s.decimals ?? 0} data-locale={t.htmlLang}>
+                {fmt(s.value, s.decimals ?? 0)}
+              </span>
+              {s.suffix && <span class="stat__suffix">{s.suffix}</span>}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <ul class="pr">
+      {
+        p.items.map((item, i) => (
+          <li class="pr__item" data-reveal>
+            <span class="label pr__num">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="pr__title">{item.title}</h3>
+            <p class="pr__text">{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    margin-bottom: clamp(4rem, 2rem + 6vw, 8rem);
+  }
+
+  .stat {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: 2rem 1.5rem 0 0;
+  }
+
+  .stat + .stat {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .stat dt {
+    order: 2;
+    max-width: 24ch;
+  }
+
+  .stat__value {
+    order: 1;
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(3.75rem, 2rem + 6vw, 8.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .stat__suffix {
+    font-size: 0.5em;
+    color: var(--gold-2);
+    margin-left: 0.05em;
+    vertical-align: 0.6em;
+  }
+
+  .pr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  .pr__item {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 2.25rem 2rem 2.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pr__item:not(:nth-child(3n + 1)) {
+    padding-left: 2rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .pr__num {
+    color: var(--gold);
+  }
+
+  .pr__title {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 1.3rem + 0.8vw, 2.1rem);
+    line-height: 1.1;
+  }
+
+  .pr__text {
+    color: var(--bone-2);
+    max-width: 36ch;
+  }
+
+  @media (max-width: 960px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stat:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .stat:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+      margin-top: 2rem;
+    }
+    .pr {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pr__item:not(:nth-child(3n + 1)) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .pr__item:nth-child(even) {
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--line);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .pr {
+      grid-template-columns: 1fr;
+    }
+    .pr__item:nth-child(even) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .pr__item {
+      padding-right: 0;
+    }
+  }
+</style>

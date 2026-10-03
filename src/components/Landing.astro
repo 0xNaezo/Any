@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import StageCanvas from './StageCanvas.astro';
+import Hero from './Hero.astro';
+import Loom from './Loom.astro';
+import Work from './Work.astro';
+import Services from './Services.astro';
+import Process from './Process.astro';
+import Principles from './Principles.astro';
+import Team from './Team.astro';
+import Testimonials from './Testimonials.astro';
+import Engagement from './Engagement.astro';
+import Faq from './Faq.astro';
+import Contact from './Contact.astro';
+import Footer from './Footer.astro';
+import { getContent, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getContent(locale);
+const numero = locale === 'ru' ? '№' : 'Nº';
+const n = (i: number) => `${numero} ${String(i).padStart(2, '0')}`;
+---
+
+<Base locale={locale}>
+  <Header locale={locale} />
+  <main id="main">
+    <div class="stage" data-stage>
+      <StageCanvas />
+      <div class="stage__content">
+        <Hero t={t} />
+        <Loom t={t} index={n(1)} />
+      </div>
+    </div>
+    <Work t={t} index={n(2)} />
+    <Services t={t} index={n(3)} />
+    <Process t={t} index={n(4)} />
+    <Principles t={t} index={n(5)} />
+    <Team t={t} index={n(6)} />
+    <Testimonials t={t} index={n(7)} />
+    <Engagement t={t} index={n(8)} />
+    <Faq t={t} index={n(9)} />
+    <Contact t={t} index={n(10)} />
+  </main>
+  <Footer locale={locale} />
+</Base>
+
+<style>
+  /* the canvas and the content share one grid cell: the canvas sticks while both scroll */
+  .stage {
+    position: relative;
+    display: grid;
+  }
+
+  .stage > :global(*) {
+    grid-area: 1 / 1;
+  }
+
+  .stage__content {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+
+  /* the woven cloth dissolves into the night as the stage scrolls away */
+  .stage::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 45vh;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgb(8 9 12 / 0), var(--ink-1) 92%);
+  }
+</style>

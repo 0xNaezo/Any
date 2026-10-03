@@ -1,0 +1,225 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import Button from '../components/Button.astro';
+import { defaultLocale, getContent, localeRoot, locales } from '../i18n';
+
+// One static 404 file answers every missing path, so the language is chosen in the
+// browser: the locale in the URL, then the saved choice, then the browser language.
+const pick = `(function(){var ok=${JSON.stringify(locales)},d=document.documentElement,c='${defaultLocale}';try{var p=location.pathname.split('/')[1],s=localStorage.getItem('nl-locale'),n=(navigator.language||'').slice(0,2).toLowerCase();c=ok.indexOf(p)>-1?p:ok.indexOf(s)>-1?s:ok.indexOf(n)>-1?n:c;}catch(e){}d.lang=c;d.setAttribute('data-nf',c);})();`;
+
+const roots = Object.fromEntries(locales.map((l) => [l, localeRoot(l)]));
+const home = `(function(){var a=document.querySelector('[data-nf-home]'),r=${JSON.stringify(roots)}[document.documentElement.getAttribute('data-nf')];if(a&&r)a.href=r;})();`;
+
+// Hanging warp threads; one of them has come loose.
+const THREADS = 34;
+const LOOSE = 21;
+const threads = Array.from({ length: THREADS }, (_, i) => {
+  const r = Math.sin(i * 12.9898) * 43758.5453;
+  const rand = r - Math.floor(r);
+  return { delay: (rand * 9).toFixed(2), alpha: (0.1 + rand * 0.16).toFixed(3), loose: i === LOOSE };
+});
+---
+
+<Base locale={defaultLocale} page="404" title="404 · Nightloom" noindex>
+  <script is:inline set:html={pick} />
+  <main id="main" class="nf">
+    <div class="nf__loom" aria-hidden="true">
+      {
+        threads.map((th) => (
+          <i class:list={[th.loose && 'is-loose']} style={`--d:${th.delay}s;--a:${th.alpha}`}>
+            {th.loose && (
+              <svg viewBox="0 0 16 40" focusable="false">
+                <path d="M8 0C8 9 3 13 4 22C5 31 13 30 12 23C11.2 17.5 6 21 7.5 27" />
+              </svg>
+            )}
+          </i>
+        ))
+      }
+    </div>
+
+    <div class="nf__inner container">
+      <a href={localeRoot(defaultLocale)} class="nf__logo" data-nf-home>
+        <Logo />
+      </a>
+      <script is:inline set:html={home} />
+
+      {
+        locales.map((locale) => {
+          const t = getContent(locale);
+          return (
+            <section class="nf__body" data-nf-lang={locale} lang={t.htmlLang}>
+              <div class="nf__meta">
+                <span class="label label--bright">404</span>
+                <span class="thread" aria-hidden="true" />
+              </div>
+              <h1 class="h1 nf__title" set:html={t.notFound.title} />
+              <p class="lede">{t.notFound.text}</p>
+              <Button href={localeRoot(locale)}>{t.notFound.back}</Button>
+            </section>
+          );
+        })
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 70% at 78% 30%, rgb(201 180 138 / 0.06), transparent 70%),
+      var(--ink-1);
+  }
+
+  .nf__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: inherit;
+    padding-block: 1.4rem clamp(3rem, 2rem + 4vw, 6rem);
+  }
+
+  .nf__logo {
+    justify-self: start;
+    padding: 0.5rem 0;
+  }
+
+  .nf__body {
+    align-self: end;
+    display: grid;
+    justify-items: start;
+    gap: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    max-width: 52rem;
+  }
+
+  /* language: English until the inline script says otherwise */
+  .nf__body[data-nf-lang='ru'],
+  :global(html[data-nf='ru']) .nf__body[data-nf-lang='en'] {
+    display: none;
+  }
+
+  :global(html[data-nf='ru']) .nf__body[data-nf-lang='ru'] {
+    display: grid;
+  }
+
+  .nf__meta {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    width: min(100%, 22rem);
+  }
+
+  .nf__meta .thread {
+    flex: 1;
+  }
+
+  .nf__title {
+    font-size: clamp(3.4rem, 1rem + 8vw, 9.5rem);
+    padding-bottom: 0.06em;
+  }
+
+  .nf__body > * {
+    animation: nf-in 1.6s var(--ease-out) both;
+  }
+
+  .nf__body > :nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  .nf__body > :nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .nf__body > :nth-child(4) {
+    animation-delay: 0.42s;
+  }
+
+  @keyframes nf-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+
+  /* ---------- the loom */
+
+  .nf__loom {
+    position: absolute;
+    inset: 0 0 0 38%;
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 3vw 6vw;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 30%, #000 85%, transparent);
+  }
+
+  .nf__loom i {
+    position: relative;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, rgb(235 231 223 / var(--a)) 18%, rgb(235 231 223 / calc(var(--a) * 0.6)) 80%, transparent);
+    transform-origin: 50% 0;
+    animation: nf-sway 7s ease-in-out infinite alternate;
+    animation-delay: calc(var(--d) * -1);
+  }
+
+  .nf__loom i.is-loose {
+    height: 54%;
+    background: linear-gradient(180deg, transparent, rgb(201 180 138 / 0.55) 30%, rgb(226 211 177 / 0.9));
+    animation-name: nf-sway-loose;
+    animation-duration: 5s;
+  }
+
+  .nf__loom svg {
+    position: absolute;
+    top: 100%;
+    left: -8.5px;
+    width: 18px;
+    height: 45px;
+    max-width: none;
+    overflow: visible;
+    fill: none;
+    stroke: var(--gold-2);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgb(226 211 177 / 0.6));
+  }
+
+  @keyframes nf-sway {
+    from {
+      transform: rotate(-0.12deg);
+    }
+    to {
+      transform: rotate(0.12deg);
+    }
+  }
+
+  @keyframes nf-sway-loose {
+    from {
+      transform: rotate(-1.6deg);
+    }
+    to {
+      transform: rotate(1.4deg);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .nf__loom {
+      inset: 0;
+      opacity: 0.55;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nf__loom i,
+    .nf__body > * {
+      animation: none;
+    }
+  }
+</style>

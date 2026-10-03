@@ -1,0 +1,79 @@
+---
+import { GHOST_PATH, GHOST_VIEWBOX } from '../lib/ghost';
+---
+
+<!-- The canvas is shared by the hero and the manifesto: it stays fixed while both scroll over it. -->
+<div class="stage__sticky" aria-hidden="true">
+  <canvas class="stage__canvas" data-loom-canvas></canvas>
+  <div class="stage__fallback">
+    <svg viewBox={GHOST_VIEWBOX} focusable="false">
+      <defs>
+        <pattern id="loom-weave" width="1.6" height="1.6" patternUnits="userSpaceOnUse">
+          <rect width="1.6" height="1.6" fill="#0d0e12"></rect>
+          <rect x="0.15" y="0" width="0.5" height="1.6" fill="#a7a197"></rect>
+          <rect x="0.95" y="0" width="0.5" height="1.6" fill="#8d887f"></rect>
+        </pattern>
+      </defs>
+      <path fill="url(#loom-weave)" fill-rule="evenodd" d={GHOST_PATH}></path>
+    </svg>
+  </div>
+</div>
+
+<style>
+  .stage__sticky {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    height: 100lvh;
+    z-index: 0;
+    overflow: hidden;
+    background: var(--ink-1);
+  }
+
+  .stage__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 2.4s var(--ease-soft);
+  }
+
+  :global(.loom-ready) .stage__canvas {
+    opacity: 1;
+  }
+
+  .stage__fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 15vw 12vh 0;
+    opacity: 0.7;
+  }
+
+  .stage__fallback svg {
+    width: min(26vw, 36vh);
+    height: auto;
+  }
+
+  :global(.no-js) .stage__fallback,
+  :global(.loom-fallback) .stage__fallback {
+    display: flex;
+  }
+
+  /* on narrow screens the text runs over it, so it stays a faint watermark */
+  @media (max-width: 760px) {
+    .stage__fallback {
+      align-items: flex-start;
+      justify-content: center;
+      padding: 16vh 0 0;
+      opacity: 0.16;
+    }
+    .stage__fallback svg {
+      width: 56vw;
+    }
+  }
+</style>

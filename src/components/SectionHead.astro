@@ -1,0 +1,24 @@
+---
+interface Props {
+  index: string;
+  label: string;
+  aside?: string;
+  title: string;
+  intro?: string;
+  id?: string;
+}
+const { index, label, aside, title, intro, id } = Astro.props;
+---
+
+<header class="sh">
+  <div class="sh__top">
+    <span class="label label--bright" data-reveal>{index}</span>
+    <span class="label" data-reveal>{label}</span>
+    <span class="thread" data-line aria-hidden="true"></span>
+    {aside && <span class="label" data-reveal>{aside}</span>}
+  </div>
+  <div class="sh__body">
+    <h2 class="h2 sh__title" id={id} data-split set:html={title} />
+    {intro && <p class="lede sh__intro" data-reveal>{intro}</p>}
+  </div>
+</header>
