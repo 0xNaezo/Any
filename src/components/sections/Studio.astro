@@ -1,0 +1,161 @@
+---
+import { about } from '../../data/site';
+const letters = ['a', 'b', 'c'];
+---
+
+<section id="studio" class="section studio" aria-labelledby="studio-title">
+  <div class="container">
+    <div class="studio-head grid">
+      <span class="rule" data-rule aria-hidden="true"></span>
+      <p class="label section-index" data-reveal="fade">
+        <span class="num">{about.index}</span>
+        <span aria-hidden="true">—</span>
+        <span>{about.label}</span>
+      </p>
+      <h2 id="studio-title" class="visually-hidden">About the studio</h2>
+      <p class="statement display" data-scrub-words>{about.statement}</p>
+    </div>
+
+    <ul class="principles grid">
+      {
+        about.principles.map((p, i) => (
+          <li class="principle" data-reveal>
+            <span class="label">({letters[i]})</span>
+            <h3 class="principle-title">{p.title}</h3>
+            <p class="principle-text">{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <dl class="stats">
+      {
+        about.stats.map((s) => (
+          <div class="stat" data-reveal>
+            <dt class="label">{s.label}</dt>
+            <dd class="display stat-value">
+              <span data-count={s.value} data-decimals={s.decimals ?? 0}>
+                {s.decimals ? s.value.toFixed(s.decimals) : s.value}
+              </span>
+              <span class="stat-suffix">{s.suffix}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .studio-head {
+    position: relative;
+    padding-top: clamp(1.25rem, 1rem + 1vw, 2rem);
+    row-gap: 1.5rem;
+  }
+  .section-index {
+    grid-column: 1 / span 3;
+    padding-top: 0.45em;
+  }
+  .statement {
+    grid-column: 4 / -1;
+    font-size: var(--display-sm);
+    line-height: 1.16;
+    letter-spacing: -0.018em;
+    max-width: 24em;
+    color: var(--ink);
+  }
+  :global(html.motion) .statement :global(.word) {
+    color: var(--ink-4);
+  }
+
+  .principles {
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+    row-gap: 2.5rem;
+  }
+  .principle {
+    grid-column: span 3;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding-right: 1rem;
+  }
+  .principle:first-child {
+    grid-column: 4 / span 3;
+  }
+  .principle-title {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-top: 0.5rem;
+  }
+  .principle-text {
+    color: var(--ink-2);
+    font-size: 0.9688rem;
+    line-height: 1.6;
+  }
+
+  .stats {
+    margin-top: clamp(5rem, 3rem + 6vw, 9rem);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--line-2);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem clamp(1rem, 0.5rem + 1.5vw, 2rem) 0;
+    border-left: 1px solid var(--line);
+  }
+  .stat:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .stat-value {
+    font-size: var(--display-lg);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .stat-suffix {
+    color: var(--ink-3);
+    margin-left: 0.04em;
+  }
+  .stat .label {
+    max-width: 14em;
+  }
+
+  @media (max-width: 1080px) {
+    .principle,
+    .principle:first-child {
+      grid-column: span 4;
+    }
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stat:nth-child(3) {
+      border-left: 0;
+      padding-left: 0;
+    }
+    .stat:nth-child(n + 3) {
+      padding-top: 2.5rem;
+    }
+  }
+  @media (max-width: 900px) {
+    .section-index,
+    .statement {
+      grid-column: 1 / -1;
+    }
+    .principle,
+    .principle:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 520px) {
+    .stat {
+      padding-inline: 1rem 0;
+    }
+  }
+</style>

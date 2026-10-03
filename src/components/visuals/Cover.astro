@@ -1,0 +1,370 @@
+---
+import { nextId } from '../../lib/ids';
+
+/**
+ * Blueprint-style product illustrations used as case-study covers until real
+ * screenshots are added (set `image` in the case study's frontmatter).
+ * Drawn on an 800×600 grid with hairline strokes that stay 1px at any size.
+ */
+interface Props {
+  name: 'ledger' | 'health' | 'notes' | 'orbit';
+  image?: string;
+  alt?: string;
+  class?: string;
+  eager?: boolean;
+}
+const { name, image, alt = '', class: className, eager = false } = Astro.props;
+const uid = nextId(`cover-${name}`);
+---
+
+<div class:list={['cover', `cover--${name}`, className]}>
+  {
+    image ? (
+      <img src={image} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    ) : (
+      <svg viewBox="0 0 800 600" role="img" aria-label={alt} preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id={`${uid}-dots`} width="20" height="20" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.9" fill="rgb(236 233 227 / 0.07)" />
+          </pattern>
+          <radialGradient id={`${uid}-glow`} cx="0.62" cy="0.38" r="0.75">
+            <stop offset="0" stop-color="rgb(201 212 238 / 0.10)" />
+            <stop offset="1" stop-color="rgb(201 212 238 / 0)" />
+          </radialGradient>
+          <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="rgb(236 233 227 / 0.16)" />
+            <stop offset="1" stop-color="rgb(236 233 227 / 0)" />
+          </linearGradient>
+          <linearGradient id={`${uid}-fade`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0.55" stop-color="#fff" />
+            <stop offset="1" stop-color="#000" />
+          </linearGradient>
+          <mask id={`${uid}-mask`}>
+            <rect width="800" height="600" fill={`url(#${uid}-fade)`} />
+          </mask>
+        </defs>
+
+        <rect width="800" height="600" fill="#101012" />
+        <rect width="800" height="600" fill={`url(#${uid}-dots)`} />
+        <rect width="800" height="600" fill={`url(#${uid}-glow)`} />
+
+        <g class="art" mask={`url(#${uid}-mask)`}>
+          {name === 'ledger' && (
+            <g>
+              {/* window */}
+              <rect class="frame" x="88" y="84" width="680" height="470" rx="12" />
+              <path class="l" d="M88 120h680" />
+              <circle class="l" cx="108" cy="102" r="4" />
+              <circle class="l" cx="124" cy="102" r="4" />
+              <circle class="l" cx="140" cy="102" r="4" />
+              <rect class="l" x="330" y="94" width="196" height="16" rx="8" />
+              {/* sidebar */}
+              <path class="l" d="M232 120v434" />
+              <rect class="l2" x="108" y="140" width="22" height="22" rx="6" />
+              <path class="l2" d="M140 151h58" />
+              <path class="l" d="M108 196h84M108 222h64M108 248h96M108 274h56M108 300h78" />
+              <rect class="hl" x="100" y="210" width="120" height="24" rx="6" />
+              {/* KPIs */}
+              <rect class="l" x="252" y="140" width="156" height="78" rx="8" />
+              <rect class="l" x="420" y="140" width="156" height="78" rx="8" />
+              <rect class="l" x="588" y="140" width="160" height="78" rx="8" />
+              <path class="l" d="M266 160h52M434 160h44M602 160h60" />
+              <path class="l3" d="M266 192h84M434 192h66M602 192h76" />
+              <path class="l2" d="M360 200l10-8 10 4 12-14M520 202l10-6 10 2 12-12M690 200l10-10 10 6 12-10" />
+              {/* chart */}
+              <rect class="l" x="252" y="232" width="496" height="196" rx="8" />
+              <path class="grid-l" d="M272 280h456M272 320h456M272 360h456M272 400h456" />
+              <path
+                fill={`url(#${uid}-area)`}
+                d="M272 392C310 386 330 360 366 362S420 380 452 350S510 300 548 312S600 342 636 300S700 262 728 258V408H272Z"
+              />
+              <path
+                class="l3"
+                d="M272 392C310 386 330 360 366 362S420 380 452 350S510 300 548 312S600 342 636 300S700 262 728 258"
+              />
+              <path class="dash" d="M272 372C320 370 360 352 410 356S500 340 548 336S640 320 728 300" />
+              <path class="l2" d="M636 300v108" />
+              <circle class="dot-solid" cx="636" cy="300" r="4" />
+              <circle class="l2" cx="636" cy="300" r="10" />
+              <rect class="tip" x="580" y="244" width="112" height="40" rx="6" />
+              <path class="l3" d="M594 258h46" />
+              <path class="l" d="M594 270h76" />
+              <path class="l" d="M272 252h80" />
+              {/* table */}
+              <path class="l" d="M252 448h496M252 478h496M252 508h496M252 538h496" />
+              <path class="l" d="M268 463h70M268 493h90M268 523h60" />
+              <path class="l" d="M420 463h120M420 493h96M420 523h132" />
+              <rect class="pill-ok" x="648" y="455" width="60" height="16" rx="8" />
+              <rect class="pill-ok" x="648" y="485" width="60" height="16" rx="8" />
+              <rect class="pill" x="648" y="515" width="60" height="16" rx="8" />
+            </g>
+          )}
+
+          {name === 'health' && (
+            <g>
+              {/* back phone: calendar */}
+              <g class="back">
+                <rect class="frame" x="430" y="112" width="232" height="468" rx="34" />
+                <rect class="l" x="512" y="126" width="68" height="18" rx="9" />
+                <path class="l2" d="M458 178h96" />
+                <path class="l" d="M458 200h60" />
+                <g class="l">
+                  <circle cx="470" cy="244" r="12" />
+                  <circle cx="504" cy="244" r="12" />
+                  <circle cx="538" cy="244" r="12" />
+                  <circle cx="572" cy="244" r="12" />
+                  <circle cx="606" cy="244" r="12" />
+                  <circle cx="640" cy="244" r="12" />
+                </g>
+                <circle class="dot-solid soft" cx="572" cy="244" r="12" />
+                <rect class="l" x="458" y="282" width="176" height="44" rx="10" />
+                <rect class="l" x="458" y="336" width="176" height="44" rx="10" />
+                <rect class="hl-strong" x="458" y="390" width="176" height="44" rx="10" />
+                <rect class="l" x="458" y="444" width="176" height="44" rx="10" />
+                <path class="l" d="M474 304h50M474 358h40M474 412h58M474 466h44" />
+                <path class="l3" d="M596 412h22" />
+              </g>
+              {/* front phone: home */}
+              <rect class="frame front-fill" x="156" y="62" width="244" height="492" rx="36" />
+              <rect class="l" x="242" y="76" width="72" height="20" rx="10" />
+              <path class="l" d="M184 130h56" />
+              <path class="l3" d="M184 156h132" />
+              <circle class="l2" cx="364" cy="140" r="14" />
+              <rect class="card" x="184" y="186" width="188" height="120" rx="14" />
+              <path class="l" d="M202 212h60" />
+              <path class="l3" d="M202 238h120" />
+              <path class="l2" d="M202 258h88" />
+              <rect class="btn-shape" x="202" y="274" width="76" height="20" rx="10" />
+              <path class="l" d="M298 284h52" />
+              <path class="l2" d="M184 336h80" />
+              <rect class="l" x="184" y="354" width="188" height="48" rx="10" />
+              <rect class="l" x="184" y="412" width="188" height="48" rx="10" />
+              <circle class="l2" cx="206" cy="378" r="10" />
+              <circle class="l2" cx="206" cy="436" r="10" />
+              <path class="l" d="M226 372h76M226 386h50M226 430h88M226 444h40" />
+              <path class="l" d="M156 492h244" />
+              <circle class="l3" cx="206" cy="520" r="5" />
+              <circle class="l" cx="256" cy="520" r="5" />
+              <circle class="l" cx="306" cy="520" r="5" />
+              <circle class="l" cx="350" cy="520" r="5" />
+            </g>
+          )}
+
+          {name === 'notes' && (
+            <g>
+              <rect class="frame" x="72" y="80" width="656" height="480" rx="12" />
+              <path class="l" d="M72 116h656" />
+              <circle class="l" cx="92" cy="98" r="4" />
+              <circle class="l" cx="108" cy="98" r="4" />
+              <circle class="l" cx="124" cy="98" r="4" />
+              {/* left nav */}
+              <path class="l" d="M196 116v444" />
+              <path class="l2" d="M92 144h72" />
+              <path class="l" d="M92 176h60M92 200h84M92 224h52M92 248h70" />
+              <rect class="hl" x="84" y="188" width="104" height="24" rx="6" />
+              {/* doc */}
+              <path class="l3" d="M228 156h224" />
+              <path class="l" d="M228 180h140" />
+              <rect class="tag-shape" x="228" y="198" width="66" height="18" rx="9" />
+              <rect class="tag-shape" x="302" y="198" width="80" height="18" rx="9" />
+              <path class="l" d="M228 244h300M228 264h276M228 284h308M228 304h188" />
+              <rect class="mark" x="300" y="256" width="168" height="16" rx="3" />
+              <path class="l" d="M228 336h288M228 356h300M228 376h240" />
+              <rect class="mark" x="228" y="368" width="128" height="16" rx="3" />
+              <path class="l" d="M228 408h296M228 428h220M228 448h284M228 468h160" />
+              <path class="caret" d="M390 462v14" />
+              {/* margin comment */}
+              <path class="dash" d="M470 264c20 0 34 0 52-8" />
+              {/* right panel */}
+              <path class="l" d="M560 116v444" />
+              <path class="l2" d="M580 144h80" />
+              <circle class="bubble" cx="632" cy="222" r="38" />
+              <circle class="bubble" cx="602" cy="290" r="24" />
+              <circle class="bubble strong" cx="664" cy="296" r="30" />
+              <circle class="bubble" cx="616" cy="350" r="16" />
+              <path class="l" d="M580 400h112M580 424h88M580 448h104M580 472h70" />
+              <rect class="btn-shape" x="580" y="500" width="96" height="24" rx="12" />
+            </g>
+          )}
+
+          {name === 'orbit' && (
+            <g>
+              <rect class="frame" x="60" y="72" width="680" height="490" rx="12" />
+              {/* topography */}
+              <g class="topo">
+                <path d="M60 210c80-30 140 10 210-12s120-70 200-50 170 60 270 30" />
+                <path d="M60 260c90-28 150 18 230-6s130-60 210-44 160 56 240 24" />
+                <path d="M60 320c70-20 160 24 240 4s140-50 220-36 150 46 220 22" />
+                <path d="M60 380c100-24 170 20 250 6s150-40 230-28 120 30 200 16" />
+                <path d="M60 450c110-18 190 14 270 4s150-26 230-18 110 18 180 10" />
+                <path d="M300 150c40 10 60 40 40 70s-70 40-100 20-30-60 0-80 40-14 60-10z" />
+                <path d="M520 360c34 6 50 30 34 54s-60 30-86 14-22-48 2-62 30-10 50-6z" />
+              </g>
+              {/* side panel */}
+              <rect class="panel" x="500" y="92" width="220" height="450" rx="10" />
+              <path class="l2" d="M520 122h96" />
+              <g>
+                <path class="l" d="M520 168h120M520 222h100M520 276h130M520 330h90" />
+                <path class="l" d="M520 186h170M520 240h170M520 294h170M520 348h170" />
+                <path class="l3" d="M520 186h118M520 240h52M520 294h150M520 348h96" />
+              </g>
+              <path class="l" d="M500 380h220" />
+              <path class="l" d="M520 410h80M520 434h132M520 458h100" />
+              {/* routes */}
+              <path class="route" d="M110 486C150 420 170 380 228 360S320 330 350 270 420 180 470 150" />
+              <path class="route dim" d="M96 260c60 20 100 60 150 70s110-20 160 10 50 90 60 130" />
+              <path class="dash" d="M228 360c-10 40 0 80 40 112" />
+              <circle class="dot-solid" cx="228" cy="360" r="5" />
+              <circle class="ring" cx="228" cy="360" r="16" />
+              <circle class="dot-solid" cx="350" cy="270" r="4" />
+              <circle class="dot-solid soft" cx="406" cy="340" r="4" />
+              <circle class="dot-solid soft" cx="160" cy="300" r="4" />
+              <rect class="tip" x="248" y="372" width="108" height="38" rx="6" />
+              <path class="l3" d="M262 386h44" />
+              <path class="l" d="M262 398h72" />
+              <circle class="l2" cx="470" cy="150" r="7" />
+              <circle class="l2" cx="110" cy="486" r="7" />
+            </g>
+          )}
+        </g>
+      </svg>
+    )
+  }
+</div>
+
+<style>
+  .cover {
+    position: relative;
+    overflow: hidden;
+    background: #101012;
+    border-radius: 6px;
+    aspect-ratio: 4 / 3;
+  }
+  .cover img,
+  .cover svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--line);
+    pointer-events: none;
+  }
+
+  .art :global(*) {
+    vector-effect: non-scaling-stroke;
+  }
+  .art :global(.l),
+  .art :global(.frame),
+  .art :global(.l2),
+  .art :global(.l3),
+  .art :global(.grid-l),
+  .art :global(.dash),
+  .art :global(.topo path),
+  .art :global(.route),
+  .art :global(.ring) {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .art :global(.frame) {
+    stroke: rgb(236 233 227 / 0.3);
+    fill: rgb(11 11 12 / 0.55);
+  }
+  .art :global(.front-fill) {
+    fill: #0f0f11;
+  }
+  .art :global(.l) {
+    stroke: rgb(236 233 227 / 0.2);
+  }
+  .art :global(.l2) {
+    stroke: rgb(236 233 227 / 0.42);
+  }
+  .art :global(.l3) {
+    stroke: rgb(236 233 227 / 0.85);
+    stroke-width: 1.5;
+  }
+  .art :global(.grid-l) {
+    stroke: rgb(236 233 227 / 0.07);
+  }
+  .art :global(.dash) {
+    stroke: rgb(201 212 238 / 0.55);
+    stroke-dasharray: 3 5;
+  }
+  .art :global(.hl) {
+    fill: rgb(236 233 227 / 0.05);
+  }
+  .art :global(.hl-strong) {
+    fill: rgb(236 233 227 / 0.09);
+    stroke: rgb(236 233 227 / 0.4);
+  }
+  .art :global(.tip) {
+    fill: #17171a;
+    stroke: rgb(236 233 227 / 0.3);
+  }
+  .art :global(.dot-solid) {
+    fill: var(--ink);
+  }
+  .art :global(.dot-solid.soft) {
+    fill: rgb(236 233 227 / 0.35);
+  }
+  .art :global(.pill) {
+    fill: none;
+    stroke: rgb(236 233 227 / 0.25);
+  }
+  .art :global(.pill-ok) {
+    fill: rgb(143 224 166 / 0.14);
+    stroke: rgb(143 224 166 / 0.5);
+  }
+  .art :global(.card) {
+    fill: rgb(236 233 227 / 0.05);
+    stroke: rgb(236 233 227 / 0.35);
+  }
+  .art :global(.btn-shape) {
+    fill: rgb(236 233 227 / 0.85);
+  }
+  .art :global(.tag-shape) {
+    fill: none;
+    stroke: rgb(236 233 227 / 0.3);
+  }
+  .art :global(.mark) {
+    fill: rgb(201 212 238 / 0.14);
+  }
+  .art :global(.caret) {
+    stroke: var(--moon);
+    stroke-width: 1.5;
+  }
+  .art :global(.bubble) {
+    fill: rgb(236 233 227 / 0.04);
+    stroke: rgb(236 233 227 / 0.25);
+  }
+  .art :global(.bubble.strong) {
+    fill: rgb(201 212 238 / 0.1);
+    stroke: rgb(201 212 238 / 0.6);
+  }
+  .art :global(.back) {
+    opacity: 0.75;
+  }
+  .art :global(.topo path) {
+    stroke: rgb(236 233 227 / 0.09);
+  }
+  .art :global(.panel) {
+    fill: #0f0f11;
+    stroke: rgb(236 233 227 / 0.22);
+  }
+  .art :global(.route) {
+    stroke: rgb(236 233 227 / 0.8);
+    stroke-width: 1.5;
+  }
+  .art :global(.route.dim) {
+    stroke: rgb(236 233 227 / 0.28);
+    stroke-width: 1;
+  }
+  .art :global(.ring) {
+    stroke: rgb(236 233 227 / 0.35);
+  }
+</style>

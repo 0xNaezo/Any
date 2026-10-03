@@ -1,0 +1,181 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import { process } from '../../data/site';
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section id="process" class="section process" aria-labelledby="process-title">
+  <div class="container">
+    <SectionHead
+      id="process-title"
+      index={process.index}
+      label={process.label}
+      title={process.title}
+      lede={process.lede}
+    />
+
+    <div class="steps-wrap" data-process>
+      <div class="thread" aria-hidden="true">
+        <span class="thread-fill" data-thread-fill></span>
+      </div>
+      <ol class="steps">
+        {
+          process.steps.map((s, i) => (
+            <li class="step" data-step data-reveal style={`--i:${i}`}>
+              <span class="node" aria-hidden="true" />
+              <div class="step-head">
+                <span class="label label--ink">{pad(i + 1)}</span>
+                <span class="label">{s.duration}</span>
+              </div>
+              <h3 class="step-title display">{s.title}</h3>
+              <p class="step-text">{s.text}</p>
+              <p class="step-output">
+                <span class="label">You get</span>
+                <span>{s.output}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps-wrap {
+    position: relative;
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+    --node: 9px;
+  }
+  .thread {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--node) / 2);
+    height: 1px;
+    background: var(--line-2);
+  }
+  .thread-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--progress, 1));
+  }
+  :global(html.motion) .thread-fill {
+    --progress: 0;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+  }
+  .step {
+    position: relative;
+    padding-top: calc(var(--node) + 1.75rem);
+  }
+  .node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--node);
+    height: var(--node);
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--line-3);
+    transition:
+      background-color 400ms var(--ease-out),
+      border-color 400ms var(--ease-out),
+      box-shadow 600ms var(--ease-out);
+  }
+  .step.is-lit .node,
+  :global(html:not(.motion)) .node {
+    background: var(--ink);
+    border-color: var(--ink);
+    box-shadow: 0 0 0 5px rgb(236 233 227 / 0.06);
+  }
+  .step-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+  .step-title {
+    margin-top: 1.25rem;
+    font-size: var(--display-sm);
+    line-height: 1;
+    letter-spacing: -0.024em;
+  }
+  .step-text {
+    margin-top: 1rem;
+    color: var(--ink-2);
+    font-size: 0.9688rem;
+    line-height: 1.6;
+    padding-right: 0.5rem;
+  }
+  .step-output {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line-2);
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 1080px) {
+    .thread {
+      left: calc(var(--node) / 2);
+      right: auto;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      height: auto;
+    }
+    .thread-fill {
+      transform-origin: 50% 0;
+      transform: scaleY(var(--progress, 1));
+    }
+    .steps {
+      grid-template-columns: 1fr;
+      row-gap: 3rem;
+    }
+    .step {
+      padding-top: 0;
+      padding-left: calc(var(--node) + clamp(1.5rem, 1rem + 3vw, 4rem));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+      column-gap: var(--col-gap);
+      align-items: start;
+    }
+    .node {
+      top: 0.2rem;
+    }
+    .step-head {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+      gap: 1.5rem;
+    }
+    .step-title {
+      margin-top: 0.75rem;
+    }
+    .step-text {
+      grid-column: 2;
+      grid-row: 2 / span 2;
+      margin-top: 0.85rem;
+    }
+    .step-output {
+      grid-column: 1;
+    }
+  }
+  @media (max-width: 640px) {
+    .step {
+      grid-template-columns: 1fr;
+    }
+    .step-text,
+    .step-output {
+      grid-column: 1;
+      grid-row: auto;
+    }
+  }
+</style>

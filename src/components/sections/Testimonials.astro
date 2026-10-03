@@ -1,0 +1,304 @@
+---
+import Icon from '../ui/Icon.astro';
+import { testimonials } from '../../data/site';
+const pad = (n: number) => String(n).padStart(2, '0');
+const total = testimonials.items.length;
+---
+
+<section class="section quotes" aria-labelledby="quotes-title" data-quotes>
+  <div class="container">
+    <div class="quotes-grid grid">
+      <span class="rule" data-rule aria-hidden="true"></span>
+
+      <div class="quotes-side">
+        <h2 class="label section-index" data-reveal="fade">
+          <span class="num">{testimonials.index}</span>
+          <span aria-hidden="true">—</span>
+          <span id="quotes-title">{testimonials.label}</span>
+        </h2>
+
+        <div class="quotes-controls" data-reveal="fade">
+          <div class="tabs" role="tablist" aria-label="Choose a testimonial">
+            {
+              testimonials.items.map((t, i) => (
+                <button
+                  class="tab label"
+                  role="tab"
+                  type="button"
+                  id={`quote-tab-${i}`}
+                  aria-controls={`quote-${i}`}
+                  aria-selected={i === 0 ? 'true' : 'false'}
+                  tabindex={i === 0 ? 0 : -1}
+                  data-quote-tab={i}
+                >
+                  {t.company}
+                </button>
+              ))
+            }
+          </div>
+          <div class="pager">
+            <span class="label tabular counter">
+              <span class="label--ink" data-quote-current>01</span> / {pad(total)}
+            </span>
+            <button class="pager-btn" type="button" aria-label="Previous testimonial" data-quote-prev>
+              <Icon name="arrow-left" size={14} />
+            </button>
+            <button class="pager-btn" type="button" aria-label="Next testimonial" data-quote-next>
+              <Icon name="arrow-right" size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="quotes-stage">
+        {
+          testimonials.items.map((t, i) => (
+            <figure
+              class:list={['quote', { 'is-active': i === 0 }]}
+              id={`quote-${i}`}
+              role="tabpanel"
+              aria-labelledby={`quote-tab-${i}`}
+              data-quote={i}
+            >
+              <blockquote class="quote-text display">
+                <span class="quote-mark" aria-hidden="true">
+                  “
+                </span>
+                {t.quote}
+              </blockquote>
+              <figcaption class="quote-by">
+                <span class="quote-avatar" aria-hidden="true">
+                  {t.name
+                    .split(' ')
+                    .map((p) => p[0])
+                    .join('')}
+                </span>
+                <span>
+                  <span class="quote-name">{t.name}</span>
+                  <span class="label">
+                    {t.role}, {t.company}
+                  </span>
+                </span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quotes-grid {
+    position: relative;
+    padding-top: clamp(1.25rem, 1rem + 1vw, 2rem);
+    row-gap: 3rem;
+  }
+  .quotes-side {
+    grid-column: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+  .quotes-controls {
+    display: grid;
+    gap: 2rem;
+  }
+  .tabs {
+    display: grid;
+    justify-items: start;
+    gap: 0.35rem;
+  }
+  .tab {
+    position: relative;
+    padding: 0.35rem 0 0.35rem 1.1rem;
+    color: var(--ink-3);
+    transition: color var(--dur-fast) linear;
+    text-align: left;
+  }
+  .tab::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.4);
+    transform-origin: 0 50%;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .tab:hover,
+  .tab[aria-selected='true'] {
+    color: var(--ink);
+  }
+  .tab[aria-selected='true']::before {
+    transform: scaleX(1);
+  }
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .counter {
+    margin-right: auto;
+  }
+  .pager-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    color: var(--ink);
+    transition:
+      border-color var(--dur) linear,
+      background-color var(--dur) linear;
+  }
+  .pager-btn:hover {
+    border-color: var(--line-3);
+    background: rgb(236 233 227 / 0.04);
+  }
+
+  .quotes-stage {
+    grid-column: 4 / -1;
+    display: grid;
+  }
+  .quote {
+    display: grid;
+    align-content: start;
+    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  /* Without JS every quote is shown; with JS they stack in one cell and crossfade. */
+  .quote + .quote {
+    margin-top: 4rem;
+  }
+  :global(html.js) .quote {
+    grid-area: 1 / 1;
+    margin-top: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 500ms var(--ease-out),
+      visibility 0s linear 500ms;
+  }
+  :global(html.js) .quote.is-active {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 700ms var(--ease-out) 120ms,
+      visibility 0s;
+  }
+  .quote-text {
+    position: relative;
+    font-size: var(--display-md);
+    line-height: 1.06;
+    letter-spacing: -0.026em;
+    max-width: 17em;
+    text-wrap: pretty;
+  }
+  .quote-mark {
+    position: absolute;
+    left: -0.46em;
+    top: -0.02em;
+    color: var(--ink-4);
+  }
+  .quote-by {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .quote-avatar {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-2);
+  }
+  .quote-name {
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.1rem;
+  }
+
+  @media (max-width: 900px) {
+    .quotes-side,
+    .quotes-stage {
+      grid-column: 1 / -1;
+    }
+    .quotes-side {
+      gap: 2rem;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.5rem;
+    }
+    .quotes-stage {
+      grid-row: 2;
+    }
+    .quotes-controls {
+      grid-row: 3;
+    }
+    .quote-mark {
+      position: static;
+      display: block;
+      height: 0.5em;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-quotes]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-quote-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-quote]')];
+    const current = root.querySelector<HTMLElement>('[data-quote-current]');
+    let index = 0;
+
+    const show = (i: number, focus = false) => {
+      index = (i + panels.length) % panels.length;
+      panels.forEach((p, n) => {
+        const on = n === index;
+        p.classList.toggle('is-active', on);
+        p.toggleAttribute('hidden', false);
+        p.setAttribute('aria-hidden', on ? 'false' : 'true');
+      });
+      tabs.forEach((t, n) => {
+        const on = n === index;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        if (on && focus) t.focus();
+      });
+      if (current) current.textContent = String(index + 1).padStart(2, '0');
+    };
+
+    tabs.forEach((t, n) => {
+      t.addEventListener('click', () => show(n));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          show(index + 1, true);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          show(index - 1, true);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          show(0, true);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          show(panels.length - 1, true);
+        }
+      });
+    });
+    root.querySelector('[data-quote-prev]')?.addEventListener('click', () => show(index - 1));
+    root.querySelector('[data-quote-next]')?.addEventListener('click', () => show(index + 1));
+    show(0);
+  });
+</script>

@@ -1,0 +1,65 @@
+---
+/**
+ * Shared section opener: a hairline that draws in, the mono index/label on the left,
+ * and the serif title on the right. Titles are { lead, emphasis?, tail? } so one phrase
+ * can be set in italic.
+ */
+interface Title {
+  lead: string;
+  emphasis?: string;
+  tail?: string;
+}
+interface Props {
+  index: string;
+  label: string;
+  title: Title;
+  lede?: string;
+  id: string;
+  size?: 'lg' | 'md';
+  class?: string;
+}
+
+const { index, label, title, lede, id, size = 'lg', class: className } = Astro.props;
+---
+
+<header class:list={['section-head', 'grid', className]}>
+  <span class="rule" data-rule aria-hidden="true"></span>
+  <p class="label section-index" data-reveal="fade">
+    <span class="num">{index}</span>
+    <span aria-hidden="true">—</span>
+    <span>{label}</span>
+  </p>
+  <div class="head-main">
+    <h2 id={id} class:list={['display', size === 'lg' ? 'display-lg' : 'display-md', 'head-title']} data-split>
+      {title.lead}{title.emphasis && ' '}{title.emphasis && <em>{title.emphasis}</em>}{title.tail && ' '}{title.tail}
+    </h2>
+    {lede && <p class="lede head-lede" data-reveal>{lede}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .section-head {
+    row-gap: 1.5rem;
+  }
+  .section-index {
+    grid-column: 1 / span 3;
+    padding-top: 0.2em;
+  }
+  .head-main {
+    grid-column: 4 / -1;
+  }
+  .head-title {
+    max-width: 15em;
+  }
+  .head-lede {
+    max-width: 32em;
+    margin-top: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+  }
+  @media (max-width: 900px) {
+    .section-index,
+    .head-main {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

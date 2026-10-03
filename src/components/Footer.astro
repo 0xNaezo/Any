@@ -1,0 +1,225 @@
+---
+import Icon from './ui/Icon.astro';
+import { colophon, nav, studio } from '../data/site';
+
+interface Props {
+  minimal?: boolean;
+}
+const { minimal = false } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer" data-footer>
+  <div class="container">
+    {
+      !minimal && (
+        <div class="footer-cols grid">
+          <div class="col col-sitemap">
+            <p class="label">Index</p>
+            <ul>
+              {nav.map((item) => (
+                <li>
+                  <a class="link" href={item.href}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a class="link" href="/#contact">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="col col-contact">
+            <p class="label">Contact</p>
+            <ul>
+              <li>
+                <a class="link" href={`mailto:${studio.email}`}>
+                  {studio.email}
+                </a>
+              </li>
+              <li>
+                <a class="link" href={studio.telegram.url} target="_blank" rel="noopener">
+                  Telegram
+                  <Icon name="arrow-up-right" size={12} />
+                </a>
+              </li>
+              <li>
+                <a class="link" href={studio.calendar} target="_blank" rel="noopener">
+                  Book a 30-min call
+                  <Icon name="arrow-up-right" size={12} />
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="col col-social">
+            <p class="label">Elsewhere</p>
+            <ul>
+              {studio.social.map((s) => (
+                <li>
+                  <a class="link" href={s.url} target="_blank" rel="noopener">
+                    {s.label}
+                    <Icon name="arrow-up-right" size={12} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="col col-studio">
+            <p class="label">Studio</p>
+            <ul class="muted">
+              <li>{studio.legalName}</li>
+              <li>{studio.legal.registration}</li>
+              <li>{studio.legal.address}</li>
+            </ul>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="wordmark-wrap" data-wordmark>
+      <p class="wordmark display" aria-hidden="true">
+        <span class="wm-text">Nightloom</span>
+      </p>
+      <svg class="peek" viewBox="10 7.5 34 38" aria-hidden="true" data-peek>
+        <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M35 37.1V21a11 11 0 0 0-22 0v16.4c0 .8.9 1.2 1.5.7l1.9-1.6a1.6 1.6 0 0 1 2 0l1.7 1.4a1.6 1.6 0 0 0 2 0l1.7-1.4a1.6 1.6 0 0 1 2 0l1.7 1.4a1.6 1.6 0 0 0 2 0l1.7-1.4a1.6 1.6 0 0 1 2 0l1.9 1.6c.6.5 1.5.1 1.5-.7"
+          ></path>
+          <path d="M35 37c0 3.5 2.6 6.3 6.4 6.3"></path>
+        </g>
+        <g class="peek-eyes" fill="currentColor">
+          <ellipse cx="19.6" cy="21.8" rx="1.7" ry="2.5"></ellipse>
+          <ellipse cx="28.4" cy="21.8" rx="1.7" ry="2.5"></ellipse>
+        </g>
+      </svg>
+    </div>
+
+    <div class="footer-base">
+      <p class="label">© {studio.founded}–{year} {studio.name}</p>
+      <p class="label colophon">{colophon}</p>
+      <p class="label clock">
+        Local time <time class="label--ink tabular" data-clock data-tz={studio.timeZone}>--:--</time>
+        {studio.timeZoneLabel}
+      </p>
+      <a href="#main" class="label label--ink to-top" data-to-top>
+        Back to top <Icon name="arrow-up" size={12} />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    padding-top: clamp(4rem, 3rem + 4vw, 7rem);
+    border-top: 1px solid var(--line);
+    overflow: clip;
+  }
+
+  .footer-cols {
+    row-gap: 2.5rem;
+    padding-bottom: clamp(4rem, 2rem + 6vw, 8rem);
+  }
+  .col {
+    grid-column: span 3;
+  }
+  .col .label {
+    margin-bottom: 1.25rem;
+  }
+  .col ul {
+    display: grid;
+    gap: 0.55rem;
+    font-size: 0.9375rem;
+  }
+  .col ul.muted {
+    color: var(--ink-2);
+  }
+  .col .link {
+    color: var(--ink);
+  }
+  .col .link :global(.icon) {
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 900px) {
+    .col {
+      grid-column: span 6;
+    }
+  }
+
+  /* Wordmark spans the container; font-size is derived from the measured width of the word. */
+  .wordmark-wrap {
+    position: relative;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: clip;
+  }
+  .wordmark {
+    /* "Nightloom" is 4.405em wide in Newsreader at this tracking; size it to 86% of the container. */
+    font-size: calc((min(100vw, var(--maxw)) - var(--gutter) * 2) * 0.86 / 4.405);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    padding-block: 0.06em 0.02em;
+    white-space: nowrap;
+    color: var(--ink);
+    user-select: none;
+    margin-left: -0.02em;
+  }
+  .wm-text {
+    display: inline-block;
+  }
+  .peek {
+    position: absolute;
+    right: 1.5%;
+    bottom: -0.25rem;
+    width: clamp(2.75rem, 1rem + 5vw, 6.5rem);
+    color: var(--ink);
+  }
+
+  .footer-base {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 1rem 2.5rem;
+    padding-block: 1.75rem 2rem;
+  }
+  .colophon {
+    color: var(--ink-3);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .clock time {
+    margin-inline: 0.35em;
+  }
+  .to-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .to-top:hover :global(.icon) {
+    transform: translateY(-2px);
+  }
+  .to-top :global(.icon) {
+    transition: transform var(--dur) var(--ease-out);
+  }
+
+  @media (max-width: 1100px) {
+    .footer-base {
+      grid-template-columns: 1fr auto;
+    }
+    .colophon {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+  @media (max-width: 600px) {
+    .footer-base {
+      grid-template-columns: 1fr;
+    }
+    .colophon {
+      grid-row: auto;
+    }
+  }
+</style>

@@ -1,0 +1,156 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import Icon from '../ui/Icon.astro';
+import { engagement } from '../../data/site';
+---
+
+<section id="engagement" class="section engagement" aria-labelledby="engagement-title">
+  <div class="container">
+    <SectionHead
+      id="engagement-title"
+      index={engagement.index}
+      label={engagement.label}
+      title={engagement.title}
+      lede={engagement.lede}
+    />
+
+    <ul class="models">
+      {
+        engagement.models.map((m) => (
+          <li class:list={['model', { 'is-featured': m.featured }]} data-reveal>
+            <div class="model-head">
+              <h3 class="model-name display">{m.name}</h3>
+              {m.featured && <span class="badge label label--ink">Most chosen</span>}
+            </div>
+            <p class="model-for">{m.bestFor}</p>
+
+            <div class="model-price">
+              <span class="label">{m.priceNote}</span>
+              <span class="price display">{m.price}</span>
+              <span class="label label--2">{m.timeline}</span>
+            </div>
+
+            <ul class="model-list">
+              {m.includes.map((item) => (
+                <li>
+                  <Icon name="check" size={14} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              class:list={['btn', m.featured ? 'btn--primary' : 'btn--ghost', 'model-cta']}
+              href="#contact"
+              data-prefill={m.name}
+            >
+              Discuss this
+              <Icon name="arrow-right" class="arrow" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="models-note label" data-reveal="fade">
+      Prices in USD, excl. VAT · Fixed quote after discovery · Milestone or monthly invoicing
+    </p>
+  </div>
+</section>
+
+<style>
+  .models {
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--col-gap);
+    align-items: stretch;
+  }
+  .model {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgb(236 233 227 / 0.015), rgb(236 233 227 / 0));
+    transition: border-color var(--dur-slow) var(--ease-out);
+  }
+  .model:hover {
+    border-color: var(--line-2);
+  }
+  .model.is-featured {
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgb(201 212 238 / 0.07), transparent 70%),
+      var(--bg-raised);
+    border-color: var(--line-2);
+  }
+  .model-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .model-name {
+    font-size: var(--display-xs);
+    line-height: 1.12;
+    letter-spacing: -0.014em;
+  }
+  .badge {
+    flex: none;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    font-size: 0.625rem;
+  }
+  .model-for {
+    margin-top: 0.6rem;
+    color: var(--ink-2);
+    font-size: 0.9688rem;
+  }
+  .model-price {
+    display: grid;
+    gap: 0.35rem;
+    margin-block: clamp(2rem, 1.5rem + 2vw, 3rem);
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .price {
+    font-size: var(--display-md);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .model-list {
+    display: grid;
+    gap: 0.75rem;
+    font-size: 0.9688rem;
+    margin-bottom: 2.5rem;
+  }
+  .model-list li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+  .model-list :global(.icon) {
+    flex: none;
+    color: var(--ink-3);
+    transform: translateY(2px);
+  }
+  .model-cta {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+  .models-note {
+    margin-top: 2rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 1080px) {
+    .models {
+      grid-template-columns: 1fr;
+      max-width: 40rem;
+    }
+  }
+</style>

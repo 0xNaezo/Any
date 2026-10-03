@@ -1,0 +1,60 @@
+---
+/**
+ * Hand-drawn line icons on a shared grid so they sit at the same optical weight.
+ * UI icons use a 16px grid, feature icons a 24px grid.
+ */
+type UiIcon = 'arrow-right' | 'arrow-up-right' | 'arrow-down' | 'arrow-up' | 'arrow-left' | 'plus' | 'copy' | 'check' | 'menu' | 'close';
+type FeatureIcon = 'seal' | 'key' | 'scale' | 'eye' | 'shield' | 'handover';
+
+interface Props {
+  name: UiIcon | FeatureIcon;
+  class?: string;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { name, class: className, size, strokeWidth } = Astro.props;
+
+const ui: Record<UiIcon, string> = {
+  'arrow-right': '<path d="M2.5 8h11M9.5 4l4 4-4 4"/>',
+  'arrow-left': '<path d="M13.5 8h-11M6.5 4l-4 4 4 4"/>',
+  'arrow-up-right': '<path d="M4.5 11.5l7-7M5.5 4.5h6v6"/>',
+  'arrow-down': '<path d="M8 2.5v11M4 9.5l4 4 4-4"/>',
+  'arrow-up': '<path d="M8 13.5v-11M4 6.5l4-4 4 4"/>',
+  plus: '<path d="M8 2.5v11M2.5 8h11"/>',
+  copy: '<rect x="5.5" y="5.5" width="8" height="8" rx="1.2"/><path d="M10.5 5.5v-2a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"/>',
+  check: '<path d="M3 8.5l3.2 3.2L13 4.5"/>',
+  menu: '<path d="M2 5.5h12M2 10.5h12"/>',
+  close: '<path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/>',
+};
+
+const feature: Record<FeatureIcon, string> = {
+  seal: '<rect x="4.75" y="10.25" width="14.5" height="10" rx="1.75"/><path d="M8 10.25V7.5a4 4 0 0 1 8 0v2.75"/><path d="M12 14v2.5"/>',
+  key: '<circle cx="7.75" cy="12" r="3.75"/><path d="M11.5 12h9M17.5 12v3M20.5 12v2.25"/>',
+  scale: '<path d="M12 4v16M8.5 20h7M4.5 7.25h15"/><path d="M4.5 7.25L2.25 13a2.4 2.4 0 0 0 4.5 0L4.5 7.25zM19.5 7.25L17.25 13a2.4 2.4 0 0 0 4.5 0L19.5 7.25z"/>',
+  eye: '<path d="M2.5 12s3.5-6.25 9.5-6.25S21.5 12 21.5 12s-3.5 6.25-9.5 6.25S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.75"/>',
+  shield: '<path d="M12 3.25l7 2.75v5.5c0 4.25-2.9 7.75-7 9.25-4.1-1.5-7-5-7-9.25V6l7-2.75z"/><path d="M9 12.25l2.1 2.1L15.25 10"/>',
+  handover: '<path d="M6 3.5h8.25L18 7.25V20.5H6z"/><path d="M14 3.5v4h4"/><path d="M9 11.5h6M9 14.5h6M9 17.5h3.5"/>',
+};
+
+const isUi = name in ui;
+const body = isUi ? ui[name as UiIcon] : feature[name as FeatureIcon];
+const box = isUi ? 16 : 24;
+const px = size ?? box;
+const sw = strokeWidth ?? (isUi ? 1.4 : 1.25);
+---
+
+<svg
+  class:list={['icon', className]}
+  width={px}
+  height={px}
+  viewBox={`0 0 ${box} ${box}`}
+  fill="none"
+  stroke="currentColor"
+  stroke-width={sw}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  set:html={body}
+/>

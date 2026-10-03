@@ -1,0 +1,79 @@
+---
+/**
+ * The Nightloom mark: a ghost drawn with a single thread that comes loose at the hem.
+ * The body and the loose tail are separate paths so the tail can sway on hover
+ * and the whole thread can be "woven" in on first load.
+ */
+interface Props {
+  wordmark?: boolean;
+  size?: number;
+  class?: string;
+  label?: string;
+}
+const { wordmark = true, size = 30, class: className, label = 'Nightloom' } = Astro.props;
+---
+
+<span class:list={['logo', className]} style={`--logo-size:${size}px`}>
+  <svg class="logo-mark" viewBox="10 7.5 34 38" aria-hidden="true" focusable="false">
+    <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path
+        class="logo-body"
+        pathLength="1"
+        d="M35 37.1V21a11 11 0 0 0-22 0v16.4c0 .8.9 1.2 1.5.7l1.9-1.6a1.6 1.6 0 0 1 2 0l1.7 1.4a1.6 1.6 0 0 0 2 0l1.7-1.4a1.6 1.6 0 0 1 2 0l1.7 1.4a1.6 1.6 0 0 0 2 0l1.7-1.4a1.6 1.6 0 0 1 2 0l1.9 1.6c.6.5 1.5.1 1.5-.7"
+      ></path>
+      <path class="logo-tail" pathLength="1" d="M35 37c0 3.5 2.6 6.3 6.4 6.3"></path>
+    </g>
+    <g class="logo-eyes" fill="currentColor">
+      <ellipse cx="19.6" cy="21.8" rx="1.7" ry="2.5"></ellipse>
+      <ellipse cx="28.4" cy="21.8" rx="1.7" ry="2.5"></ellipse>
+    </g>
+  </svg>
+  {wordmark && <span class="logo-word">{label}</span>}
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--logo-size) * 0.32);
+    color: var(--ink);
+  }
+  .logo-mark {
+    width: calc(var(--logo-size) * 0.895);
+    height: var(--logo-size);
+    overflow: visible;
+  }
+  .logo-word {
+    font-family: var(--serif);
+    font-size: calc(var(--logo-size) * 0.8);
+    line-height: 1;
+    letter-spacing: -0.012em;
+    transform: translateY(-0.04em);
+  }
+  .logo-tail {
+    transform-box: view-box;
+    transform-origin: 35px 37px;
+    transition: transform 900ms var(--ease-out);
+  }
+  .logo-eyes ellipse {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  :global(a:hover) > .logo .logo-tail,
+  .logo:hover .logo-tail {
+    transform: rotate(-14deg);
+  }
+  :global(a:hover) > .logo .logo-eyes ellipse,
+  .logo:hover .logo-eyes ellipse {
+    animation: blink 420ms var(--ease-in-out);
+  }
+  @keyframes blink {
+    0%,
+    100% {
+      transform: scaleY(1);
+    }
+    45% {
+      transform: scaleY(0.12);
+    }
+  }
+</style>

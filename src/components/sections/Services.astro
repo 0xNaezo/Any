@@ -1,0 +1,144 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import { services } from '../../data/site';
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section id="services" class="section services" aria-labelledby="services-title">
+  <div class="container">
+    <SectionHead
+      id="services-title"
+      index={services.index}
+      label={services.label}
+      title={services.title}
+      lede={services.lede}
+    />
+
+    <ol class="service-list">
+      {
+        services.items.map((s, i) => (
+          <li class="service grid" data-reveal>
+            <span class="service-idx label">{pad(i + 1)}</span>
+            <h3 class="service-title display">{s.title}</h3>
+            <div class="service-body">
+              <p class="service-text">{s.text}</p>
+              <ul class="service-tags" aria-label={`${s.title}: typical work`}>
+                {s.tags.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="toolkit grid" data-reveal>
+      <p class="label toolkit-label">Toolkit</p>
+      <ul class="toolkit-list mono" aria-label="Tools and technologies we use">
+        {services.toolkit.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-list {
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+    border-top: 1px solid var(--line-2);
+  }
+  .service {
+    position: relative;
+    padding-block: clamp(1.75rem, 1.25rem + 1.5vw, 2.75rem);
+    border-bottom: 1px solid var(--line);
+    row-gap: 1rem;
+    align-items: start;
+  }
+  .service::before {
+    content: '';
+    position: absolute;
+    inset: 0 calc(var(--gutter) * -1);
+    background: linear-gradient(90deg, rgb(236 233 227 / 0.035), rgb(236 233 227 / 0));
+    opacity: 0;
+    transition: opacity var(--dur-slow) var(--ease-out);
+    pointer-events: none;
+  }
+  .service:hover::before {
+    opacity: 1;
+  }
+  .service-idx {
+    grid-column: 1 / span 3;
+    padding-top: 0.9em;
+    transition: color var(--dur) linear;
+  }
+  .service:hover .service-idx {
+    color: var(--ink);
+  }
+  .service-title {
+    grid-column: 4 / span 4;
+    font-size: var(--display-sm);
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .service:hover .service-title {
+    transform: translateX(0.35rem);
+  }
+  .service-body {
+    grid-column: 8 / -1;
+    padding-top: 0.35rem;
+  }
+  .service-text {
+    color: var(--ink-2);
+    max-width: 30em;
+  }
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+  }
+
+  .toolkit {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+    row-gap: 1rem;
+  }
+  .toolkit-label {
+    grid-column: 1 / span 3;
+    padding-top: 0.2em;
+  }
+  .toolkit-list {
+    grid-column: 4 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    color: var(--ink-2);
+    line-height: 2;
+    max-width: 52em;
+  }
+  .toolkit-list li:not(:last-child)::after {
+    content: '/';
+    color: var(--ink-4);
+    margin-inline: 0.65em;
+  }
+
+  @media (max-width: 1080px) {
+    .service-title {
+      grid-column: 4 / -1;
+    }
+    .service-body {
+      grid-column: 4 / -1;
+    }
+  }
+  @media (max-width: 900px) {
+    .service-idx {
+      grid-column: 1 / -1;
+      padding-top: 0;
+    }
+    .service-title,
+    .service-body,
+    .toolkit-label,
+    .toolkit-list {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

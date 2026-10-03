@@ -1,0 +1,594 @@
+---
+import Icon from '../ui/Icon.astro';
+import { contact, studio } from '../../data/site';
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="contact-head grid">
+      <span class="rule" data-rule aria-hidden="true"></span>
+      <p class="label section-index" data-reveal="fade">
+        <span class="num">{contact.index}</span>
+        <span aria-hidden="true">—</span>
+        <span>{contact.label}</span>
+      </p>
+      <h2 id="contact-title" class="display display-lg contact-title" data-split>
+        {contact.title.lead}{' '}<em>{contact.title.emphasis}</em>
+      </h2>
+    </div>
+
+    <div class="contact-body grid">
+      <div class="contact-side">
+        <p class="lede contact-lede" data-reveal>{contact.lede}</p>
+
+        <ul class="channels" data-reveal>
+          <li class="channel">
+            <span class="label">Email</span>
+            <span class="channel-row">
+              <a class="channel-value" href={`mailto:${studio.email}`}>{studio.email}</a>
+              <button class="copy label" type="button" data-copy={studio.email} aria-live="polite">
+                <Icon name="copy" size={13} class="copy-icon" />
+                <span data-copy-text>Copy</span>
+              </button>
+            </span>
+          </li>
+          <li class="channel">
+            <span class="label">Telegram</span>
+            <a class="channel-value" href={studio.telegram.url} target="_blank" rel="noopener">
+              {studio.telegram.handle}
+              <Icon name="arrow-up-right" size={14} />
+            </a>
+          </li>
+          <li class="channel">
+            <span class="label">Call</span>
+            <a class="channel-value" href={studio.calendar} target="_blank" rel="noopener">
+              Book a 30-min intro
+              <Icon name="arrow-up-right" size={14} />
+            </a>
+          </li>
+        </ul>
+
+        <p class="reply-hint" data-reveal data-reply-hint data-tz={studio.timeZone} data-start={studio.workingHours.start} data-end={studio.workingHours.end} data-tz-label={studio.timeZoneLabel}>
+          <span class="dot" aria-hidden="true"></span>
+          <span data-reply-text>We reply within one business day.</span>
+        </p>
+      </div>
+
+      <form class="form" data-contact-form data-endpoint={studio.formEndpoint} data-email={studio.email} novalidate data-reveal>
+        <div class="field-row">
+          <div class="field">
+            <label class="label" for="f-name">Your name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Jane Cooper" />
+            <p class="field-error" data-error-for="name">Please tell us your name.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required placeholder="jane@company.com" />
+            <p class="field-error" data-error-for="email">We need a valid email to reply.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="f-company">Company <span class="optional">— optional</span></label>
+          <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Company or project name" />
+        </div>
+
+        <fieldset class="field chips">
+          <legend class="label">What do you need?</legend>
+          <div class="chip-list">
+            {
+              contact.projectTypes.map((t) => (
+                <label class="chip">
+                  <input type="checkbox" name="needs" value={t} />
+                  <span>{t}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="field chips">
+          <legend class="label">Budget</legend>
+          <div class="chip-list">
+            {
+              contact.budgets.map((b) => (
+                <label class="chip">
+                  <input type="radio" name="budget" value={b} />
+                  <span>{b}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label class="label" for="f-message">About the project</label>
+          <textarea
+            id="f-message"
+            name="message"
+            rows="4"
+            required
+            placeholder="What are you building, where are you now, and when would you like to launch?"
+            data-autogrow></textarea>
+          <p class="field-error" data-error-for="message">A couple of sentences is plenty.</p>
+        </div>
+
+        <!-- Honeypot: humans never see or fill this. -->
+        <div class="hp" aria-hidden="true">
+          <label for="f-website">Website</label>
+          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form-foot">
+          <button class="btn btn--primary submit" type="submit" data-submit>
+            <span data-submit-label>Send inquiry</span>
+            <Icon name="arrow-right" class="arrow" />
+          </button>
+          <p class="form-note">
+            We only use your details to reply. NDA on request — before you share anything sensitive.
+          </p>
+        </div>
+
+        <div class="form-status" role="status" aria-live="polite" data-form-status></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-head {
+    position: relative;
+    padding-top: clamp(1.25rem, 1rem + 1vw, 2rem);
+    row-gap: 1.5rem;
+  }
+  .section-index {
+    grid-column: 1 / span 3;
+    padding-top: 0.4em;
+  }
+  .contact-title {
+    grid-column: 4 / -1;
+    max-width: 12em;
+  }
+
+  .contact-body {
+    margin-top: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+    row-gap: 4rem;
+  }
+  .contact-side {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+  .contact-lede {
+    max-width: 26em;
+  }
+  .channels {
+    border-top: 1px solid var(--line-2);
+  }
+  .channel {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .channel-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .channel-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.625rem);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size var(--dur) var(--ease-out);
+  }
+  .channel-value:hover {
+    background-size: 100% 1px;
+  }
+  .channel-value :global(.icon) {
+    color: var(--ink-3);
+  }
+  .copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-3);
+    padding: 0.4rem 0;
+    transition: color var(--dur-fast) linear;
+  }
+  .copy:hover,
+  .copy.is-done {
+    color: var(--ink);
+  }
+
+  .reply-hint {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+  .reply-hint .dot {
+    transform: translateY(-1px);
+  }
+  .reply-hint.is-away .dot {
+    background: var(--warn);
+  }
+  .reply-hint.is-away .dot::after {
+    border-color: var(--warn);
+  }
+
+  /* ---------- Form ---------- */
+  .form {
+    grid-column: 7 / -1;
+    display: grid;
+    gap: 2.25rem;
+    align-content: start;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.25rem var(--col-gap);
+  }
+  .field {
+    display: grid;
+    gap: 0.6rem;
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .field > .label {
+    transition: color var(--dur-fast) linear;
+  }
+  .field:focus-within > .label {
+    color: var(--ink);
+  }
+  .optional {
+    color: var(--ink-3);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line-2);
+    border-radius: 0;
+    padding: 0.6rem 0 0.75rem;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    color: var(--ink);
+    outline: none;
+    transition: border-color var(--dur) var(--ease-out);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field textarea {
+    resize: none;
+    min-height: 7.5rem;
+    overflow: hidden;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--ink-4);
+  }
+  .field input:hover,
+  .field textarea:hover {
+    border-bottom-color: var(--line-3);
+  }
+  .field input:focus,
+  .field textarea:focus {
+    border-bottom-color: var(--ink);
+  }
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+  }
+  .field-error {
+    display: none;
+    font-size: 0.8125rem;
+    color: var(--warn);
+  }
+  .field.has-error .field-error {
+    display: block;
+  }
+  .field.has-error input,
+  .field.has-error textarea {
+    border-bottom-color: var(--warn);
+  }
+
+  .chips legend {
+    margin-bottom: 0.85rem;
+  }
+  .chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .chip {
+    position: relative;
+    cursor: pointer;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    height: 2.5rem;
+    padding-inline: 1rem;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+    transition:
+      color var(--dur-fast) linear,
+      background-color var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+  .chip:hover span {
+    border-color: var(--line-3);
+    color: var(--ink);
+  }
+  .chip input:checked + span {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  .chip input:focus-visible + span {
+    outline: 1.5px solid var(--moon);
+    outline-offset: 3px;
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    padding-top: 0.5rem;
+  }
+  .form-note {
+    flex: 1 1 16rem;
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+    max-width: 28em;
+  }
+  .submit[aria-busy='true'] {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .form-status:empty {
+    display: none;
+  }
+  .form-status {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    background: var(--bg-raised);
+    font-size: 0.9688rem;
+  }
+  .form-status :global(strong) {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.375rem;
+    margin-bottom: 0.35rem;
+  }
+  .form-status :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 1080px) {
+    .contact-side {
+      grid-column: 1 / span 12;
+    }
+    .form {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 900px) {
+    .section-index,
+    .contact-title {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+    .channel {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
+</style>
+
+<script>
+  /* Copy-to-clipboard for the email address */
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    const text = btn.querySelector<HTMLElement>('[data-copy-text]');
+    let timer = 0;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.classList.add('is-done');
+        if (text) text.textContent = 'Copied';
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          btn.classList.remove('is-done');
+          if (text) text.textContent = 'Copy';
+        }, 2200);
+      } catch {
+        window.location.href = `mailto:${btn.dataset.copy}`;
+      }
+    });
+  });
+
+  /* "Will they answer today?" — based on the studio's local time and working hours. */
+  const hint = document.querySelector<HTMLElement>('[data-reply-hint]');
+  if (hint) {
+    const tz = hint.dataset.tz || 'UTC';
+    const start = Number(hint.dataset.start ?? 10);
+    const end = Number(hint.dataset.end ?? 19);
+    const tzLabel = hint.dataset.tzLabel ?? '';
+    const out = hint.querySelector<HTMLElement>('[data-reply-text]');
+    const update = () => {
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: tz,
+        hour: '2-digit',
+        minute: '2-digit',
+        weekday: 'short',
+        hour12: false,
+      }).formatToParts(new Date());
+      const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+      const hour = Number(get('hour'));
+      const time = `${get('hour')}:${get('minute')}`;
+      const weekday = get('weekday');
+      const weekend = weekday === 'Sat' || weekday === 'Sun';
+      const working = !weekend && hour >= start && hour < end;
+      hint.classList.toggle('is-away', !working);
+      if (!out) return;
+      if (working) out.textContent = `It's ${time} here and we're at our desks — expect a reply today.`;
+      else if (weekend) out.textContent = `It's the weekend here (${time} ${tzLabel}). We'll reply first thing on Monday.`;
+      else if (hour < start) out.textContent = `It's ${time} here — early. We'll reply this morning, ${tzLabel}.`;
+      else out.textContent = `It's ${time} here, so we've signed off. Expect a reply tomorrow morning, ${tzLabel}.`;
+    };
+    update();
+    window.setInterval(update, 60_000);
+  }
+
+  /* Auto-growing textarea */
+  document.querySelectorAll<HTMLTextAreaElement>('[data-autogrow]').forEach((ta) => {
+    const fit = () => {
+      ta.style.height = 'auto';
+      ta.style.height = `${ta.scrollHeight + 2}px`;
+    };
+    ta.addEventListener('input', fit);
+  });
+
+  /* Engagement cards prefill the message */
+  document.querySelectorAll<HTMLAnchorElement>('[data-prefill]').forEach((a) => {
+    a.addEventListener('click', () => {
+      const ta = document.querySelector<HTMLTextAreaElement>('#f-message');
+      if (ta && !ta.value.trim()) {
+        ta.value = `We're interested in a ${a.dataset.prefill?.toLowerCase()}. `;
+        ta.dispatchEvent(new Event('input'));
+      }
+    });
+  });
+
+  /* Form submission */
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]');
+    const endpoint = form.dataset.endpoint ?? '';
+    const email = form.dataset.email ?? '';
+
+    const fieldFor = (name: string) => form.querySelector<HTMLElement>(`[data-error-for="${name}"]`)?.closest('.field');
+    const validate = () => {
+      let firstInvalid: HTMLElement | null = null;
+      (['name', 'email', 'message'] as const).forEach((name) => {
+        const input = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
+        if (!input) return;
+        const ok = input.value.trim() !== '' && input.checkValidity();
+        fieldFor(name)?.classList.toggle('has-error', !ok);
+        input.setAttribute('aria-invalid', ok ? 'false' : 'true');
+        if (!ok && !firstInvalid) firstInvalid = input;
+      });
+      return firstInvalid as HTMLElement | null;
+    };
+
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.name && fieldFor(t.name)?.classList.contains('has-error')) {
+        const ok = t.value.trim() !== '' && t.checkValidity();
+        fieldFor(t.name)?.classList.toggle('has-error', !ok);
+        t.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      }
+    });
+
+    const setStatus = (html: string) => {
+      if (status) status.innerHTML = html;
+    };
+    const escape = (v: string) =>
+      v.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const invalid = validate();
+      if (invalid) {
+        invalid.focus();
+        return;
+      }
+      const data = new FormData(form);
+      if (String(data.get('website') ?? '') !== '') return; // bot
+
+      const needs = data.getAll('needs').join(', ') || '—';
+      const budget = String(data.get('budget') ?? '—') || '—';
+      const name = String(data.get('name'));
+      const from = String(data.get('email'));
+      const company = String(data.get('company') ?? '');
+      const message = String(data.get('message'));
+
+      if (!endpoint) {
+        const subject = `New project — ${name}${company ? ` (${company})` : ''}`;
+        const body = `${message}\n\n—\nName: ${name}\nEmail: ${from}\nCompany: ${company || '—'}\nNeeds: ${needs}\nBudget: ${budget}`;
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        setStatus(
+          `<strong>Almost there.</strong>Your email app should open with everything filled in — just press send. If nothing happened, write to <a href="mailto:${email}">${email}</a>.`,
+        );
+        return;
+      }
+
+      submit?.setAttribute('aria-busy', 'true');
+      if (submitLabel) submitLabel.textContent = 'Sending…';
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: data,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        form.querySelectorAll<HTMLTextAreaElement>('[data-autogrow]').forEach((ta) => (ta.style.height = ''));
+        setStatus(
+          `<strong>Thank you, ${escape(name.split(' ')[0])}.</strong>Your message is with the whole team. We'll reply within one business day — usually much sooner.`,
+        );
+      } catch {
+        setStatus(
+          `<strong>That didn't go through.</strong>Sorry about that. Please email us directly at <a href="mailto:${email}">${email}</a> — we read everything.`,
+        );
+      } finally {
+        submit?.removeAttribute('aria-busy');
+        if (submitLabel) submitLabel.textContent = 'Send inquiry';
+      }
+    });
+  }
+</script>

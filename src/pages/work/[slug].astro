@@ -1,0 +1,376 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Cover from '../../components/visuals/Cover.astro';
+import Icon from '../../components/ui/Icon.astro';
+
+export async function getStaticPaths() {
+  const cases = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+  return cases.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, index: i, total: cases.length, next: cases[(i + 1) % cases.length] },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  index: number;
+  total: number;
+  next: CollectionEntry<'work'>;
+}
+
+const { entry, index, total, next } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<BaseLayout title={`${data.client} — ${data.headline}`} description={data.summary}>
+  <article class="case-page">
+    <header class="case-hero container">
+      <div class="case-top">
+        <a class="label label--2 back" href="/#work">
+          <Icon name="arrow-left" size={12} /> All work
+        </a>
+        <p class="label">Case study — {pad(index + 1)} / {pad(total)}</p>
+      </div>
+
+      <h1 class="display display-xl case-name" data-hero-title>{data.client}</h1>
+      <p class="case-headline display" data-hero-item>{data.headline}</p>
+
+      <div class="case-intro grid">
+        <p class="lede case-summary" data-hero-item>{data.summary}</p>
+        <dl class="case-facts" data-hero-item>
+          <div><dt class="label">Sector</dt><dd>{data.sector}</dd></div>
+          <div><dt class="label">Year</dt><dd>{data.year}</dd></div>
+          <div><dt class="label">Duration</dt><dd>{data.duration}</dd></div>
+          <div><dt class="label">Our role</dt><dd>{data.role.join(', ')}</dd></div>
+          <div><dt class="label">Stack</dt><dd class="mono">{data.stack.join(' · ')}</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="container case-cover" data-reveal>
+      <Cover name={data.cover} image={data.image} alt={`${data.client} — ${data.headline}`} eager class="cover-wide" />
+    </div>
+
+    <section class="container case-results" aria-label="Results">
+      <dl class="results" style={`--n:${data.results.length}`}>
+        {
+          data.results.map((r) => (
+            <div class="result" data-reveal>
+              <dt class="label">{r.label}</dt>
+              <dd class="display">{r.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="container case-body grid">
+      <p class="label body-label" data-reveal="fade">The story</p>
+      <div class="prose" data-reveal>
+        <Content />
+      </div>
+    </section>
+
+    {
+      data.quote && (
+        <section class="container case-quote grid" aria-label="Client testimonial">
+          <span class="rule" data-rule aria-hidden="true" />
+          <figure class="pull" data-reveal>
+            <blockquote class="display">“{data.quote.text}”</blockquote>
+            <figcaption>
+              <span class="pull-name">{data.quote.name}</span>
+              <span class="label">{data.quote.role}</span>
+            </figcaption>
+          </figure>
+        </section>
+      )
+    }
+
+    <nav class="container case-next" aria-label="Next case study">
+      <a class="next" href={`/work/${next.id}/`}>
+        <span class="label">Next case</span>
+        <span class="next-title display">
+          {next.data.client}
+          <Icon name="arrow-right" size={28} strokeWidth={1.1} class="next-arrow" />
+        </span>
+        <span class="next-headline">{next.data.headline}</span>
+      </a>
+      <div class="case-cta">
+        <p class="display">Have a project like this?</p>
+        <a class="btn btn--primary" href="/#contact">
+          Start a conversation
+          <Icon name="arrow-right" class="arrow" />
+        </a>
+      </div>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .case-page {
+    position: relative;
+    z-index: 1;
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 1rem + 2vw, 3rem));
+  }
+  .case-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color var(--dur-fast) linear;
+  }
+  .back:hover {
+    color: var(--ink);
+  }
+  .back :global(.icon) {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .back:hover :global(.icon) {
+    transform: translateX(-3px);
+  }
+  .case-name {
+    margin-top: clamp(4rem, 2rem + 8vw, 9rem);
+  }
+  .case-headline {
+    margin-top: 0.75rem;
+    font-style: italic;
+    font-size: var(--display-sm);
+    line-height: 1.1;
+    color: var(--ink-2);
+  }
+  .case-intro {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+    row-gap: 2.5rem;
+    align-items: start;
+  }
+  .case-summary {
+    grid-column: 1 / span 6;
+    max-width: 30em;
+  }
+  .case-facts {
+    grid-column: 8 / -1;
+    border-top: 1px solid var(--line-2);
+  }
+  .case-facts div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1rem;
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .case-facts dd {
+    font-size: 0.9375rem;
+  }
+  .case-facts dd.mono {
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+  }
+
+  .case-cover {
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+  }
+  .case-cover :global(.cover-wide) {
+    aspect-ratio: 16 / 9;
+  }
+
+  .case-results {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .results {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+    border-top: 1px solid var(--line-2);
+  }
+  .result {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.9rem;
+    padding: 1.5rem clamp(1rem, 0.5rem + 1.5vw, 2rem) 0;
+    border-left: 1px solid var(--line);
+  }
+  .result:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .result dd {
+    font-size: clamp(2rem, 1.1rem + 2.3vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  .case-body {
+    margin-top: clamp(6rem, 4rem + 6vw, 10rem);
+    row-gap: 2rem;
+  }
+  .body-label {
+    grid-column: 1 / span 3;
+    padding-top: 0.5rem;
+  }
+  .prose {
+    grid-column: 4 / span 7;
+    max-width: 40em;
+  }
+  .prose :global(h2) {
+    font-family: var(--serif);
+    font-size: var(--display-sm);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 3.5rem 0 1.25rem;
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(p) {
+    font-size: var(--text-md);
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin-bottom: 1.25rem;
+  }
+  .prose :global(strong) {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .prose :global(a) {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--line-3);
+    text-underline-offset: 0.2em;
+  }
+  .prose :global(ul) {
+    margin-bottom: 1.25rem;
+    color: var(--ink-2);
+  }
+  .prose :global(li) {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose :global(li)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--ink-3);
+  }
+
+  .case-quote {
+    position: relative;
+    margin-top: clamp(6rem, 4rem + 6vw, 10rem);
+    padding-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .pull {
+    grid-column: 4 / -1;
+    display: grid;
+    gap: 2rem;
+  }
+  .pull blockquote {
+    font-size: var(--display-md);
+    line-height: 1.06;
+    letter-spacing: -0.026em;
+    text-indent: -0.4em;
+    max-width: 17em;
+  }
+  .pull figcaption {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .pull-name {
+    font-weight: 500;
+  }
+
+  .case-next {
+    margin-block: clamp(7rem, 5rem + 7vw, 12rem) clamp(5rem, 4rem + 4vw, 8rem);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--col-gap);
+    border-top: 1px solid var(--line-2);
+    padding-top: 2rem;
+  }
+  .next {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .next-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: var(--display-lg);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .next :global(.next-arrow) {
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .next:hover :global(.next-arrow) {
+    transform: translateX(8px);
+  }
+  .next-headline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--display-xs);
+    color: var(--ink-2);
+  }
+  .case-cta {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    align-content: start;
+    padding-top: 2.25rem;
+  }
+  .case-cta p {
+    font-size: var(--display-sm);
+    line-height: 1.1;
+  }
+
+  @media (max-width: 1080px) {
+    .case-summary,
+    .case-facts {
+      grid-column: 1 / -1;
+    }
+    .prose {
+      grid-column: 4 / -1;
+    }
+  }
+  @media (max-width: 900px) {
+    .body-label,
+    .prose,
+    .pull {
+      grid-column: 1 / -1;
+    }
+    .case-next {
+      grid-template-columns: 1fr;
+      row-gap: 4rem;
+    }
+    .case-cta {
+      padding-top: 0;
+    }
+  }
+  @media (max-width: 640px) {
+    .results {
+      grid-template-columns: 1fr;
+    }
+    .result,
+    .result:first-child {
+      border-left: 0;
+      padding-left: 0;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .case-cover :global(.cover-wide) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

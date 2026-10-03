@@ -1,0 +1,107 @@
+---
+import SectionHead from '../ui/SectionHead.astro';
+import Icon from '../ui/Icon.astro';
+import { commitments } from '../../data/site';
+---
+
+<section id="commitments" class="section commitments" aria-labelledby="commitments-title">
+  <div class="container">
+    <SectionHead
+      id="commitments-title"
+      index={commitments.index}
+      label={commitments.label}
+      title={commitments.title}
+      size="lg"
+    />
+
+    <ul class="promises">
+      {
+        commitments.items.map((c) => (
+          <li class="promise" data-reveal>
+            <Icon name={c.icon} size={28} class="promise-icon" />
+            <h3 class="promise-title">{c.title}</h3>
+            <p class="promise-text">{c.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .promises {
+    margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line-2);
+  }
+  .promise {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    padding: clamp(1.75rem, 1.25rem + 1.5vw, 2.75rem) clamp(1.25rem, 0.75rem + 1.5vw, 2.5rem)
+      clamp(2.25rem, 1.5rem + 2vw, 3.5rem);
+    border-bottom: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+    transition: background-color var(--dur-slow) var(--ease-out);
+  }
+  .promise:nth-child(3n + 1) {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .promise:hover {
+    background: linear-gradient(180deg, rgb(236 233 227 / 0.03), rgb(236 233 227 / 0) 80%);
+  }
+  .promise :global(.promise-icon) {
+    color: var(--ink-2);
+    margin-bottom: 1.5rem;
+    transition:
+      color var(--dur) linear,
+      transform var(--dur-slow) var(--ease-out);
+  }
+  .promise:hover :global(.promise-icon) {
+    color: var(--ink);
+    transform: translateY(-2px);
+  }
+  .promise-title {
+    font-family: var(--serif);
+    font-size: var(--display-xs);
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+  }
+  .promise-text {
+    color: var(--ink-2);
+    font-size: 0.9688rem;
+    line-height: 1.6;
+    max-width: 26em;
+  }
+
+  @media (max-width: 1080px) {
+    .promises {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .promise:nth-child(3n + 1) {
+      border-left: 1px solid var(--line);
+      padding-left: clamp(1.25rem, 0.75rem + 1.5vw, 2.5rem);
+    }
+    .promise:nth-child(2n + 1) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+  @media (max-width: 640px) {
+    .promises {
+      grid-template-columns: 1fr;
+    }
+    .promise,
+    .promise:nth-child(3n + 1) {
+      border-left: 0;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .promise :global(.promise-icon) {
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>

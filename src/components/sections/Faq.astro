@@ -1,0 +1,207 @@
+---
+import { faq, studio } from '../../data/site';
+---
+
+<section id="faq" class="section faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="faq-grid grid">
+      <span class="rule" data-rule aria-hidden="true"></span>
+
+      <div class="faq-side">
+        <div class="faq-sticky">
+          <p class="label section-index" data-reveal="fade">
+            <span class="num">{faq.index}</span>
+            <span aria-hidden="true">—</span>
+            <span>{faq.label}</span>
+          </p>
+          <h2 id="faq-title" class="display display-md faq-title" data-split>
+            {faq.title.lead} <em>{faq.title.emphasis}</em>
+          </h2>
+          <p class="faq-more muted" data-reveal>
+            Something else on your mind? Ask us directly at{' '}
+            <a class="link link--underlined" href={`mailto:${studio.email}`}>{studio.email}</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-list" data-accordion>
+        {
+          faq.items.map((item, i) => (
+            <details class="qa" data-reveal>
+              <summary class="qa-q">
+                <span class="label qa-idx">{String(i + 1).padStart(2, '0')}</span>
+                <span class="qa-text">{item.q}</span>
+                <span class="qa-icon" aria-hidden="true">
+                  <span />
+                  <span />
+                </span>
+              </summary>
+              <div class="qa-a">
+                <p>{item.a}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-grid {
+    position: relative;
+    padding-top: clamp(1.25rem, 1rem + 1vw, 2rem);
+    row-gap: 3rem;
+  }
+  .faq-side {
+    grid-column: 1 / span 5;
+  }
+  .faq-sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+  .faq-title {
+    margin-top: 1.5rem;
+    max-width: 8em;
+  }
+  .faq-more {
+    margin-top: 2rem;
+    max-width: 22em;
+    font-size: 0.9688rem;
+  }
+  .faq-list {
+    grid-column: 6 / -1;
+    border-top: 1px solid var(--line-2);
+  }
+
+  .qa {
+    border-bottom: 1px solid var(--line);
+  }
+  .qa-q {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding-block: 1.5rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .qa-q::-webkit-details-marker {
+    display: none;
+  }
+  .qa-idx {
+    transition: color var(--dur-fast) linear;
+  }
+  .qa-text {
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.625rem);
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    transition: color var(--dur-fast) linear;
+  }
+  .qa-q:hover .qa-idx,
+  .qa[open] .qa-idx {
+    color: var(--ink);
+  }
+  .qa-icon {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    align-self: center;
+  }
+  .qa-icon span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1.25px;
+    background: var(--ink-2);
+    transition:
+      transform 500ms var(--ease-out),
+      background-color var(--dur-fast) linear;
+  }
+  .qa-icon span:last-child {
+    transform: rotate(90deg);
+  }
+  .qa[open] .qa-icon span:last-child {
+    transform: rotate(0deg);
+  }
+  .qa-q:hover .qa-icon span {
+    background: var(--ink);
+  }
+  .qa-a {
+    overflow: hidden;
+  }
+  .qa-a p {
+    padding: 0 2rem 1.75rem 3.75rem;
+    color: var(--ink-2);
+    max-width: 40em;
+  }
+
+  @media (max-width: 1080px) {
+    .faq-side,
+    .faq-list {
+      grid-column: 1 / -1;
+    }
+    .faq-sticky {
+      position: static;
+    }
+    .faq-title {
+      max-width: 12em;
+    }
+  }
+  @media (max-width: 640px) {
+    .qa-q {
+      grid-template-columns: 2.25rem 1fr auto;
+    }
+    .qa-a p {
+      padding: 0 0 1.5rem 3rem;
+    }
+  }
+</style>
+
+<script>
+  // Smooth open/close for <details>, keeping native semantics (and the no-JS fallback).
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-accordion]').forEach((list) => {
+    const items = [...list.querySelectorAll<HTMLDetailsElement>('details')];
+    items.forEach((details) => {
+      const summary = details.querySelector('summary');
+      const body = details.querySelector<HTMLElement>('.qa-a');
+      if (!summary || !body) return;
+      let anim: Animation | null = null;
+
+      const close = (el: HTMLDetailsElement) => {
+        const b = el.querySelector<HTMLElement>('.qa-a');
+        if (!b || !el.open) return;
+        if (reduce) {
+          el.open = false;
+          return;
+        }
+        const h = b.offsetHeight;
+        const a = b.animate([{ height: `${h}px` }, { height: '0px' }], { duration: 380, easing: 'cubic-bezier(0.65, 0, 0.35, 1)' });
+        a.onfinish = () => {
+          el.open = false;
+        };
+      };
+
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        anim?.cancel();
+        if (details.open) {
+          close(details);
+          return;
+        }
+        // One answer open at a time keeps the list scannable.
+        items.filter((d) => d !== details).forEach(close);
+        details.open = true;
+        if (reduce) return;
+        const h = body.offsetHeight;
+        anim = body.animate([{ height: '0px', opacity: 0 }, { height: `${h}px`, opacity: 1 }], {
+          duration: 520,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        });
+      });
+    });
+  });
+</script>

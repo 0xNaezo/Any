@@ -1,0 +1,235 @@
+---
+import Icon from '../ui/Icon.astro';
+import { hero, studio } from '../../data/site';
+---
+
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <canvas class="hero-canvas" aria-hidden="true" data-loom></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+    <div class="hero-top" data-hero-item data-loom-avoid="text">
+      <p class="label">
+        {hero.eyebrow} <span aria-hidden="true">·</span> Est. {studio.founded}
+      </p>
+      <p class="label hero-coords" aria-hidden="true">
+        {studio.location}
+      </p>
+    </div>
+
+    <h1 id="hero-title" class="display display-xl hero-title" data-hero-title data-loom-avoid="text">
+      <span class="line">{hero.title.lead}</span>{' '}
+      <span class="line"><em>{hero.title.emphasis}</em></span>
+    </h1>
+
+    <div class="hero-bottom grid">
+      <div class="hero-copy" data-loom-avoid>
+        <p class="lede hero-lede" data-hero-item>{hero.lede}</p>
+        <div class="hero-ctas" data-hero-item>
+          <a class="btn btn--primary" href={hero.primaryCta.href}>
+            {hero.primaryCta.label}
+            <Icon name="arrow-right" class="arrow" />
+          </a>
+          <a class="btn btn--ghost" href={hero.secondaryCta.href}>
+            {hero.secondaryCta.label}
+            <Icon name="arrow-down" class="arrow arrow-down" />
+          </a>
+        </div>
+      </div>
+
+      <dl class="hero-facts" data-loom-avoid>
+        {
+          hero.facts.map((f) => (
+            <div class="fact" data-hero-item>
+              <dt class="label">{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))
+        }
+        <div class="fact" data-hero-item>
+          <dt class="label">Local time</dt>
+          <dd>
+            <time class="tabular" data-clock data-tz={studio.timeZone}>--:--</time>
+            <span class="dim">&ensp;{studio.timeZoneLabel}</span>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <a class="scroll-cue label" href="#studio" data-hero-item aria-label="Scroll to the studio section">
+    <span class="scroll-track" aria-hidden="true"><span></span></span>
+    Scroll
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: max(100svh, 46rem);
+    display: flex;
+    flex-direction: column;
+    isolation: isolate;
+  }
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+  }
+  /* Keeps the weave from competing with the copy, and fades it into the page below. */
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, var(--bg) 0%, transparent 18%, transparent 62%, var(--bg) 100%),
+      radial-gradient(120% 90% at 0% 100%, rgb(11 11 12 / 0.85) 0%, rgb(11 11 12 / 0.4) 40%, transparent 70%);
+  }
+
+  .hero-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 1rem + 2vw, 3rem));
+    padding-bottom: clamp(4.5rem, 2rem + 6vh, 7rem);
+  }
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .hero-title {
+    margin-top: auto;
+    padding-top: clamp(2.5rem, 1rem + 8vh, 12rem);
+    /* On short, wide screens the headline yields to the viewport height so the CTAs stay above the fold. */
+    font-size: min(var(--display-xl), 17.5vh);
+  }
+  .hero-title .line {
+    display: block;
+  }
+  .hero-title em {
+    padding-right: 0.04em;
+  }
+
+  .hero-bottom {
+    margin-top: clamp(1.75rem, 0.5rem + 3.5vh, 3.5rem);
+    row-gap: 3rem;
+    align-items: end;
+  }
+  .hero-copy {
+    grid-column: 1 / span 6;
+  }
+  .hero-lede {
+    max-width: 34em;
+  }
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+  .arrow-down {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .btn:hover .arrow-down {
+    transform: translateY(2px);
+  }
+
+  .hero-facts {
+    grid-column: 9 / span 4;
+  }
+  .fact:first-child {
+    border-top: 1px solid var(--line-2);
+  }
+  .fact {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact dd {
+    font-size: 0.9375rem;
+    color: var(--ink);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: 1.75rem;
+    translate: -50% 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .scroll-track {
+    position: relative;
+    width: 1px;
+    height: 2.5rem;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .scroll-track span {
+    position: absolute;
+    inset: 0;
+    background: var(--ink-2);
+    transform: translateY(-100%);
+    animation: drip 2.4s var(--ease-in-out) infinite;
+  }
+  @keyframes drip {
+    0% {
+      transform: translateY(-100%);
+    }
+    55% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .hero-copy {
+      grid-column: 1 / span 8;
+    }
+    .hero-facts {
+      grid-column: 1 / span 8;
+    }
+  }
+  /* Portrait tablets, like phones, float the ghost above the headline: give it the room. */
+  @media (min-width: 768px) and (max-width: 1080px) and (orientation: portrait) {
+    .hero-title {
+      padding-top: 30vh;
+    }
+  }
+  @media (max-width: 767px) {
+    .hero-coords {
+      display: none;
+    }
+    .hero-copy,
+    .hero-facts {
+      grid-column: 1 / -1;
+    }
+    .hero-title {
+      padding-top: 40vh;
+      font-size: var(--display-xl);
+    }
+    .scroll-cue {
+      display: none;
+    }
+    .hero-inner {
+      padding-bottom: 3.5rem;
+    }
+    .fact {
+      grid-template-columns: 6rem 1fr;
+    }
+  }
+</style>
