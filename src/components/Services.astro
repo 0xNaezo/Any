@@ -1,0 +1,213 @@
+---
+import SectionHead from './SectionHead.astro';
+import { site } from '../data/site';
+
+const { services } = site;
+---
+
+<section class="section" id="services" aria-labelledby="services-title">
+  <div class="container">
+    <SectionHead
+      index={services.index}
+      label={services.label}
+      meta={services.meta}
+      title={services.title}
+      lead={services.lead}
+      titleId="services-title"
+    />
+
+    <ol class="services">
+      {
+        services.items.map((item, i) => (
+          <li class="service" data-reveal>
+            <span class="service__index mono">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="service__title">{item.title}</h3>
+            <p class="service__text">{item.text}</p>
+            <ul class="service__tags" aria-label={`${item.title} — typical work`}>
+              {item.tags.map((tag) => (
+                <li class="tag">{tag}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="toolbox">
+      <div class="toolbox__head" data-reveal>
+        <h3 class="label toolbox__label">{services.stack.label}</h3>
+        <p class="toolbox__note">{services.stack.note}</p>
+      </div>
+      <div class="toolbox__groups" data-stagger>
+        {
+          services.stack.groups.map((group) => (
+            <div class="toolbox__group" data-stagger-item>
+              <h4 class="label">{group.title}</h4>
+              <ul>
+                {group.items.map((tool) => (
+                  <li>{tool}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services {
+    margin-top: clamp(64px, 8vw, 112px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .service {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 16px;
+    align-items: start;
+    padding-block: clamp(28px, 3vw, 40px);
+    border-top: 1px solid var(--line);
+    isolation: isolate;
+  }
+  .service::before {
+    content: '';
+    position: absolute;
+    inset: -1px calc(var(--gutter) * -0.5) 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgb(255 255 255 / 0.028), transparent 80%);
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out);
+  }
+  .service:hover::before {
+    opacity: 1;
+  }
+
+  .service__index {
+    grid-column: span 1;
+    padding-top: 0.45em;
+    font-size: 0.75rem;
+    color: var(--fg-3);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .service:hover .service__index {
+    color: var(--accent);
+  }
+
+  .service__title {
+    grid-column: span 4;
+    font-size: clamp(1.5rem, 1.15rem + 1vw, 2.125rem);
+    font-weight: 450;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .service:hover .service__title {
+    transform: translateX(6px);
+  }
+
+  .service__text {
+    grid-column: span 4;
+    max-width: 46ch;
+    padding-top: 0.2em;
+  }
+
+  .service__tags {
+    grid-column: span 3;
+    justify-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    padding-top: 0.25em;
+  }
+
+  .toolbox {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 40px;
+    margin-top: clamp(80px, 9vw, 136px);
+  }
+  .toolbox__head {
+    grid-column: span 4;
+    display: grid;
+    align-content: start;
+    gap: 12px;
+  }
+  .toolbox__label {
+    color: var(--fg-2);
+  }
+  .toolbox__note {
+    max-width: 26ch;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.625rem;
+    line-height: 1.15;
+    color: var(--fg);
+  }
+  .toolbox__groups {
+    grid-column: 5 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .toolbox__group {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .toolbox__group ul {
+    display: grid;
+    gap: 8px;
+  }
+  .toolbox__group li {
+    color: var(--fg-2);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .toolbox__group li:hover {
+    color: var(--fg);
+  }
+
+  @media (max-width: 1023px) {
+    .service__index {
+      grid-column: span 2;
+    }
+    .service__title {
+      grid-column: span 10;
+    }
+    .service__text {
+      grid-column: 3 / -1;
+    }
+    .service__tags {
+      grid-column: 3 / -1;
+      justify-self: start;
+      justify-content: flex-start;
+    }
+    .toolbox__head,
+    .toolbox__groups {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .service__index {
+      grid-column: 1 / -1;
+      padding-top: 0;
+    }
+    .service__title,
+    .service__text,
+    .service__tags {
+      grid-column: 1 / -1;
+    }
+    .toolbox__groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 32px;
+    }
+  }
+</style>

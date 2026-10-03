@@ -1,0 +1,18 @@
+export type IconName =
+  | 'arrow-right'
+  | 'arrow-down'
+  | 'arrow-up'
+  | 'arrow-up-right'
+  | 'plus'
+  | 'check'
+  | 'copy'
+  | 'star'
+  | 'reply'
+  | 'key'
+  | 'price'
+  | 'people'
+  | 'handover'
+  | 'shield'
+  | 'mail'
+  | 'telegram'
+  | 'calendar';

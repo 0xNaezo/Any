@@ -1,0 +1,832 @@
+---
+/**
+ * Illustrated placeholder covers for case studies.
+ * Swap them for real screenshots via `image` in src/data/site.ts.
+ */
+import type { Visual } from '../data/site';
+
+interface Props {
+  kind: Visual;
+  label: string;
+}
+
+const { kind, label } = Astro.props;
+
+/* ── helpers ──────────────────────────────────────────────────────────── */
+type Pt = [number, number];
+
+/** Catmull-Rom → cubic Bézier path through points. */
+function smooth(points: Pt[], tension = 0.5): string {
+  if (points.length < 2) return '';
+  let d = `M${points[0][0].toFixed(1)} ${points[0][1].toFixed(1)}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+    const c1: Pt = [p1[0] + ((p2[0] - p0[0]) / 6) * tension * 2, p1[1] + ((p2[1] - p0[1]) / 6) * tension * 2];
+    const c2: Pt = [p2[0] - ((p3[0] - p1[0]) / 6) * tension * 2, p2[1] - ((p3[1] - p1[1]) / 6) * tension * 2];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+
+/** Deterministic PRNG so illustrations render identically on every build. */
+function rng(seed: number) {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ── ledger: cash-flow chart ──────────────────────────────────────────── */
+const actual = [182, 176, 191, 204, 198, 221, 236, 229, 251, 262, 274, 284];
+const forecast = [284, 291, 297, 309, 318];
+const band = [0, 6, 11, 16, 22];
+const cx0 = 204;
+const cx1 = 560;
+const cy0 = 246;
+const cy1 = 340;
+const vMin = 150;
+const vMax = 350;
+const toX = (i: number) => cx0 + (i / 15) * (cx1 - cx0);
+const toY = (v: number) => cy1 - ((v - vMin) / (vMax - vMin)) * (cy1 - cy0);
+const actualPts: Pt[] = actual.map((v, i) => [toX(i), toY(v)]);
+const forecastPts: Pt[] = forecast.map((v, i) => [toX(i + 11), toY(v)]);
+const actualLine = smooth(actualPts);
+const actualArea = `${actualLine} L${toX(11).toFixed(1)} ${cy1} L${cx0} ${cy1} Z`;
+const forecastLine = smooth(forecastPts);
+const bandTop = forecast.map((v, i) => [toX(i + 11), toY(v + band[i])] as Pt);
+const bandBottom = forecast.map((v, i) => [toX(i + 11), toY(v - band[i])] as Pt).reverse();
+const bandArea = `${smooth(bandTop)} L${bandBottom[0][0].toFixed(1)} ${bandBottom[0][1].toFixed(1)} ${smooth(bandBottom).replace(/^M[^C]+/, '')} Z`;
+const months = ['D', 'J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D', 'J', 'F', 'M'];
+
+/* ── freight: procedural map ──────────────────────────────────────────── */
+const rand = rng(7);
+const streets: { d: string; w: number; o: number }[] = [];
+for (let i = 0; i < 9; i++) {
+  const y = 96 + rand() * 330;
+  const y2 = y + (rand() - 0.5) * 160;
+  streets.push({ d: `M48 ${y.toFixed(1)} L412 ${y2.toFixed(1)}`, w: rand() > 0.75 ? 2.2 : 1, o: 0.05 + rand() * 0.04 });
+}
+for (let i = 0; i < 8; i++) {
+  const x = 60 + rand() * 340;
+  const x2 = x + (rand() - 0.5) * 140;
+  streets.push({ d: `M${x.toFixed(1)} 78 L${x2.toFixed(1)} 436`, w: rand() > 0.75 ? 2.2 : 1, o: 0.05 + rand() * 0.04 });
+}
+const highway = smooth([
+  [48, 330],
+  [120, 300],
+  [190, 318],
+  [260, 250],
+  [330, 226],
+  [412, 170],
+]);
+const routeA = smooth([
+  [96, 372],
+  [140, 330],
+  [200, 316],
+  [252, 262],
+  [318, 228],
+  [372, 150],
+]);
+const routeB = smooth([
+  [118, 128],
+  [160, 170],
+  [214, 184],
+  [246, 236],
+  [300, 288],
+]);
+const trucks: Pt[] = [
+  [252, 262],
+  [160, 170],
+  [338, 206],
+  [118, 396],
+  [372, 352],
+];
+const fleet = [
+  { id: 'TRK-214', status: 'On route', tone: 'ok', eta: '14:20' },
+  { id: 'TRK-187', status: 'Loading', tone: 'muted', eta: '15:05' },
+  { id: 'TRK-302', status: 'On route', tone: 'ok', eta: '15:40' },
+  { id: 'TRK-095', status: 'Delayed', tone: 'warn', eta: '16:10' },
+  { id: 'TRK-241', status: 'On route', tone: 'ok', eta: '16:55' },
+  { id: 'TRK-118', status: 'At depot', tone: 'muted', eta: '—' },
+];
+const spark = smooth(
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => [428 + i * 14.6, 404 - [6, 9, 7, 12, 10, 15, 13, 18, 14, 20, 17][i]] as Pt),
+);
+
+/* ── docs: text lines ─────────────────────────────────────────────────── */
+const r2 = rng(11);
+const para = (x: number, y: number, n: number, max = 280) =>
+  Array.from({ length: n }, (_, i) => ({ x, y: y + i * 11, w: i === n - 1 ? max * (0.35 + r2() * 0.3) : max * (0.86 + r2() * 0.14) }));
+const docBlocks = [
+  ...para(80, 146, 4),
+  ...para(80, 212, 3),
+  ...para(92, 266, 3, 262),
+  ...para(80, 320, 4),
+  ...para(92, 378, 2, 262),
+];
+const issues = [
+  { sev: 'High', tone: 'bad', title: 'Uncapped indemnity', ref: '§7.2' },
+  { sev: 'Medium', tone: 'warn', title: 'Auto-renewal, 90-day notice', ref: '§12.1' },
+  { sev: 'Low', tone: 'muted', title: 'Governing law mismatch', ref: '§15.3' },
+];
+---
+
+<svg class="visual" viewBox="0 0 640 480" role="img" aria-label={label} xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id={`fade-${kind}`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a8f0cc" stop-opacity="0.22"></stop>
+      <stop offset="1" stop-color="#a8f0cc" stop-opacity="0"></stop>
+    </linearGradient>
+    <filter id={`shadow-${kind}`} x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity="0.55"></feDropShadow>
+    </filter>
+  </defs>
+
+  <!-- window chrome -->
+  <g filter={`url(#shadow-${kind})`}>
+    <rect x="48" y="44" width="544" height="392" rx="12" class="win"></rect>
+  </g>
+  <rect x="48.5" y="44.5" width="543" height="391" rx="11.5" class="win-stroke"></rect>
+  <circle cx="68" cy="61" r="4" class="chrome"></circle>
+  <circle cx="82" cy="61" r="4" class="chrome"></circle>
+  <circle cx="96" cy="61" r="4" class="chrome"></circle>
+  <rect x="232" y="52" width="176" height="18" rx="9" class="url"></rect>
+  <text x="320" y="64.5" text-anchor="middle" class="t-mono s8 faint">
+    {kind === 'ledger' && 'app.ledgerly.io'}
+    {kind === 'freight' && 'dispatch.atlasfreight.com'}
+    {kind === 'store' && 'verso.design'}
+    {kind === 'docs' && 'app.quill.legal'}
+  </text>
+  <line x1="48" y1="78.5" x2="592" y2="78.5" class="hair"></line>
+
+  {
+    kind === 'ledger' && (
+      <g>
+        {/* sidebar */}
+        <line x1="168.5" y1="79" x2="168.5" y2="436" class="hair" />
+        <g class="fg">
+          <rect x="64" y="96" width="12" height="2.6" rx="1" />
+          <rect x="64" y="100.5" width="8" height="2.6" rx="1" />
+          <rect x="64" y="105" width="4.5" height="2.6" rx="1" />
+        </g>
+        <text x="82" y="105" class="t-sans s11 fg w600">Ledgerly</text>
+        <rect x="58" y="151" width="100" height="21" rx="6" class="pill-active" />
+        {['Overview', 'Cash flow', 'Invoices', 'Forecast', 'Accounts', 'Settings'].map((item, i) => (
+          <text x="68" y={139 + i * 26} class:list={['t-sans s9', i === 1 ? 'fg' : 'muted']}>
+            {item}
+          </text>
+        ))}
+        <circle cx="70" cy="414" r="8" class="surface-3" />
+        <text x="70" y="417" text-anchor="middle" class="t-sans s7 fg">SL</text>
+        <text x="84" y="417" class="t-sans s8 muted">Sarah L.</text>
+
+        {/* header */}
+        <text x="186" y="108" class="t-sans s14 fg w500">Cash flow</text>
+        <text x="186" y="121" class="t-mono s7 faint">UPDATED 2 MIN AGO</text>
+        <rect x="474" y="95" width="102" height="22" rx="11" class="surface-2" />
+        <rect x="540" y="98" width="33" height="16" rx="8" class="pill-active" />
+        <text x="491" y="109" text-anchor="middle" class="t-mono s7 faint">1M</text>
+        <text x="521" y="109" text-anchor="middle" class="t-mono s7 faint">3M</text>
+        <text x="556.5" y="109" text-anchor="middle" class="t-mono s7 fg">12M</text>
+
+        {/* KPI tiles */}
+        {[
+          { l: 'BALANCE', v: '$284,120', d: '+12.4%' },
+          { l: 'INFLOW · 30D', v: '+$42.8k', d: '+8.1%' },
+          { l: 'RUNWAY', v: '18.4 mo', d: '+2.3 mo' },
+        ].map((k, i) => (
+          <g>
+            <rect x={186 + i * 132} y="134" width="122" height="62" rx="8" class="tile" />
+            <text x={198 + i * 132} y="152" class="t-mono s7 faint">
+              {k.l}
+            </text>
+            <text x={198 + i * 132} y="176" class="t-sans s15 fg w500">
+              {k.v}
+            </text>
+            <text x={198 + i * 132} y="188" class="t-mono s7 accent">
+              {k.d}
+            </text>
+          </g>
+        ))}
+
+        {/* chart */}
+        <rect x="186" y="208" width="386" height="160" rx="8" class="tile" />
+        <text x="200" y="228" class="t-sans s9 fg">Projected balance</text>
+        <circle cx="452" cy="225" r="3" class="accent-fill" />
+        <text x="459" y="228" class="t-mono s7 faint">ACTUAL</text>
+        <line x1="500" y1="225" x2="512" y2="225" class="dash-line" />
+        <text x="517" y="228" class="t-mono s7 faint">FORECAST</text>
+        {[0, 1, 2, 3].map((i) => (
+          <line x1={cx0} y1={cy0 + i * ((cy1 - cy0) / 3)} x2={cx1} y2={cy0 + i * ((cy1 - cy0) / 3)} class="grid" />
+        ))}
+        <path d={bandArea} class="band" />
+        <path d={actualArea} fill={`url(#fade-${kind})`} />
+        <path d={actualLine} class="line-accent" />
+        <path d={forecastLine} class="line-forecast" />
+        <line x1={toX(11)} y1={cy0 - 6} x2={toX(11)} y2={cy1} class="today" />
+        <circle cx={toX(11)} cy={toY(284)} r="4.5" class="dot-ring" />
+        <circle cx={toX(11)} cy={toY(284)} r="2.2" class="accent-fill" />
+        <rect x={toX(11) - 30} y={toY(284) - 32} width="60" height="19" rx="5" class="tooltip" />
+        <text x={toX(11)} y={toY(284) - 19.5} text-anchor="middle" class="t-mono s7 fg">
+          $284.1k
+        </text>
+        {months.map((m, i) => (
+          <text x={toX(i)} y="357" text-anchor="middle" class="t-mono s6 faint">
+            {m}
+          </text>
+        ))}
+
+        {/* upcoming */}
+        <text x="186" y="392" class="t-mono s7 faint">UPCOMING</text>
+        {[
+          { n: 'Payroll', d: 'Nov 28', a: '−$38,400', c: 'muted' },
+          { n: 'Stripe payout', d: 'Nov 30', a: '+$12,940', c: 'accent' },
+        ].map((row, i) => (
+          <g>
+            <line x1="186" y1={399.5 + i * 18} x2="572" y2={399.5 + i * 18} class="hair" />
+            <text x="186" y={412 + i * 18} class="t-sans s8 fg">
+              {row.n}
+            </text>
+            <text x="330" y={412 + i * 18} class="t-mono s7 faint">
+              {row.d}
+            </text>
+            <text x="572" y={412 + i * 18} text-anchor="end" class:list={['t-mono s8', row.c]}>
+              {row.a}
+            </text>
+          </g>
+        ))}
+      </g>
+    )
+  }
+
+  {
+    kind === 'freight' && (
+      <g>
+        <clipPath id="map-clip">
+          <path d="M48 79 H412 V436 H60 A12 12 0 0 1 48 424 Z" />
+        </clipPath>
+        <g clip-path="url(#map-clip)">
+          <rect x="48" y="79" width="364" height="357" class="map" />
+          <path d="M48 160 C120 150 160 210 230 196 C300 182 330 120 412 118 L412 104 C330 104 300 166 230 180 C160 194 120 136 48 146 Z" class="river" />
+          <rect x="300" y="300" width="78" height="56" rx="10" class="park" />
+          <rect x="72" y="214" width="54" height="42" rx="10" class="park" />
+          {streets.map((s) => (
+            <path d={s.d} stroke="#fff" stroke-opacity={s.o} stroke-width={s.w} fill="none" />
+          ))}
+          <path d={highway} class="highway" />
+          <path d={routeB} class="route-warn" />
+          <path d={routeA} class="route" />
+          <circle cx="96" cy="372" r="5" class="stop" />
+          <circle cx="372" cy="150" r="5" class="stop" />
+          {trucks.map(([x, y], i) => (
+            <g>
+              <circle cx={x} cy={y} r={i === 0 ? 14 : 10} class={i === 3 ? 'halo-warn' : 'halo'} />
+              <circle cx={x} cy={y} r="4.5" class={i === 3 ? 'warn-fill' : 'accent-fill'} />
+            </g>
+          ))}
+          {/* callout */}
+          <g>
+            <line x1="252" y1="262" x2="268" y2="296" class="hair-strong" />
+            <rect x="200" y="296" width="150" height="58" rx="8" class="callout" />
+            <text x="212" y="314" class="t-mono s8 fg">
+              TRK-214
+            </text>
+            <rect x="290" y="305" width="48" height="13" rx="6.5" class="pill-ok" />
+            <text x="314" y="314.5" text-anchor="middle" class="t-mono s6 accent">
+              ON ROUTE
+            </text>
+            <text x="212" y="329" class="t-sans s8 muted">
+              Belgrade to Budapest
+            </text>
+            <text x="212" y="344" class="t-mono s7 accent">
+              ETA 14:20 · 62 KM
+            </text>
+          </g>
+          {/* controls */}
+          <rect x="62" y="92" width="24" height="44" rx="6" class="callout" />
+          <path d="M70 104h8M74 100v8M70 124h8" class="ctrl" />
+          <line x1="64" y1="418" x2="114" y2="418" class="scale" />
+          <text x="64" y="411" class="t-mono s6 faint">
+            10 KM
+          </text>
+        </g>
+
+        {/* fleet panel */}
+        <line x1="412.5" y1="79" x2="412.5" y2="436" class="hair" />
+        <text x="428" y="104" class="t-sans s11 fg w500">Fleet</text>
+        <text x="576" y="104" text-anchor="end" class="t-mono s7 faint">36 ACTIVE</text>
+        {fleet.map((t, i) => (
+          <g>
+            <line x1="428" y1={117.5 + i * 36} x2="576" y2={117.5 + i * 36} class="hair" />
+            <text x="428" y={134 + i * 36} class="t-mono s8 fg">
+              {t.id}
+            </text>
+            <rect
+              x="428"
+              y={140 + i * 36}
+              width={t.status.length * 4.4 + 12}
+              height="12"
+              rx="6"
+              class={t.tone === 'ok' ? 'pill-ok' : t.tone === 'warn' ? 'pill-warn' : 'pill-muted'}
+            />
+            <text
+              x={434}
+              y={148.6 + i * 36}
+              class:list={['t-mono s6', t.tone === 'ok' ? 'accent' : t.tone === 'warn' ? 'warn' : 'muted']}
+            >
+              {t.status.toUpperCase()}
+            </text>
+            <text x="576" y={134 + i * 36} text-anchor="end" class="t-mono s8 muted">
+              {t.eta}
+            </text>
+          </g>
+        ))}
+        <line x1="428" y1="333.5" x2="576" y2="333.5" class="hair" />
+        <text x="428" y="352" class="t-mono s7 faint">EVENTS / MIN</text>
+        <text x="428" y="372" class="t-sans s14 fg w500">1,482</text>
+        <path d={spark} class="line-accent" />
+      </g>
+    )
+  }
+
+  {
+    kind === 'store' && (
+      <g>
+        {/* store nav */}
+        <text x="66" y="102" class="t-sans s8 muted">Shop</text>
+        <text x="96" y="102" class="t-sans s8 muted">Collections</text>
+        <text x="150" y="102" class="t-sans s8 muted">Journal</text>
+        <text x="320" y="104" text-anchor="middle" class="t-serif s18 fg spaced">VERSO</text>
+        <text x="526" y="102" text-anchor="end" class="t-sans s8 muted">Search</text>
+        <text x="574" y="102" text-anchor="end" class="t-sans s8 fg">Cart (2)</text>
+        <line x1="48" y1="116.5" x2="592" y2="116.5" class="hair" />
+
+        {/* hero product */}
+        <rect x="64" y="130" width="290" height="196" rx="8" class="photo" />
+        <ellipse cx="210" cy="298" rx="96" ry="9" class="floor-shadow" />
+        <g class="chair">
+          <path d="M150 168 C142 176 150 214 176 246" class="chair-back" />
+          <path d="M176 248 C200 262 248 264 276 252" class="chair-seat" />
+          <path d="M182 262 L166 298 M268 262 L284 298 M186 270 L262 270" class="chair-legs" />
+          <path d="M268 252 C272 236 268 226 258 222" class="chair-arm" />
+        </g>
+        <text x="78" y="148" class="t-mono s7 faint">01 / 06</text>
+
+        <text x="374" y="148" class="t-mono s7 faint">NEW · ARC COLLECTION</text>
+        <text x="374" y="178" class="t-serif s24 fg">Arc Lounge</text>
+        <text x="374" y="202" class="t-serif s24 fg">Chair</text>
+        <text x="374" y="224" class="t-mono s10 muted">$1,240</text>
+        <circle cx="381" cy="246" r="7" class="swatch-oak" />
+        <circle cx="400" cy="246" r="7" class="swatch-walnut" />
+        <circle cx="419" cy="246" r="7" class="swatch-black" />
+        <circle cx="381" cy="246" r="10" class="swatch-ring" />
+        <rect x="374" y="266" width="136" height="28" rx="14" class="btn-light" />
+        <text x="442" y="283.5" text-anchor="middle" class="t-sans s9 dark w500">
+          Add to cart
+        </text>
+        <text x="374" y="314" class="t-mono s7 faint">FREE DELIVERY IN 5–7 DAYS</text>
+
+        {/* product row */}
+        {[
+          { n: 'Halo Table Lamp', p: '$320', icon: 'lamp' },
+          { n: 'Disc Side Table', p: '$540', icon: 'table' },
+          { n: 'Tri Stool', p: '$290', icon: 'stool' },
+        ].map((item, i) => (
+          <g>
+            <rect x={64 + i * 172} y="342" width="164" height="58" rx="8" class="photo" />
+            {item.icon === 'lamp' && (
+              <g class="mini" transform={`translate(${146 + i * 172} 371)`}>
+                <path d="M-11 -4 A11 9 0 0 1 11 -4 Z" />
+                <path d="M0 -4 V13 M-7 14 H7" />
+              </g>
+            )}
+            {item.icon === 'table' && (
+              <g class="mini" transform={`translate(${146 + i * 172} 371)`}>
+                <ellipse cx="0" cy="-7" rx="14" ry="3.5" />
+                <path d="M0 -4 V12 M-8 14 H8" />
+              </g>
+            )}
+            {item.icon === 'stool' && (
+              <g class="mini" transform={`translate(${146 + i * 172} 371)`}>
+                <ellipse cx="0" cy="-6" rx="10" ry="3" />
+                <path d="M-6 -3 L-10 14 M6 -3 L10 14 M0 -3 V14" />
+              </g>
+            )}
+            <text x={64 + i * 172} y="416" class="t-sans s8 fg">
+              {item.n}
+            </text>
+            <text x={228 + i * 172} y="416" text-anchor="end" class="t-mono s7 muted">
+              {item.p}
+            </text>
+          </g>
+        ))}
+
+        {/* toast */}
+        <g filter={`url(#shadow-${kind})`}>
+          <rect x="452" y="126" width="164" height="44" rx="10" class="toast" />
+        </g>
+        <rect x="452.5" y="126.5" width="163" height="43" rx="9.5" class="toast-stroke" />
+        <circle cx="474" cy="148" r="8" class="pill-ok" />
+        <path d="m470.5 148 2.4 2.4 4.6-4.8" class="check" />
+        <text x="490" y="145" class="t-sans s9 fg w500">Added to cart</text>
+        <text x="490" y="158" class="t-mono s7 faint">ARC LOUNGE CHAIR</text>
+      </g>
+    )
+  }
+
+  {
+    kind === 'docs' && (
+      <g>
+        {/* document */}
+        <rect x="62" y="92" width="318" height="330" rx="6" class="page" />
+        <text x="80" y="118" class="t-sans s11 fg w500">Master Services Agreement</text>
+        <text x="80" y="131" class="t-mono s7 faint">V3 · 24 PAGES · UPLOADED TODAY</text>
+        <text x="80" y="204" class="t-sans s8 fg w500">7. Limitation of liability</text>
+        <rect x="80" y="259" width="290" height="40" rx="4" class="mark-bad" />
+        <rect x="80" y="259" width="2" height="40" class="mark-bad-edge" />
+        <rect x="80" y="371" width="290" height="29" rx="4" class="mark-warn" />
+        <rect x="80" y="371" width="2" height="29" class="mark-warn-edge" />
+        <text x="372" y="271" text-anchor="end" class="t-mono s6 bad">7.2</text>
+        <text x="372" y="383" text-anchor="end" class="t-mono s6 warn">12.1</text>
+        {docBlocks.map((l) => (
+          <rect x={l.x} y={l.y} width={l.w} height="4.5" rx="2.25" class="text-line" />
+        ))}
+
+        {/* review panel */}
+        <text x="400" y="108" class="t-sans s11 fg w500">Review</text>
+        <rect x="532" y="97" width="44" height="15" rx="7.5" class="pill-muted" />
+        <text x="554" y="107.5" text-anchor="middle" class="t-mono s6 muted">3 ISSUES</text>
+        {issues.map((it, i) => (
+          <g>
+            <rect x="398" y={122 + i * 58} width="178" height="50" rx="8" class="tile" />
+            <rect
+              x="408"
+              y={132 + i * 58}
+              width={it.sev.length * 4.4 + 12}
+              height="12"
+              rx="6"
+              class={it.tone === 'bad' ? 'pill-bad' : it.tone === 'warn' ? 'pill-warn' : 'pill-muted'}
+            />
+            <text x="414" y={140.6 + i * 58} class:list={['t-mono s6', it.tone === 'bad' ? 'bad' : it.tone === 'warn' ? 'warn' : 'muted']}>
+              {it.sev.toUpperCase()}
+            </text>
+            <text x="566" y={141 + i * 58} text-anchor="end" class="t-mono s7 faint">
+              {it.ref}
+            </text>
+            <text x="408" y={161 + i * 58} class="t-sans s8 fg">
+              {it.title}
+            </text>
+          </g>
+        ))}
+
+        {/* chat */}
+        <rect x="462" y="304" width="114" height="22" rx="11" class="bubble-user" />
+        <text x="519" y="318.5" text-anchor="middle" class="t-sans s7 fg">
+          Summarise liability terms
+        </text>
+        <rect x="398" y="336" width="10" height="10" rx="3" class="accent-fill" />
+        <rect x="414" y="338" width="150" height="4.5" rx="2.25" class="text-line-bright" />
+        <rect x="414" y="348" width="138" height="4.5" rx="2.25" class="text-line-bright" />
+        <rect x="414" y="358" width="96" height="4.5" rx="2.25" class="text-line-bright" />
+        <rect x="514" y="355.5" width="26" height="10" rx="5" class="pill-bad" />
+        <text x="527" y="362.6" text-anchor="middle" class="t-mono s5 bad">§7.2</text>
+        <rect x="398" y="388" width="178" height="30" rx="15" class="input" />
+        <text x="412" y="406" class="t-sans s7 faint">Ask about this contract…</text>
+        <circle cx="560" cy="403" r="9" class="btn-light" />
+        <path d="M560 407.5v-8M556.5 402.5l3.5-3.5 3.5 3.5" class="send" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .visual {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .t-sans {
+    font-family: var(--font-sans);
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .t-serif {
+    font-family: var(--font-serif);
+  }
+  .spaced {
+    letter-spacing: 0.32em;
+  }
+  .w500 {
+    font-weight: 500;
+  }
+  .w600 {
+    font-weight: 600;
+  }
+  .s5 {
+    font-size: 5px;
+  }
+  .s6 {
+    font-size: 6px;
+  }
+  .s7 {
+    font-size: 7px;
+  }
+  .s8 {
+    font-size: 8px;
+  }
+  .s9 {
+    font-size: 9px;
+  }
+  .s10 {
+    font-size: 10px;
+  }
+  .s11 {
+    font-size: 11px;
+  }
+  .s14 {
+    font-size: 14px;
+  }
+  .s15 {
+    font-size: 15px;
+  }
+  .s18 {
+    font-size: 18px;
+  }
+  .s24 {
+    font-size: 24px;
+  }
+
+  .fg {
+    fill: #ededf0;
+  }
+  .muted {
+    fill: #9a9aa4;
+  }
+  .faint {
+    fill: #62626c;
+  }
+  .dark {
+    fill: #0a0a0c;
+  }
+  .accent {
+    fill: #a8f0cc;
+  }
+  .warn {
+    fill: #f5c97a;
+  }
+  .bad {
+    fill: #ff9b9b;
+  }
+
+  .win {
+    fill: #101013;
+  }
+  .win-stroke {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.09);
+  }
+  .chrome {
+    fill: #2a2a30;
+  }
+  .url {
+    fill: #18181c;
+  }
+  .hair {
+    stroke: rgb(255 255 255 / 0.07);
+  }
+  .hair-strong {
+    stroke: rgb(255 255 255 / 0.25);
+  }
+  .tile {
+    fill: #141418;
+    stroke: rgb(255 255 255 / 0.06);
+  }
+  .surface-2 {
+    fill: #17171b;
+  }
+  .surface-3 {
+    fill: #26262c;
+  }
+  .pill-active {
+    fill: #222228;
+  }
+  .grid {
+    stroke: rgb(255 255 255 / 0.05);
+    stroke-dasharray: 2 3;
+  }
+  .band {
+    fill: rgb(168 240 204 / 0.07);
+  }
+  .line-accent {
+    fill: none;
+    stroke: #a8f0cc;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .line-forecast {
+    fill: none;
+    stroke: #a8f0cc;
+    stroke-opacity: 0.6;
+    stroke-width: 1.4;
+    stroke-dasharray: 3 3;
+  }
+  .dash-line {
+    stroke: #a8f0cc;
+    stroke-opacity: 0.6;
+    stroke-dasharray: 3 2;
+  }
+  .today {
+    stroke: rgb(255 255 255 / 0.18);
+    stroke-dasharray: 2 2;
+  }
+  .accent-fill {
+    fill: #a8f0cc;
+  }
+  .warn-fill {
+    fill: #f5c97a;
+  }
+  .dot-ring {
+    fill: #101013;
+    stroke: #a8f0cc;
+    stroke-opacity: 0.5;
+  }
+  .tooltip {
+    fill: #222228;
+    stroke: rgb(255 255 255 / 0.08);
+  }
+
+  .map {
+    fill: #0d0d10;
+  }
+  .river {
+    fill: rgb(255 255 255 / 0.035);
+  }
+  .park {
+    fill: rgb(168 240 204 / 0.035);
+  }
+  .highway {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.12);
+    stroke-width: 4;
+  }
+  .route {
+    fill: none;
+    stroke: #a8f0cc;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .route-warn {
+    fill: none;
+    stroke: #f5c97a;
+    stroke-width: 1.6;
+    stroke-dasharray: 4 4;
+    stroke-linecap: round;
+  }
+  .stop {
+    fill: #0d0d10;
+    stroke: #ededf0;
+    stroke-width: 1.6;
+  }
+  .halo {
+    fill: rgb(168 240 204 / 0.14);
+  }
+  .halo-warn {
+    fill: rgb(245 201 122 / 0.14);
+  }
+  .callout {
+    fill: #18181c;
+    stroke: rgb(255 255 255 / 0.1);
+  }
+  .ctrl {
+    stroke: #9a9aa4;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+  }
+  .scale {
+    stroke: #62626c;
+    stroke-width: 1.4;
+  }
+  .pill-ok {
+    fill: rgb(168 240 204 / 0.12);
+  }
+  .pill-warn {
+    fill: rgb(245 201 122 / 0.13);
+  }
+  .pill-bad {
+    fill: rgb(255 155 155 / 0.13);
+  }
+  .pill-muted {
+    fill: rgb(255 255 255 / 0.06);
+  }
+
+  .photo {
+    fill: #17171b;
+  }
+  .floor-shadow {
+    fill: rgb(0 0 0 / 0.35);
+  }
+  .chair path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .chair-back {
+    stroke: #c9b49a;
+    stroke-width: 15;
+  }
+  .chair-seat {
+    stroke: #c9b49a;
+    stroke-width: 16;
+  }
+  .chair-arm {
+    stroke: #8a6e52;
+    stroke-width: 5;
+  }
+  .chair-legs {
+    stroke: #8a6e52;
+    stroke-width: 4;
+  }
+  .swatch-oak {
+    fill: #c9b49a;
+  }
+  .swatch-walnut {
+    fill: #6f5440;
+  }
+  .swatch-black {
+    fill: #2a2a2e;
+    stroke: rgb(255 255 255 / 0.12);
+  }
+  .swatch-ring {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.5);
+  }
+  .btn-light {
+    fill: #ededf0;
+  }
+  .mini {
+    fill: none;
+    stroke: #9a9aa4;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .toast {
+    fill: #1b1b20;
+  }
+  .toast-stroke {
+    fill: none;
+    stroke: rgb(168 240 204 / 0.25);
+  }
+  .check {
+    fill: none;
+    stroke: #a8f0cc;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .page {
+    fill: #141418;
+    stroke: rgb(255 255 255 / 0.06);
+  }
+  .text-line {
+    fill: rgb(255 255 255 / 0.11);
+  }
+  .text-line-bright {
+    fill: rgb(255 255 255 / 0.2);
+  }
+  .mark-bad {
+    fill: rgb(255 155 155 / 0.08);
+  }
+  .mark-bad-edge {
+    fill: #ff9b9b;
+  }
+  .mark-warn {
+    fill: rgb(245 201 122 / 0.08);
+  }
+  .mark-warn-edge {
+    fill: #f5c97a;
+  }
+  .bubble-user {
+    fill: #222228;
+  }
+  .input {
+    fill: #141418;
+    stroke: rgb(255 255 255 / 0.08);
+  }
+  .send {
+    fill: none;
+    stroke: #0a0a0c;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

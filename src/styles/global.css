@@ -1,0 +1,428 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Nightloom — global styles
+   Layers: reset → tokens → base → components → utilities.
+   Component styles (scoped, unlayered) always win over these layers.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@layer reset, base, components, utilities;
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #0a0a0c;
+  --bg-1: #0e0e11;
+  --bg-2: #131317;
+  --bg-3: #1a1a1f;
+
+  /* text — --fg … --fg-3 are ≥ 4.5:1 on every surface;
+     --fg-4 is for large display text (≥ 3:1) and decorative marks only */
+  --fg: #ededf0;
+  --fg-2: #a1a1aa;
+  --fg-3: #85858f;
+  --fg-4: #63636d;
+
+  /* hairlines */
+  --line: rgb(255 255 255 / 0.075);
+  --line-2: rgb(255 255 255 / 0.13);
+  --line-3: rgb(255 255 255 / 0.22);
+
+  /* signal colour: "all systems operational" */
+  --accent: #a8f0cc;
+  --accent-rgb: 168 240 204;
+  --amber: #f5c97a;
+  --danger: #ff9b9b;
+
+  /* layout */
+  --container: 1440px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --gap: clamp(16px, 1.7vw, 24px);
+  --header-h: 68px;
+  --section-y: clamp(104px, 12vw, 184px);
+
+  /* type scale */
+  --fs-display: clamp(3.25rem, 0.6rem + 8.2vw, 9.5rem);
+  --fs-h2: clamp(2.375rem, 1.15rem + 3.9vw, 5rem);
+  --fs-h3: clamp(1.375rem, 1.1rem + 0.7vw, 1.75rem);
+  --fs-lead: clamp(1.125rem, 1.02rem + 0.38vw, 1.375rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-mono: 0.75rem;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur: 320ms;
+  --dur-slow: 640ms;
+
+  /* shape */
+  --radius-s: 6px;
+  --radius: 12px;
+  --radius-l: 20px;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    hanging-punctuation: first last;
+  }
+  body {
+    min-height: 100svh;
+  }
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+  button {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  ul,
+  ol {
+    list-style: none;
+    padding: 0;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  legend {
+    padding: 0;
+  }
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    background: var(--bg);
+    scroll-padding-top: calc(var(--header-h) + 24px);
+    scrollbar-color: var(--bg-3) var(--bg);
+    scrollbar-width: thin;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg-2);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  /* film grain — sits behind content, never intercepts input */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  main,
+  footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--fg);
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd,
+  blockquote {
+    text-wrap: pretty;
+  }
+
+  strong {
+    color: var(--fg);
+    font-weight: 500;
+  }
+
+  em {
+    font-style: normal;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-3);
+    border: 2px solid var(--bg);
+    border-radius: 10px;
+  }
+}
+
+/* ── Components ─────────────────────────────────────────────────────────── */
+@layer components {
+  .container {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .section {
+    position: relative;
+    padding-block: var(--section-y);
+  }
+
+  /* Italic serif accent, used inside headings: *word* in site.ts */
+  .serif,
+  :is(h1, h2, h3, blockquote) em {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+  }
+
+  .label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    font-weight: 450;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mono {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lead {
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    letter-spacing: -0.012em;
+    color: var(--fg-2);
+  }
+
+  /* Status dot */
+  .dot {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: dot-pulse 2.6s var(--ease-out) infinite;
+  }
+  .dot.is-amber {
+    background: var(--amber);
+  }
+  .dot.is-off {
+    background: var(--fg-4);
+  }
+  .dot.is-off::after {
+    animation: none;
+  }
+  @keyframes dot-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    70%,
+    100% {
+      transform: scale(3.2);
+      opacity: 0;
+    }
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding-inline: 10px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    color: var(--fg-3);
+    white-space: nowrap;
+  }
+
+  /* Animated underline */
+  .link {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition:
+      background-size var(--dur-slow) var(--ease-out),
+      color var(--dur) var(--ease-out);
+    padding-bottom: 2px;
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Hairline */
+  .rule {
+    height: 1px;
+    background: var(--line-2);
+    transform-origin: left center;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    transform: translateY(-160%);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .skip-link:focus-visible {
+    transform: none;
+  }
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+@layer utilities {
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+}
+
+/* ── Progressive enhancement for scroll reveals ─────────────────────────────
+   Content is always visible without JS. With JS, [data-reveal] starts hidden
+   and GSAP brings it in. A safety timer in <head> removes .js if scripts fail. */
+html.js:not(.reduced-motion) :is(
+    [data-reveal],
+    [data-stagger-item],
+    [data-split],
+    [data-hero-title],
+    [data-hero-item],
+    [data-case] .case__media,
+    [data-case] .case__body > *
+  ) {
+  opacity: 0;
+}
+html.js:not(.reduced-motion) [data-line] {
+  transform: scaleX(0);
+}
+
+/* SplitText line masks: give descenders and italic overhangs room to breathe */
+.split-line-mask {
+  padding: 0.06em 0.12em 0.14em 0;
+  margin: -0.06em -0.12em -0.14em 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

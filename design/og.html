@@ -1,0 +1,41 @@
+<!doctype html>
+<!--
+  Source of public/og.png — the 1200×630 preview shown when the site is shared.
+  Edit the text below, then render it (fonts load from node_modules, so run `npm install` first):
+
+    npx playwright screenshot --viewport-size "1200, 630" --wait-for-timeout 800 design/og.html public/og.png
+
+  Or open the file in Chrome, set the window to 1200×630 in DevTools (device toolbar) and capture a screenshot.
+-->
+<html lang="en"><head><meta charset="utf-8"><title>Nightloom — OG image</title><style>
+@font-face{font-family:G;src:url(../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:GM;src:url(../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:IS;src:url(../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2) format("woff2");font-style:italic}
+
+*{margin:0;box-sizing:border-box}
+body{width:1200px;height:630px;background:#0a0a0c;overflow:hidden;position:relative;font-family:G;color:#ededf0}
+canvas{position:absolute;inset:0}
+.fade{position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0c 0%,rgba(10,10,12,.92) 34%,rgba(10,10,12,0) 62%),linear-gradient(0deg,#0a0a0c 0%,rgba(10,10,12,0) 30%)}
+.brand{position:absolute;left:72px;top:64px;display:flex;align-items:center;gap:14px;font-size:30px;font-weight:550;letter-spacing:-.025em}
+.title{position:absolute;left:68px;top:196px;font-size:104px;font-weight:450;line-height:.92;letter-spacing:-.052em}
+.title em{font-family:IS;font-style:italic;font-weight:400;letter-spacing:-.03em}
+.meta{position:absolute;left:72px;bottom:62px;font-family:GM;font-size:17px;letter-spacing:.08em;text-transform:uppercase;color:#85858f;display:flex;gap:18px;align-items:center}
+.meta i{display:inline-block;width:34px;height:1px;background:#85858f}
+</style></head><body>
+<canvas id="c" width="2400" height="1260" style="width:1200px;height:630px"></canvas>
+<div class="fade"></div>
+<div class="brand"><svg width="40" height="40" viewBox="0 0 32 32"><path fill="#ededf0" fill-rule="evenodd" d="M16 4A10 10 0 0 1 23.056 6.914H8.944A10 10 0 0 1 16 4ZM8.388 7.514H23.612A10 10 0 0 1 25.34 10.429H6.66A10 10 0 0 1 8.388 7.514ZM6.452 11.029H25.548A10 10 0 0 1 26 13.943H6A10 10 0 0 1 6.452 11.029ZM6 14.543H26V17.457H6V14.543ZM6 18.057H26V20.971H6V18.057ZM6 21.571H26V24.486H6V21.571ZM6 25.086H26V26.8C25.351 27.412 24.726 28 24 28 C22.543 28 21.457 25.6 20 25.6 C18.543 25.6 17.457 28 16 28 C14.543 28 13.457 25.6 12 25.6 C10.543 25.6 9.457 28 8 28 C7.274 28 6.649 27.412 6 26.8V25.086ZM10.863 13.943A1.55 2.35 0 0 1 13.937 13.943ZM13.937 14.543A1.55 2.35 0 0 1 10.863 14.543ZM18.063 13.943A1.55 2.35 0 0 1 21.137 13.943ZM21.137 14.543A1.55 2.35 0 0 1 18.063 14.543Z"/></svg>Nightloom</div>
+<div class="title">Small team.<br>Serious <em>software.</em></div>
+<div class="meta"><i></i>Independent software studio</div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');x.scale(2,2);
+const W=1200,H=630,TAU=Math.PI*2,clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v,ss=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t)};
+const R=150,gx=900,gTop=96,gh=R*2.4,domeY=gTop+R,amp=R*.12,hemC=gTop+gh-amp,lam=R*.8,soft=R*.17,lift=R*.13;
+const field=(px,py)=>{let d;if(py<domeY){d=Math.hypot(px-gx,py-domeY)-R}else{const s=Math.abs(px-gx)-R,b=py-(hemC+amp*Math.cos((px-gx)/lam*TAU+0.6));d=s>0&&b>0?Math.hypot(s,b):Math.max(s,b)}const e=1-ss(-soft,soft,d);if(e<=0)return 0;return e*(.55+.45*Math.sqrt(clamp(-d/(R*.8))))};
+const eyeY=gTop+R*1.024,erx=R*.145,ery=R*.23,eyes=[gx-R*.36,gx+R*.36];const holeY=eyeY+field(eyes[0],eyeY)*lift;
+const L=10,cols=[];for(let i=0;i<L;i++){const k=i/(L-1);cols.push(`rgba(${Math.round(237-69*k*.45)},${Math.round(237+3*k*.45)},${Math.round(240-36*k*.45)},${(.085+Math.pow(k,1.15)*.8).toFixed(3)})`)}
+const paths=cols.map(()=>new Path2D());const gap=9;
+for(let y0=4;y0<H;y0+=gap){let spans=[0,W];const dy=(y0-holeY)/ery;if(Math.abs(dy)<1){const hw=erx*Math.sqrt(1-dy*dy);spans=[0,eyes[0]-hw,eyes[0]+hw,eyes[1]-hw,eyes[1]+hw,W]}
+for(let k=0;k<spans.length;k+=2){let lv=-1,px=0,py=0,first=true;for(let X=spans[k];;X+=5){const cx=Math.min(X,spans[k+1]);const v=field(cx,y0);const y=y0-v*lift;const l=Math.min(L-1,Math.round(v*(L-1)));if(first){first=false;lv=l;paths[l].moveTo(cx,y)}else if(l!==lv){lv=l;paths[l].moveTo(px,py);paths[l].lineTo(cx,y)}else paths[l].lineTo(cx,y);px=cx;py=y;if(cx>=spans[k+1])break}}}
+x.lineWidth=1;paths.forEach((p,i)=>{x.strokeStyle=cols[i];x.stroke(p)});
+</script></body></html>

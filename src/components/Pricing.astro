@@ -1,0 +1,225 @@
+---
+import SectionHead from './SectionHead.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const { pricing } = site;
+---
+
+<section class="section pricing" id="pricing" aria-labelledby="pricing-title">
+  <div class="container">
+    <SectionHead
+      index={pricing.index}
+      label={pricing.label}
+      meta={pricing.meta}
+      title={pricing.title}
+      lead={pricing.lead}
+      titleId="pricing-title"
+    />
+
+    <ul class="plans" data-stagger>
+      {
+        pricing.plans.map((plan) => (
+          <li class:list={['plan', { 'plan--featured': plan.featured }]} data-spotlight data-stagger-item>
+            <div class="plan__head">
+              <h3 class="plan__name">{plan.name}</h3>
+              {plan.featured && (
+                <span class="plan__badge">
+                  <span class="dot" aria-hidden="true" />
+                  {pricing.featuredLabel}
+                </span>
+              )}
+            </div>
+
+            <p class="plan__price">
+              <span class="label plan__period">{plan.period}</span>
+              <span class="plan__amount">{plan.price}</span>
+            </p>
+            <p class="plan__desc">{plan.description}</p>
+
+            <p class="plan__duration">
+              <span class="label">Timeline</span>
+              <span>{plan.duration}</span>
+            </p>
+
+            <ul class="plan__features">
+              {plan.features.map((feature) => (
+                <li>
+                  <Icon name="check" size={16} class="plan__check" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Button
+              label={plan.cta}
+              href="#contact"
+              variant={plan.featured ? 'primary' : 'ghost'}
+              class="plan__cta"
+              data-plan={plan.name}
+            />
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="pricing__note" data-reveal>{pricing.note}</p>
+  </div>
+</section>
+
+<style>
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+    margin-top: clamp(64px, 8vw, 112px);
+  }
+
+  .plan {
+    --mx: 50%;
+    --my: 0%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: clamp(28px, 2.8vw, 40px);
+    border-radius: var(--radius-l);
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--line);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .plan::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(480px circle at var(--mx) var(--my), rgb(255 255 255 / 0.04), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .plan:hover::before {
+    opacity: 1;
+  }
+
+  .plan--featured {
+    background: linear-gradient(180deg, #121216, #0d0d10 60%);
+    box-shadow:
+      inset 0 0 0 1px var(--line-2),
+      0 40px 80px -40px rgb(0 0 0 / 0.8);
+  }
+  .plan--featured::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(var(--accent-rgb) / 0.7), transparent);
+  }
+
+  .plan__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 28px;
+  }
+  .plan__name {
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .plan__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 26px;
+    padding-inline: 10px 12px;
+    border-radius: 999px;
+    background: rgb(var(--accent-rgb) / 0.08);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .plan__badge :global(.dot) {
+    width: 6px;
+    height: 6px;
+  }
+
+  .plan__price {
+    display: grid;
+    gap: 8px;
+    margin-top: clamp(12px, 2vw, 28px);
+  }
+  .plan__amount {
+    font-size: clamp(3rem, 2.2rem + 2.4vw, 4.5rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .plan__desc {
+    min-height: 3.2em;
+  }
+
+  .plan__duration {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 14px;
+    border-block: 1px solid var(--line);
+    font-size: 0.9375rem;
+    color: var(--fg);
+  }
+
+  .plan__features {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .plan__features li {
+    display: flex;
+    gap: 10px;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--fg-2);
+  }
+  .plan__features :global(.plan__check) {
+    flex: none;
+    margin-top: 2px;
+    color: var(--fg-3);
+  }
+  .plan--featured .plan__features :global(.plan__check) {
+    color: var(--accent);
+  }
+
+  .plan :global(.plan__cta) {
+    margin-top: auto;
+    width: 100%;
+  }
+  .plan :global(.plan__cta .btn__inner) {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pricing__note {
+    max-width: 72ch;
+    margin-top: 32px;
+    font-size: 0.875rem;
+    color: var(--fg-3);
+  }
+
+  @media (max-width: 1023px) {
+    .plans {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 560px;
+    }
+    .plan__desc {
+      min-height: 0;
+    }
+  }
+</style>

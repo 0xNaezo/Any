@@ -1,0 +1,262 @@
+---
+import GhostMark from './GhostMark.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { withBase } from '../lib/utils';
+
+const home = withBase('/');
+const isHome = Astro.url.pathname === home || `${Astro.url.pathname}/` === home;
+const anchor = (hash: string) => (isHome ? hash : `${home}${hash}`);
+const year = new Date().getFullYear();
+
+/* The giant wordmark: the "oo" in Nightloom become a pair of eyes. */
+const letters = [...site.name];
+const firstO = site.name.toLowerCase().indexOf('oo');
+---
+
+<footer class="footer" aria-labelledby="footer-title">
+  <h2 id="footer-title" class="sr-only">{site.name} — footer</h2>
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="footer__logo" href={home} aria-label={`${site.name} — home`}>
+          <GhostMark size={34} />
+        </a>
+        <p class="footer__tagline">{site.tagline}</p>
+        <p class="footer__status label">
+          <span class:list={['dot', { 'is-amber': !site.availability.open }]} aria-hidden="true"></span>
+          {site.availability.short}
+        </p>
+      </div>
+
+      <nav class="footer__cols" aria-label="Footer">
+        <div class="footer__col">
+          <h3 class="label">Studio</h3>
+          <ul>
+            {
+              site.nav.map((item) => (
+                <li>
+                  <a class="link" href={anchor(item.href)}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3 class="label">Contact</h3>
+          <ul>
+            <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
+            <li><a class="link" href={site.links.telegram.href} target="_blank" rel="noopener">Telegram</a></li>
+            <li><a class="link" href={site.links.call.href} target="_blank" rel="noopener">{site.links.call.label}</a></li>
+            <li><a class="link" href={anchor('#contact')}>Project form</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3 class="label">Elsewhere</h3>
+          <ul>
+            {
+              site.socials.map((social) => (
+                <li>
+                  <a class="footer__ext link" href={social.href} target="_blank" rel="noopener">
+                    {social.label}
+                    <Icon name="arrow-up-right" size={12} />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} {site.legalName}</p>
+      <p>{site.footer.legal}</p>
+      <p class="footer__colophon">{site.footer.colophon}</p>
+      <p class="footer__clock mono">
+        <span data-clock data-timezone={site.location.timezone}>--:--</span>
+        <span>{site.location.city}</span>
+      </p>
+      <a class="footer__totop" href="#main" data-to-top>
+        Back to top
+        <Icon name="arrow-up" size={14} />
+      </a>
+    </div>
+    <div class="wordmark" aria-hidden="true" data-wordmark>
+      {
+        letters.map((char, i) =>
+          firstO > -1 && (i === firstO || i === firstO + 1) ? (
+            <span class="wordmark__char wordmark__eye" data-eye>
+              {char}
+              <span class="wordmark__pupil" />
+            </span>
+          ) : (
+            <span class="wordmark__char">{char}</span>
+          ),
+        )
+      }
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-top: clamp(88px, 10vw, 144px);
+    border-top: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .footer__top {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 56px;
+  }
+
+  .footer__brand {
+    grid-column: 1 / span 5;
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 20px;
+  }
+  .footer__logo {
+    color: var(--fg);
+    border-radius: 8px;
+  }
+  .footer__tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .footer__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--fg-2);
+  }
+
+  .footer__cols {
+    grid-column: 7 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .footer__col {
+    display: grid;
+    align-content: start;
+    gap: 18px;
+  }
+  .footer__col ul {
+    display: grid;
+    gap: 10px;
+  }
+  .footer__col a {
+    color: var(--fg-2);
+    font-size: 0.9375rem;
+  }
+  .footer__col a:hover {
+    color: var(--fg);
+  }
+  .footer__ext {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Giant wordmark with watching eyes */
+  .wordmark {
+    display: flex;
+    justify-content: space-between;
+    margin-top: clamp(48px, 7vw, 96px);
+    margin-inline: -0.02em;
+    font-size: min(21.4vw, 308px);
+    font-weight: 500;
+    line-height: 0.74;
+    letter-spacing: -0.06em;
+    color: #18181c;
+    user-select: none;
+    overflow: hidden;
+  }
+  .wordmark__char {
+    display: inline-block;
+  }
+  .wordmark__eye {
+    position: relative;
+    color: #232329;
+  }
+  .wordmark__pupil {
+    --px: 0;
+    --py: 0;
+    position: absolute;
+    left: 50%;
+    top: 61%;
+    width: 0.085em;
+    height: 0.085em;
+    margin: -0.0425em 0 0 -0.0425em;
+    border-radius: 50%;
+    background: var(--fg);
+    transform: translate(calc(var(--px) * 0.075em), calc(var(--py) * 0.06em));
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 28px;
+    margin-top: clamp(72px, 9vw, 120px);
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 0.8125rem;
+    color: var(--fg-3);
+  }
+  .footer__colophon {
+    flex: 1 1 320px;
+  }
+  .footer__clock {
+    display: inline-flex;
+    gap: 8px;
+    font-size: 0.75rem;
+  }
+  .footer__totop {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fg-2);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .footer__totop:hover {
+    color: var(--fg);
+  }
+  .footer__totop :global(svg) {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .footer__totop:hover :global(svg) {
+    transform: translateY(-3px);
+  }
+
+  @media (max-width: 1023px) {
+    .footer__brand,
+    .footer__cols {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .footer__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 40px;
+    }
+    .footer__col:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,562 @@
+---
+import SectionHead from './SectionHead.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import GhostMark from './GhostMark.astro';
+import { site } from '../data/site';
+
+const { contact, email, links, availability, location } = site;
+const { form } = contact;
+const action = form.endpoint || `mailto:${email}`;
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <SectionHead
+      index={contact.index}
+      label={contact.label}
+      meta={contact.meta}
+      title={contact.title}
+      lead={contact.lead}
+      titleId="contact-title"
+    />
+
+    <div class="contact__layout">
+      <aside class="contact__aside" data-reveal>
+        <div class="contact__block">
+          <p class="label">Talk to us directly</p>
+          <ul class="channels">
+            <li class="channel">
+              <Icon name="mail" size={18} />
+              <a class="link" href={`mailto:${email}`}>{email}</a>
+              <button class="channel__copy" type="button" data-copy={email} aria-label={`Copy ${email}`}>
+                <span class="channel__copy-idle"><Icon name="copy" size={15} /></span>
+                <span class="channel__copy-done" aria-hidden="true"><Icon name="check" size={15} /></span>
+              </button>
+              <span class="sr-only" role="status" data-copy-status></span>
+            </li>
+            <li class="channel">
+              <Icon name="telegram" size={18} />
+              <a class="link" href={links.telegram.href} target="_blank" rel="noopener">{links.telegram.label}</a>
+            </li>
+            <li class="channel">
+              <Icon name="calendar" size={18} />
+              <a class="link" href={links.call.href} target="_blank" rel="noopener">{links.call.label}</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="contact__block">
+          <p class="label">{contact.next.label}</p>
+          <ol class="next">
+            {
+              contact.next.steps.map((step, i) => (
+                <li class="next__step">
+                  <span class="next__num mono">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{step}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <p class="contact__status">
+          <span class:list={['dot', { 'is-amber': !availability.open }]} aria-hidden="true"></span>
+          <span>{availability.long}</span>
+        </p>
+      </aside>
+
+      <div class="contact__panel" data-reveal>
+        <form
+          class="form"
+          action={action}
+          method="post"
+          enctype={form.endpoint ? undefined : 'text/plain'}
+          novalidate
+          data-contact-form
+          data-endpoint={form.endpoint}
+          data-email={email}
+          data-timezone={location.timezone}
+          data-workdays={JSON.stringify(location.hours.days)}
+        >
+          <div class="form__row">
+            <div class="field">
+              <label class="field__label" for="f-name">Name <span aria-hidden="true">*</span></label>
+              <input class="field__input" id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error" placeholder="Jane Cooper" />
+              <p class="field__error" id="f-name-error" data-error-for="name"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-email">Email <span aria-hidden="true">*</span></label>
+              <input class="field__input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="f-email-error" placeholder="jane@company.com" />
+              <p class="field__error" id="f-email-error" data-error-for="email"></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-company">Company <span class="field__optional">optional</span></label>
+            <input class="field__input" id="f-company" name="company" type="text" autocomplete="organization" placeholder="Company or project name" />
+          </div>
+
+          <fieldset class="field">
+            <legend class="field__label">What do you need?</legend>
+            <div class="chips">
+              {
+                form.needs.map((need) => (
+                  <label class="chip">
+                    <input type="checkbox" name="needs" value={need} />
+                    <span>{need}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend class="field__label">Budget</legend>
+            <div class="chips">
+              {
+                form.budgets.map((budget) => (
+                  <label class="chip">
+                    <input type="radio" name="budget" value={budget} />
+                    <span>{budget}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label class="field__label" for="f-message">About the project <span aria-hidden="true">*</span></label>
+            <textarea
+              class="field__input field__textarea"
+              id="f-message"
+              name="message"
+              rows="4"
+              required
+              minlength="20"
+              aria-describedby="f-message-error"
+              placeholder="What are you building, where are you now, and when would you like to launch?"
+            ></textarea>
+            <p class="field__error" id="f-message-error" data-error-for="message"></p>
+          </div>
+
+          <div class="form__plan" data-plan-note hidden>
+            <span class="label">Interested in</span>
+            <span data-plan-name></span>
+            <button type="button" class="form__plan-clear" data-plan-clear aria-label="Remove selected plan">
+              <Icon name="plus" size={14} />
+            </button>
+          </div>
+          <input type="hidden" name="plan" value="" data-plan-input />
+
+          <label class="check">
+            <input type="checkbox" name="nda" value="yes" />
+            <span class="check__box" aria-hidden="true"><Icon name="check" size={12} strokeWidth={2} /></span>
+            <span>Send me an NDA before the first call</span>
+          </label>
+
+          {/* spam trap — humans never see it */}
+          <div class="form__trap" aria-hidden="true">
+            <label>Leave this field empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          {form.accessKey && <input type="hidden" name="access_key" value={form.accessKey} />}
+          <input type="hidden" name="subject" value={`New project request — ${site.name}`} />
+
+          <div class="form__foot">
+            <Button label="Send request" type="submit" class="form__submit" magnetic={false} />
+            <p class="form__privacy">We only use your details to reply. No newsletters, no sharing — ever.</p>
+          </div>
+
+          <p class="form__status" role="alert" data-form-status></p>
+        </form>
+
+        <div class="success" data-form-success hidden tabindex="-1">
+          <GhostMark size={44} class="success__ghost" />
+          <h3 class="success__title">{form.success.title}</h3>
+          <p class="success__text" data-success-text data-template={form.success.text}>
+            {form.success.text.replace('{day}', 'the next business day')}
+          </p>
+          <button type="button" class="success__again link" data-form-reset>Send another message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 64px;
+    margin-top: clamp(64px, 8vw, 112px);
+  }
+
+  .contact__aside {
+    grid-column: 1 / span 4;
+    display: grid;
+    align-content: start;
+    gap: 48px;
+  }
+  .contact__block {
+    display: grid;
+    gap: 18px;
+  }
+
+  .channels {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  .channel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 56px;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg);
+  }
+  .channel > :global(svg) {
+    flex: none;
+    color: var(--fg-3);
+  }
+  .channel__copy {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+    border-radius: 50%;
+    color: var(--fg-3);
+    transition:
+      color var(--dur) var(--ease-out),
+      background-color var(--dur) var(--ease-out);
+  }
+  .channel__copy:hover {
+    color: var(--fg);
+    background: rgb(255 255 255 / 0.05);
+  }
+  .channel__copy > span {
+    grid-area: 1 / 1;
+    display: grid;
+    transition:
+      opacity var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out);
+  }
+  .channel__copy-done {
+    opacity: 0;
+    transform: scale(0.6);
+    color: var(--accent);
+  }
+  .channel__copy:global(.is-copied) .channel__copy-idle {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  .channel__copy:global(.is-copied) .channel__copy-done {
+    opacity: 1;
+    transform: none;
+  }
+
+  .next {
+    display: grid;
+    gap: 14px;
+  }
+  .next__step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    color: var(--fg-2);
+  }
+  .next__num {
+    padding-top: 0.25em;
+    font-size: 0.75rem;
+    color: var(--fg-3);
+  }
+
+  .contact__status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg);
+    font-size: 0.9375rem;
+  }
+
+  .contact__panel {
+    grid-column: 6 / -1;
+    position: relative;
+  }
+
+  /* ── form ── */
+  .form {
+    display: grid;
+    gap: 36px;
+  }
+  .form__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px var(--gap);
+  }
+
+  .field {
+    display: grid;
+    gap: 10px;
+  }
+  .field__label {
+    font-size: 0.875rem;
+    color: var(--fg-2);
+  }
+  .field__label span[aria-hidden] {
+    color: var(--fg-3);
+  }
+  .field__optional {
+    margin-left: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .field__input {
+    width: 100%;
+    padding: 10px 0 14px;
+    border: 0;
+    border-bottom: 1px solid var(--line-2);
+    border-radius: 0;
+    background: transparent;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    outline: none;
+    transition: border-color var(--dur) var(--ease-out);
+  }
+  .field__input::placeholder {
+    color: var(--fg-3);
+  }
+  .field__input:hover {
+    border-color: var(--line-3);
+  }
+  .field__input:focus {
+    border-color: var(--fg);
+  }
+  .field__input[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  .field__textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+  }
+  .field__error {
+    min-height: 0;
+    font-size: 0.8125rem;
+    color: var(--danger);
+  }
+  .field__error:empty {
+    display: none;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 4px;
+  }
+  .chip {
+    position: relative;
+    cursor: pointer;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding-inline: 16px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    font-size: 0.9375rem;
+    color: var(--fg-2);
+    transition:
+      background-color var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+    user-select: none;
+  }
+  .chip:hover span {
+    color: var(--fg);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+  .chip input:checked + span {
+    background: var(--fg);
+    color: var(--bg);
+    box-shadow: none;
+  }
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .form__plan {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-self: start;
+    padding: 6px 6px 6px 14px;
+    border-radius: 999px;
+    background: rgb(var(--accent-rgb) / 0.08);
+    color: var(--fg);
+    font-size: 0.9375rem;
+  }
+  .form__plan[hidden] {
+    display: none;
+  }
+  .form__plan-clear {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: var(--fg-2);
+    transform: rotate(45deg);
+  }
+  .form__plan-clear:hover {
+    color: var(--fg);
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    justify-self: start;
+    cursor: pointer;
+    color: var(--fg-2);
+    font-size: 0.9375rem;
+  }
+  .check input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .check__box {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px var(--line-3);
+    color: transparent;
+    transition:
+      background-color var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out);
+  }
+  .check input:checked + .check__box {
+    background: var(--fg);
+    color: var(--bg);
+    box-shadow: none;
+  }
+  .check input:focus-visible + .check__box {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .check:hover {
+    color: var(--fg);
+  }
+
+  .form__trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    padding-top: 8px;
+  }
+  .form__privacy {
+    max-width: 34ch;
+    font-size: 0.8125rem;
+    color: var(--fg-3);
+  }
+  .form__status {
+    font-size: 0.9375rem;
+    color: var(--danger);
+  }
+  .form__status:empty {
+    display: none;
+  }
+  .form__status:global(.is-info) {
+    color: var(--fg-2);
+  }
+
+  .success {
+    display: grid;
+    justify-items: start;
+    gap: 20px;
+    padding: clamp(32px, 4vw, 56px);
+    border-radius: var(--radius-l);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    background: linear-gradient(180deg, #111115, #0c0c0f);
+    outline: none;
+  }
+  .success[hidden] {
+    display: none;
+  }
+  .success :global(.success__ghost) {
+    color: var(--fg);
+    animation: float 4s var(--ease-in-out) infinite;
+  }
+  .success__title {
+    font-size: clamp(1.75rem, 1.3rem + 1.4vw, 2.5rem);
+    font-weight: 450;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+  .success__text {
+    max-width: 44ch;
+    font-size: 1.0625rem;
+  }
+  .success__again {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .contact__aside,
+    .contact__panel {
+      grid-column: 1 / -1;
+    }
+    .contact__aside {
+      order: 2;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .form__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .form__foot :global(.form__submit) {
+      width: 100%;
+    }
+    .form__foot :global(.form__submit .btn__inner) {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>

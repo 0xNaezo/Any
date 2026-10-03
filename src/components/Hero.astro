@@ -1,0 +1,260 @@
+---
+import Button from './Button.astro';
+import { site } from '../data/site';
+import { rich } from '../lib/utils';
+
+const { hero, location, founded } = site;
+---
+
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <canvas class="hero__canvas" data-threads aria-hidden="true"></canvas>
+  <div class="hero__ghost" data-ghost-anchor aria-hidden="true"></div>
+
+  <div class="container hero__inner">
+    <div class="hero__top">
+      <p class="label hero__eyebrow" data-hero-item>
+        <span class="hero__eyebrow-mark" aria-hidden="true"></span>
+        {hero.eyebrow}
+      </p>
+      <p class="label hero__est" data-hero-item>Est. {founded} — {location.label}</p>
+    </div>
+
+    <div class="hero__main">
+      <h1 id="hero-title" class="hero__title" data-hero-title set:html={rich(hero.title)} />
+
+      <div class="hero__sub">
+        <p class="lead hero__lead" data-hero-item>{hero.lead}</p>
+        <div class="hero__ctas" data-hero-item>
+          <Button label={hero.primary.label} href={hero.primary.href} />
+          <Button label={hero.secondary.label} href={hero.secondary.href} variant="ghost" icon="arrow-down" />
+        </div>
+      </div>
+    </div>
+
+    <dl class="hero__facts" data-hero-facts>
+      {
+        hero.facts.map((fact) => (
+          <div class="hero__fact" data-hero-item>
+            <dt class="label">{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))
+      }
+      <div class="hero__fact" data-hero-item>
+        <dt class="label">Local time</dt>
+        <dd>
+          <span class="mono" data-clock data-timezone={location.timezone}>--:--</span>
+          <span class="hero__city">in {location.city}</span>
+          <span
+            class="hero__online"
+            data-online
+            data-from={location.hours.from}
+            data-to={location.hours.to}
+            data-days={JSON.stringify(location.hours.days)}
+          >
+            <span class="dot" aria-hidden="true"></span><span class="hero__online-label" data-online-label>After hours</span>
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  /* Invisible box that positions the ghost in the canvas — tweak placement here. */
+  .hero__ghost {
+    position: absolute;
+    z-index: -2;
+    visibility: hidden;
+    pointer-events: none;
+    width: clamp(220px, 20vw, 330px);
+    aspect-ratio: 20 / 24;
+    right: calc(var(--gutter) + 6vw);
+    top: calc(var(--header-h) + clamp(32px, 7vh, 96px));
+  }
+
+  /* soft fade so threads never fight the copy */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, var(--bg) 0%, transparent 18%, transparent 52%, rgb(10 10 12 / 0.86) 78%, var(--bg) 100%),
+      linear-gradient(to right, rgb(10 10 12 / 0.72) 0%, transparent 46%);
+  }
+
+  .hero__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--header-h) + clamp(20px, 3vw, 40px));
+    padding-bottom: clamp(24px, 3vw, 36px);
+  }
+
+  .hero__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg-2);
+  }
+  .hero__eyebrow-mark {
+    width: 28px;
+    height: 1px;
+    background: var(--fg-3);
+  }
+
+  .hero__main {
+    margin-top: auto;
+    padding-top: clamp(120px, 20vh, 320px);
+  }
+
+  .hero__title {
+    font-size: var(--fs-display);
+    font-weight: 450;
+    line-height: 0.9;
+    letter-spacing: -0.052em;
+    color: var(--fg);
+    margin-left: -0.05em;
+  }
+  .hero__title :global(em) {
+    letter-spacing: -0.03em;
+    padding-right: 0.04em;
+  }
+
+  .hero__sub {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 32px;
+    align-items: end;
+    margin-top: clamp(28px, 3.4vw, 52px);
+  }
+  .hero__lead {
+    grid-column: 1 / span 6;
+    max-width: 44ch;
+  }
+  .hero__ctas {
+    grid-column: 8 / -1;
+    justify-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero__facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--gap);
+    margin-top: clamp(48px, 6vw, 88px);
+    border-top: 1px solid var(--line);
+  }
+  .hero__fact {
+    display: grid;
+    gap: 6px;
+    padding-top: 18px;
+  }
+  .hero__fact dd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 8px;
+    font-size: 0.9375rem;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  .hero__city {
+    color: var(--fg-2);
+  }
+  .hero__online {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .hero__online :global(.dot) {
+    width: 6px;
+    height: 6px;
+  }
+  /* space is reserved up front so the status can't shift the layout when it appears */
+  .hero__online-label {
+    min-width: calc(11ch + 0.44em);
+  }
+  :global(html.js) .hero__online:not(.is-ready) {
+    visibility: hidden;
+  }
+  :global(html:not(.js)) .hero__online {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .hero__ghost {
+      width: clamp(180px, 30vw, 260px);
+      right: var(--gutter);
+    }
+    .hero__lead {
+      grid-column: 1 / -1;
+    }
+    .hero__ctas {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+    .hero__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 8px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .hero__ghost {
+      width: 44vw;
+      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(var(--header-h) + 52px);
+    }
+    .hero__est {
+      display: none;
+    }
+    .hero__main {
+      padding-top: 58vw;
+    }
+    .hero::after {
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 14%, transparent 34%, rgb(10 10 12 / 0.9) 58%, var(--bg) 100%);
+    }
+    .hero__ctas {
+      width: 100%;
+    }
+    .hero__ctas :global(.btn) {
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+  }
+</style>

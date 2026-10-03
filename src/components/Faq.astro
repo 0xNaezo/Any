@@ -1,0 +1,209 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { initials } from '../lib/utils';
+
+const { faq, team, email } = site;
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <SectionHead index={faq.index} label={faq.label} meta={faq.meta} title={faq.title} titleId="faq-title" />
+
+    <div class="faq__layout">
+      <aside class="faq__aside">
+        <div class="faq__card" data-reveal>
+          <ul class="faq__faces" aria-hidden="true">
+            {team.members.map((member) => <li>{initials(member.name)}</li>)}
+          </ul>
+          <p class="faq__card-text">{faq.lead}</p>
+          <a class="faq__mail link" href={`mailto:${email}`}>
+            <Icon name="mail" size={16} />
+            {email}
+          </a>
+        </div>
+      </aside>
+
+      <div class="faq__list" data-stagger>
+        {
+          faq.items.map((item, i) => (
+            <details class="faq__item" data-faq data-stagger-item>
+              <summary class="faq__q">
+                <span class="faq__num mono">{String(i + 1).padStart(2, '0')}</span>
+                <span class="faq__text">{item.q}</span>
+                <span class="faq__icon" aria-hidden="true">
+                  <Icon name="plus" size={16} />
+                </span>
+              </summary>
+              <div class="faq__a">
+                <p>{item.a}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</section>
+
+<style>
+  .faq__layout {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 48px;
+    margin-top: clamp(56px, 7vw, 104px);
+  }
+
+  .faq__aside {
+    grid-column: 1 / span 4;
+  }
+  .faq__card {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+    display: grid;
+    gap: 20px;
+    max-width: 320px;
+  }
+  .faq__faces {
+    display: flex;
+  }
+  .faq__faces li {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    box-shadow:
+      0 0 0 3px var(--bg),
+      inset 0 0 0 1px var(--line-2);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--fg);
+  }
+  .faq__faces li:first-child {
+    margin-left: 0;
+  }
+  .faq__card-text {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    color: var(--fg);
+    letter-spacing: -0.012em;
+  }
+  .faq__mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: start;
+    color: var(--fg-2);
+  }
+  .faq__mail:hover {
+    color: var(--fg);
+  }
+
+  .faq__list {
+    grid-column: 5 / -1;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .faq__item {
+    border-top: 1px solid var(--line);
+  }
+  .faq__q {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: baseline;
+    gap: 12px;
+    padding-block: 26px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .faq__q:focus-visible {
+    outline-offset: -2px;
+  }
+  .faq__num {
+    font-size: 0.75rem;
+    color: var(--fg-3);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .faq__text {
+    font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+    font-weight: 450;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+  .faq__icon {
+    display: grid;
+    place-items: center;
+    align-self: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    color: var(--fg-2);
+    transition:
+      transform 0.5s var(--ease-out),
+      background-color var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out);
+  }
+  .faq__q:hover .faq__icon {
+    background: rgb(255 255 255 / 0.05);
+    color: var(--fg);
+  }
+  .faq__q:hover .faq__num,
+  .faq__item[open] .faq__num {
+    color: var(--accent);
+  }
+  .faq__item[open] .faq__icon {
+    transform: rotate(45deg);
+    color: var(--fg);
+  }
+
+  .faq__a {
+    overflow: hidden;
+  }
+  .faq__a p {
+    max-width: 60ch;
+    padding: 0 48px 28px 60px;
+  }
+
+  @media (max-width: 1023px) {
+    .faq__aside {
+      grid-column: 1 / -1;
+      order: 2;
+    }
+    .faq__card {
+      position: static;
+      max-width: none;
+    }
+    .faq__list {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .faq__q {
+      grid-template-columns: 32px 1fr auto;
+      padding-block: 22px;
+    }
+    .faq__a p {
+      padding: 0 0 24px 44px;
+    }
+  }
+</style>

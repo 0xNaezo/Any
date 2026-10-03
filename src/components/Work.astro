@@ -1,0 +1,323 @@
+---
+import SectionHead from './SectionHead.astro';
+import WorkVisual from './WorkVisual.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { withBase } from '../lib/utils';
+
+const { work } = site;
+---
+
+<section class="section work" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <SectionHead
+      index={work.index}
+      label={work.label}
+      meta={work.meta}
+      title={work.title}
+      lead={work.lead}
+      titleId="work-title"
+    />
+
+    <div class="work__grid">
+      {
+        work.cases.map((item, i) => (
+          <article class="case" data-case>
+            <div class="case__media" data-spotlight>
+              <div class="case__frame">
+                <div class="case__parallax" data-parallax>
+                {item.image ? (
+                  <img
+                    class="case__img"
+                    src={withBase(item.image)}
+                    alt={`${item.client} — ${item.title}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <WorkVisual kind={item.visual} label={`${item.client} product interface`} />
+                )}
+                </div>
+              </div>
+              <span class="case__corner label">{String(i + 1).padStart(2, '0')}</span>
+              <span class="case__corner case__corner--right label">{item.year}</span>
+            </div>
+
+            <div class="case__body">
+              <header class="case__head">
+                <h3 class="case__client">
+                  {item.href ? (
+                    <a href={item.href} target="_blank" rel="noopener" class="case__link">
+                      {item.client}
+                      <Icon name="arrow-up-right" size={18} />
+                    </a>
+                  ) : (
+                    item.client
+                  )}
+                </h3>
+                <span class="label">{item.industry}</span>
+              </header>
+              <p class="case__title">{item.title}</p>
+              <p class="case__summary">{item.summary}</p>
+
+              <dl class="case__metrics">
+                {item.metrics.map((metric) => (
+                  <div class="case__metric">
+                    <dt class="case__metric-label">{metric.label}</dt>
+                    <dd class="case__metric-value">{metric.value}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div class="case__foot">
+                <ul class="case__tags" aria-label="Scope">
+                  {item.services.map((service) => (
+                    <li class="tag">{service}</li>
+                  ))}
+                </ul>
+                <p class="case__stack mono">
+                  <span class="sr-only">Stack: </span>
+                  {item.stack.join(' · ')}
+                </p>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="work__foot" data-reveal>
+      <p>
+        <span class="work__foot-mark" aria-hidden="true"></span>
+        More work under NDA — fintech, health and B2B platforms.
+      </p>
+      <a class="link work__foot-link" href="#contact">Ask for the full portfolio</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .work__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: clamp(72px, 8vw, 128px);
+    margin-top: clamp(64px, 8vw, 120px);
+  }
+
+  /* staggered editorial columns (translate keeps both columns' rhythm equal) */
+  @media (min-width: 1024px) {
+    .work__grid {
+      --offset: clamp(120px, 12vw, 200px);
+      padding-bottom: var(--offset);
+    }
+    .case:nth-child(even) {
+      translate: 0 var(--offset);
+    }
+  }
+
+  .case__media {
+    --mx: 50%;
+    --my: 30%;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background:
+      radial-gradient(60% 55% at var(--mx) var(--my), rgb(255 255 255 / 0.06), transparent 70%),
+      linear-gradient(180deg, #121216, #0c0c0f);
+    box-shadow: inset 0 0 0 1px var(--line);
+    isolation: isolate;
+  }
+  .case__media::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    mask-image: radial-gradient(80% 70% at 50% 40%, #000, transparent);
+  }
+
+  .case__frame {
+    position: absolute;
+    inset: 6% 5% 0;
+    transition: transform 1.1s var(--ease-out);
+    will-change: transform;
+  }
+  .case__parallax {
+    position: absolute;
+    inset: 0;
+  }
+  .case__frame :global(.visual),
+  .case__img {
+    width: 100%;
+    height: 100%;
+  }
+  .case__img {
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 12px 12px 0 0;
+  }
+  .case:hover .case__frame {
+    transform: translateY(-1.5%) scale(1.015);
+  }
+
+  .case__corner {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    color: var(--fg-3);
+  }
+  .case__corner--right {
+    left: auto;
+    right: 20px;
+  }
+
+  .case__body {
+    display: grid;
+    gap: 14px;
+    padding-top: 28px;
+  }
+  .case__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .case__client {
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .case__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .case__link :global(svg) {
+    color: var(--fg-3);
+    transition:
+      transform var(--dur) var(--ease-out),
+      color var(--dur);
+  }
+  .case__link:hover :global(svg) {
+    color: var(--fg);
+    transform: translate(2px, -2px);
+  }
+  .case__title {
+    font-size: 1.125rem;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: var(--fg);
+    max-width: 36ch;
+  }
+  .case__summary {
+    max-width: 54ch;
+    font-size: 0.9375rem;
+  }
+
+  .case__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+    margin-top: 10px;
+    padding-block: 18px;
+    border-block: 1px solid var(--line);
+  }
+  .case__metric {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .case__metric-value {
+    font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+    font-weight: 450;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .case__metric-label {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--fg-3);
+  }
+
+  .case__foot {
+    display: grid;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .case__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .case__stack {
+    font-size: 0.75rem;
+    color: var(--fg-3);
+    letter-spacing: 0.02em;
+  }
+
+  .work__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    margin-top: clamp(80px, 9vw, 136px);
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .work__foot p {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg-2);
+  }
+  .work__foot-mark {
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--fg-4);
+  }
+  .work__foot-link {
+    color: var(--fg);
+    font-weight: 500;
+    background-size: 100% 1px;
+  }
+  .work__foot-link:hover {
+    background-size: 0 1px;
+    background-position: 100% 100%;
+  }
+
+  @media (max-width: 1023px) {
+    .work__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .case__metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .case__metric-label {
+      font-size: 0.75rem;
+    }
+    .case__corner {
+      top: 12px;
+      left: 14px;
+    }
+    .case__corner--right {
+      left: auto;
+      right: 14px;
+    }
+  }
+</style>

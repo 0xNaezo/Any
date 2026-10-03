@@ -1,0 +1,168 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from '../lib/types';
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  label: string;
+  href?: string;
+  type?: 'button' | 'submit';
+  variant?: 'primary' | 'ghost';
+  size?: 'md' | 'sm';
+  icon?: IconName | null;
+  magnetic?: boolean;
+  class?: string;
+} & Omit<HTMLAttributes<'a'>, 'type'>;
+
+const {
+  label,
+  href,
+  type = 'button',
+  variant = 'primary',
+  size = 'md',
+  icon = 'arrow-right',
+  magnetic = true,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  href={href}
+  type={href ? undefined : type}
+  data-magnetic={magnetic ? '' : undefined}
+  {...rest}
+>
+  <span class="btn__inner">
+    <span class="btn__label"><span class="btn__text" data-text={label}>{label}</span></span>
+    {
+      icon && (
+        <span class:list={['btn__icon', `btn__icon--${icon}`]}>
+          <Icon name={icon} />
+          <Icon name={icon} />
+        </span>
+      )
+    }
+  </span>
+</Tag>
+
+<style>
+  .btn {
+    --h: 52px;
+    --px: 26px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: var(--h);
+    padding-inline: var(--px) calc(var(--px) - 4px);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    isolation: isolate;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out);
+  }
+
+  .btn--sm {
+    --h: 40px;
+    --px: 18px;
+    font-size: 0.875rem;
+  }
+
+  .btn__inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .btn--primary {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .btn--primary:hover {
+    background: #fff;
+  }
+
+  .btn--ghost {
+    color: var(--fg);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .btn--ghost:hover {
+    background: rgb(255 255 255 / 0.04);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+
+  /* Text roll */
+  .btn__label {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    line-height: 1.25;
+  }
+  .btn__text {
+    display: block;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .btn__text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 100%;
+  }
+  .btn:hover .btn__text {
+    transform: translateY(-100%);
+  }
+
+  /* Arrow swap */
+  .btn__icon {
+    position: relative;
+    display: grid;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+  }
+  .btn__icon :global(svg) {
+    grid-area: 1 / 1;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .btn__icon :global(svg:last-child) {
+    transform: translateX(-130%);
+  }
+  .btn:hover .btn__icon :global(svg:first-child) {
+    transform: translateX(130%);
+  }
+  .btn:hover .btn__icon :global(svg:last-child) {
+    transform: none;
+  }
+
+  .btn__icon--arrow-down :global(svg:last-child) {
+    transform: translateY(-130%);
+  }
+  .btn:hover .btn__icon--arrow-down :global(svg:first-child) {
+    transform: translateY(130%);
+  }
+
+  .btn__icon--arrow-up-right :global(svg:last-child) {
+    transform: translate(-130%, 130%);
+  }
+  .btn:hover .btn__icon--arrow-up-right :global(svg:first-child) {
+    transform: translate(130%, -130%);
+  }
+
+  .btn[disabled],
+  .btn[aria-busy='true'] {
+    cursor: progress;
+    opacity: 0.7;
+  }
+</style>

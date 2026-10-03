@@ -1,0 +1,135 @@
+---
+import { rich } from '../lib/utils';
+
+interface Props {
+  index: string;
+  label: string;
+  meta?: string;
+  title: string;
+  lead?: string;
+  titleId?: string;
+  /** `split`: title left, lead right (default). `stack`: lead under title (for narrow, sticky columns). */
+  layout?: 'split' | 'stack';
+}
+
+const { index, label, meta, title, lead, titleId, layout = 'split' } = Astro.props;
+---
+
+<header class:list={['section-head', `section-head--${layout}`]}>
+  <div class="section-head__bar">
+    <span class="section-head__line" data-line aria-hidden="true"></span>
+    <span class="label section-head__index">({index})</span>
+    <span class="label section-head__label" data-scramble>{label}</span>
+    {meta && <span class="label section-head__meta">{meta}</span>}
+  </div>
+  <div class="section-head__body">
+    <h2 id={titleId} class="section-head__title" data-split set:html={rich(title)} />
+    {
+      (lead || Astro.slots.has('default')) && (
+        <div class="section-head__aside" data-reveal>
+          {lead && <p class="lead">{lead}</p>}
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .section-head__bar {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    align-items: baseline;
+    padding-top: 18px;
+  }
+
+  .section-head__line {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line-2);
+    transform-origin: left center;
+  }
+
+  .section-head__index {
+    grid-column: span 1;
+    color: var(--fg-3);
+  }
+  .section-head__label {
+    grid-column: span 5;
+    color: var(--fg-2);
+  }
+  .section-head__meta {
+    grid-column: 7 / -1;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .section-head__body {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 28px;
+    align-items: end;
+    margin-top: clamp(40px, 6vw, 88px);
+  }
+
+  .section-head__title {
+    grid-column: 1 / span 8;
+    font-size: var(--fs-h2);
+    font-weight: 450;
+    line-height: 0.98;
+    letter-spacing: -0.042em;
+  }
+
+  .section-head__title :global(em) {
+    letter-spacing: -0.02em;
+  }
+
+  .section-head__aside {
+    grid-column: 9 / -1;
+    max-width: 34ch;
+    justify-self: end;
+    padding-bottom: 0.35em;
+  }
+
+  .section-head--stack .section-head__title {
+    grid-column: 1 / -1;
+  }
+  .section-head--stack .section-head__aside {
+    grid-column: 1 / -1;
+    justify-self: start;
+    max-width: 40ch;
+  }
+
+  @media (max-width: 1023px) {
+    .section-head__label {
+      grid-column: span 6;
+    }
+    .section-head__meta {
+      grid-column: 8 / -1;
+    }
+    .section-head__title {
+      grid-column: 1 / -1;
+    }
+    .section-head__aside {
+      grid-column: 1 / -1;
+      justify-self: start;
+      max-width: 46ch;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .section-head__index {
+      grid-column: span 2;
+    }
+    .section-head__label {
+      grid-column: span 10;
+    }
+    .section-head__meta {
+      display: none;
+    }
+  }
+</style>

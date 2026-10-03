@@ -1,0 +1,142 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import GhostMark from './GhostMark.astro';
+import { site } from '../data/site';
+
+const { principles } = site;
+---
+
+<section class="section principles" id="commitments" aria-labelledby="principles-title">
+  <div class="container">
+    <SectionHead
+      index={principles.index}
+      label={principles.label}
+      meta={principles.meta}
+      title={principles.title}
+      titleId="principles-title"
+    >
+      <p class="principles__aside">
+        <GhostMark size={22} class="principles__ghost" />
+        <span>{principles.aside}</span>
+      </p>
+    </SectionHead>
+
+    <ul class="principles__grid" data-stagger>
+      {
+        principles.items.map((item, i) => (
+          <li class="principle" data-spotlight data-stagger-item>
+            <span class="principle__icon">
+              <Icon name={item.icon} size={20} />
+            </span>
+            <span class="principle__index mono">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="principle__title">{item.title}</h3>
+            <p class="principle__text">{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .principles__aside {
+    display: grid;
+    gap: 16px;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    letter-spacing: -0.012em;
+    color: var(--fg-2);
+  }
+  .principles__aside :global(.principles__ghost) {
+    color: var(--fg-3);
+  }
+
+  .principles__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: clamp(64px, 8vw, 112px);
+    border-radius: var(--radius-l);
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow: hidden;
+  }
+
+  .principle {
+    --mx: 50%;
+    --my: 0%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-content: start;
+    gap: 14px;
+    min-height: 280px;
+    padding: clamp(28px, 3vw, 40px);
+    box-shadow:
+      1px 0 0 var(--line),
+      0 1px 0 var(--line);
+    isolation: isolate;
+  }
+  .principle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(420px circle at var(--mx) var(--my), rgb(255 255 255 / 0.045), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .principle:hover::before {
+    opacity: 1;
+  }
+
+  .principle__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: clamp(28px, 4vw, 56px);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    color: var(--fg-2);
+    transition:
+      color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+  .principle:hover .principle__icon {
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px rgb(var(--accent-rgb) / 0.35);
+  }
+  .principle__index {
+    justify-self: end;
+    font-size: 0.75rem;
+    color: var(--fg-3);
+  }
+  .principle__title,
+  .principle__text {
+    grid-column: 1 / -1;
+  }
+  .principle__title {
+    font-size: 1.3125rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  .principle__text {
+    max-width: 38ch;
+  }
+
+  @media (max-width: 1023px) {
+    .principles__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 639px) {
+    .principles__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .principle {
+      min-height: 0;
+    }
+  }
+</style>

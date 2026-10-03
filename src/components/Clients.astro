@@ -1,0 +1,295 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { withBase } from '../lib/utils';
+
+const { clients, stats } = site;
+
+/* Placeholder glyphs that make the wordmarks feel like real logos. */
+const glyphs: Record<string, string> = {
+  Ledgerly: 'bars',
+  'Atlas Freight': 'triangle',
+  Quill: 'quill',
+  Northwind: 'arrow',
+  Halcyon: 'ring',
+  Meridian: 'meridian',
+  Oakline: 'leaf',
+  Parallel: 'parallel',
+};
+---
+
+<section class="clients" aria-labelledby="clients-title">
+  <div class="container">
+    <div class="clients__head" data-reveal>
+      <h2 id="clients-title" class="label">{clients.label}</h2>
+      <a class="rating" href={clients.rating.href} target="_blank" rel="noopener">
+        <span class="rating__stars" aria-hidden="true">
+          {Array.from({ length: 5 }, () => <Icon name="star" size={13} />)}
+        </span>
+        <span class="rating__score">{clients.rating.score}</span>
+        <span class="rating__meta">{clients.rating.count} on {clients.rating.source}</span>
+        <Icon name="arrow-up-right" size={14} class="rating__arrow" />
+      </a>
+    </div>
+
+    <ul class="logos" data-stagger>
+      {
+        clients.logos.map((logo) => (
+          <li class="logos__cell" data-stagger-item>
+            {logo.logo ? (
+              <img class="logos__img" src={withBase(logo.logo)} alt={logo.name} loading="lazy" decoding="async" />
+            ) : (
+              <span class:list={['wordmark', `wordmark--${logo.style}`]}>
+                {glyphs[logo.name] && (
+                  <svg class="wordmark__glyph" viewBox="0 0 20 20" aria-hidden="true">
+                    {glyphs[logo.name] === 'bars' && (
+                      <g fill="currentColor">
+                        <rect x="2" y="4" width="16" height="3" rx="1" />
+                        <rect x="2" y="9" width="11" height="3" rx="1" />
+                        <rect x="2" y="14" width="6" height="3" rx="1" />
+                      </g>
+                    )}
+                    {glyphs[logo.name] === 'triangle' && <path d="M10 2.5 18 17H2Z" fill="currentColor" />}
+                    {glyphs[logo.name] === 'quill' && (
+                      <path d="M17 2.5C9 3.5 4.5 9 3.5 17.5 7 11 10.5 8 17 2.5Z" fill="currentColor" />
+                    )}
+                    {glyphs[logo.name] === 'arrow' && (
+                      <path d="M3 17 17 3M8 3h9v9" fill="none" stroke="currentColor" stroke-width="2.6" />
+                    )}
+                    {glyphs[logo.name] === 'ring' && (
+                      <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="3" />
+                    )}
+                    {glyphs[logo.name] === 'meridian' && (
+                      <g fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="10" cy="10" r="7.5" />
+                        <path d="M10 2.5v15M2.5 10h15" />
+                      </g>
+                    )}
+                    {glyphs[logo.name] === 'leaf' && (
+                      <path d="M3 17C3 8 8 3 17 3c0 9-5 14-14 14Zm0 0 8-8" fill="currentColor" />
+                    )}
+                    {glyphs[logo.name] === 'parallel' && (
+                      <g fill="currentColor">
+                        <path d="M5 3h4L6 17H2Z" />
+                        <path d="M13 3h4l-3 14h-4Z" />
+                      </g>
+                    )}
+                  </svg>
+                )}
+                <span>{logo.name}</span>
+              </span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+
+    <dl class="stats">
+      {
+        stats.map((stat) => (
+          <div class="stats__item" data-reveal>
+            <dt class="stats__label">
+              {stat.label.split('\n').map((line, i) => (i === 0 ? line : [<br />, line]))}
+            </dt>
+            <dd class="stats__value">
+              <span data-count={stat.value} data-decimals={stat.decimals}>
+                {stat.value.toFixed(stat.decimals)}
+              </span>
+              <span class="stats__suffix">{stat.suffix}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .clients {
+    position: relative;
+    padding-top: clamp(72px, 9vw, 128px);
+  }
+
+  .clients__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    margin-bottom: 28px;
+  }
+
+  .rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.875rem;
+    color: var(--fg-2);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .rating:hover {
+    color: var(--fg);
+  }
+  .rating__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--accent);
+  }
+  .rating__score {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .rating :global(.rating__arrow) {
+    color: var(--fg-3);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .rating:hover :global(.rating__arrow) {
+    transform: translate(2px, -2px);
+  }
+
+  .logos {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border-block: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .logos__cell {
+    display: grid;
+    place-items: center;
+    min-height: clamp(96px, 9vw, 132px);
+    padding: 20px;
+    box-shadow:
+      1px 0 0 var(--line),
+      0 1px 0 var(--line);
+    color: var(--fg-3);
+    transition: color 0.5s var(--ease-out);
+  }
+  .logos__cell:hover {
+    color: var(--fg);
+  }
+  .logos__img {
+    max-height: 30px;
+    width: auto;
+    opacity: 0.6;
+    filter: grayscale(1) brightness(1.6);
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .logos__cell:hover .logos__img {
+    opacity: 1;
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .wordmark__glyph {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+  .wordmark--sans {
+    font-size: 1.375rem;
+    font-weight: 560;
+    letter-spacing: -0.035em;
+  }
+  .wordmark--sans-bold {
+    font-size: 1.375rem;
+    font-weight: 720;
+    letter-spacing: -0.05em;
+  }
+  .wordmark--sans-light {
+    font-size: 1.4375rem;
+    font-weight: 320;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+  }
+  .wordmark--serif {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    letter-spacing: -0.01em;
+  }
+  .wordmark--serif-italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.8125rem;
+    letter-spacing: -0.015em;
+  }
+  .wordmark--mono {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--gap);
+    margin-top: clamp(64px, 8vw, 120px);
+  }
+  .stats__item {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .stats__value {
+    display: flex;
+    align-items: baseline;
+    font-size: clamp(3.5rem, 2rem + 4vw, 6.25rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .stats__suffix {
+    margin-left: 0.04em;
+    color: var(--fg-4);
+    letter-spacing: -0.03em;
+  }
+  .stats__label {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--fg-3);
+  }
+
+  @media (max-width: 1023px) {
+    .logos {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .logos__cell:nth-child(n + 10) {
+      grid-column: span 3;
+    }
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 48px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .logos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .logos__cell:nth-child(n + 10) {
+      grid-column: auto;
+    }
+    .logos__cell {
+      min-height: 88px;
+      padding: 16px 12px;
+    }
+    .wordmark {
+      transform: scale(0.86);
+    }
+    .wordmark--mono {
+      letter-spacing: 0.06em;
+      font-size: 0.8125rem;
+    }
+  }
+</style>
