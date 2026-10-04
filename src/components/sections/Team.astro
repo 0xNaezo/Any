@@ -1,0 +1,354 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+import { Image } from 'astro:assets';
+
+const { team } = site;
+const levelName = ['Not covered', 'Backup', 'Owner'];
+---
+
+<div class="container section">
+  <Frame id="team" label={team.label} meta={team.meta} labelledby="team-title">
+    <div class="sec-head">
+      <h2 id="team-title" class="h-section" data-reveal="wipe">{team.title}</h2>
+      <p class="lead" data-reveal>{team.lead}</p>
+    </div>
+
+    <ul class="members" data-reveal-stagger>
+      {
+        team.members.map((m) => (
+          <li class="member card dash corners" data-reveal-item>
+            <div class="member__top">
+              <span class:list={['member__avatar', { 'member__avatar--photo': m.photo }]}>
+                {m.photo ? (
+                  <Image src={m.photo} alt={`${m.name}, ${m.role}`} width={192} height={192} class="member__photo" />
+                ) : (
+                  <Ghost eyes={m.eyes} size={60} fill="dither" />
+                )}
+              </span>
+              <span class="member__years">
+                <span class="px">{m.years}</span>
+                <span class="tiny">yrs exp.</span>
+              </span>
+            </div>
+            <div class="member__id">
+              <h3 class="h-card">{m.name}</h3>
+              <p class="member__role small">{m.role}</p>
+            </div>
+            <p class="member__bio small">{m.bio}</p>
+            <div class="tags">
+              {m.skills.map((s) => (
+                <span class="tag">{s}</span>
+              ))}
+            </div>
+            <div class="member__foot">
+              <span class="member__clock tiny">
+                <PixelIcon name="clock" />
+                {m.city} <span class="tnum" data-clock={m.tz}>--:--</span>
+              </span>
+              <span class="member__links">
+                {m.links.map((l) => (
+                  <a class="px" href={l.href} aria-label={`${m.name} on ${l.label === 'GH' ? 'GitHub' : 'LinkedIn'}`}>
+                    [{l.label}]
+                  </a>
+                ))}
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="coverage" data-coverage>
+      <div class="coverage__bar">
+        <h3 class="label">{team.coverageLabel}</h3>
+        <p class="coverage__legend tiny">
+          <span><i class="cell cell--2" aria-hidden="true"></i> Owner</span>
+          <span><i class="cell cell--1" aria-hidden="true"></i> Backup</span>
+        </p>
+      </div>
+      <div class="coverage__scroll">
+        <table class="coverage__table">
+          <caption class="visually-hidden">Who owns and who backs up each area of a project</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="coverage__area-h tiny">Area</th>
+              {
+                team.members.map((m) => (
+                  <th scope="col" class="coverage__person">
+                    <Ghost eyes={m.eyes} size={30} blink={false} />
+                    <span class="tiny">{m.name}</span>
+                  </th>
+                ))
+              }
+              <th scope="col" class="coverage__bf tiny">Coverage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              team.coverage.map((row) => {
+                const count = row.levels.filter((l) => l > 0).length;
+                return (
+                  <tr>
+                    <th scope="row" class="small">
+                      {row.area}
+                    </th>
+                    {row.levels.map((l, i) => (
+                      <td>
+                        <i class={`cell cell--${l}`} data-cell role="img" aria-label={`${team.members[i].name}: ${levelName[l]}`} />
+                      </td>
+                    ))}
+                    <td class="coverage__count px">×{count}</td>
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="coverage__note small">
+        <PixelIcon name="check" />
+        At least two people know every part of your system. No single point of failure.
+      </p>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .members {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 700px) {
+    .members {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1180px) {
+    .members {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .member {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+  }
+  .member__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .member__avatar {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    color: var(--accent);
+    background: var(--tint);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: background-color var(--t-fast) steps(2);
+  }
+  .member__avatar :global(.ghost) {
+    transition: transform var(--t-fast) steps(2);
+  }
+  .member__avatar--photo {
+    position: relative;
+    overflow: hidden;
+  }
+  .member__avatar--photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #6d92ec;
+    mix-blend-mode: multiply;
+    transition: opacity var(--t-med) steps(3);
+  }
+  .member__avatar :global(.member__photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.1);
+    transition: filter var(--t-med) steps(3);
+  }
+  .member:hover .member__avatar--photo::after {
+    opacity: 0;
+  }
+  .member:hover .member__avatar :global(.member__photo) {
+    filter: none;
+  }
+  .member:hover .member__avatar :global(.ghost) {
+    transform: translateY(-6px);
+  }
+  .member:hover .member__avatar {
+    background: var(--tint-3);
+  }
+  .member__years {
+    display: grid;
+    justify-items: end;
+    gap: 4px;
+    color: var(--ink-3);
+  }
+  .member__years .px {
+    font-size: 32px;
+    color: var(--accent);
+  }
+  .member__id {
+    display: grid;
+    gap: 6px;
+  }
+  .member__role {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .member__bio {
+    color: var(--ink-2);
+  }
+  .member__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 16px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  .member__clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-2);
+  }
+  .member__clock :global(.icon) {
+    color: var(--accent-mid);
+  }
+  .member__links {
+    display: inline-flex;
+    gap: 10px;
+  }
+  .member__links a {
+    position: relative;
+    z-index: 1;
+    font-size: 16px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  .member__links a:hover {
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+
+  /* ---------- coverage map ---------- */
+  .coverage {
+    margin-top: 56px;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .coverage__bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    background: var(--tint);
+  }
+  .coverage__bar h3 {
+    font-weight: 400;
+  }
+  .coverage__legend {
+    display: flex;
+    gap: 20px;
+    color: var(--ink-2);
+  }
+  .coverage__legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .coverage__legend .cell {
+    width: 12px;
+    height: 12px;
+  }
+  .coverage__scroll {
+    overflow-x: auto;
+  }
+  .coverage__table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+  }
+  .coverage__table th,
+  .coverage__table td {
+    padding: 12px 20px;
+    text-align: center;
+    font-weight: 400;
+  }
+  .coverage__table tbody tr {
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+    transition: background-color var(--t-fast) steps(2);
+  }
+  .coverage__table tbody tr:hover {
+    background-color: var(--tint);
+  }
+  .coverage__table tbody th {
+    text-align: left;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .coverage__area-h {
+    text-align: left !important;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .coverage__person {
+    color: var(--accent);
+  }
+  .coverage__person :global(.ghost) {
+    margin: 0 auto 6px;
+  }
+  .coverage__person .tiny {
+    color: var(--ink-2);
+  }
+  .coverage__bf {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .coverage__count {
+    font-size: 16px;
+    color: var(--signal);
+  }
+  .cell {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
+  .cell--2 {
+    background: var(--accent);
+  }
+  .cell--1 {
+    background: repeating-conic-gradient(var(--accent) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+    box-shadow: inset 0 0 0 1px var(--accent-mid);
+  }
+  .cell--0 {
+    width: 4px;
+    height: 4px;
+    background: var(--line-2);
+  }
+  .coverage__note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    color: var(--ink-2);
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  .coverage__note :global(.icon) {
+    color: var(--signal);
+  }
+</style>

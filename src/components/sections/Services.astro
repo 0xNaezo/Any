@@ -1,0 +1,148 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { services } = site;
+---
+
+<div class="container section">
+  <Frame id="services" label={services.label} meta={services.meta} labelledby="services-title">
+    <div class="sec-head">
+      <h2 id="services-title" class="h-section" data-reveal="wipe">{services.title}</h2>
+      <p class="lead" data-reveal>{services.lead}</p>
+    </div>
+
+    <ul class="svc-grid" data-reveal-stagger>
+      {
+        services.items.map((s, i) => (
+          <li class="svc card dash corners" data-reveal-item>
+            <div class="svc__top">
+              <span class="svc__icon">
+                <PixelIcon name={s.icon} size={32} />
+              </span>
+              <span class="svc__idx px">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+            <h3 class="h-card svc__title">{s.title}</h3>
+            <p class="svc__text small">{s.text}</p>
+            <ul class="svc__points checklist small">
+              {s.points.map((p) => (
+                <li>
+                  <PixelIcon name="check" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+            <div class="tags svc__stack">
+              {s.stack.map((t) => (
+                <span class="tag">{t}</span>
+              ))}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="svc-also" data-reveal>
+      <span class="label">Also</span>
+      <ul>
+        {
+          services.also.map((a) => (
+            <li>
+              <PixelIcon name="diamond" />
+              {a}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .svc-grid {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 700px) {
+    .svc-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .svc-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .svc {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 28px;
+  }
+  .svc__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .svc__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    color: var(--accent);
+    background: var(--tint);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      background-color var(--t-fast) steps(2),
+      color var(--t-fast) steps(2);
+  }
+  .svc:hover .svc__icon {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .svc__idx {
+    font-size: 16px;
+    color: var(--ink-3);
+  }
+  .svc__text {
+    color: var(--ink-2);
+  }
+  .svc__points {
+    color: var(--ink);
+    margin-top: 4px;
+  }
+  .svc__stack {
+    margin-top: auto;
+    padding-top: 12px;
+  }
+
+  .svc-also {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+    margin-top: 32px;
+    padding-top: 24px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  .svc-also .label {
+    color: var(--ink-3);
+  }
+  .svc-also ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+  .svc-also li {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .svc-also li :global(.icon) {
+    color: var(--accent-mid);
+  }
+</style>

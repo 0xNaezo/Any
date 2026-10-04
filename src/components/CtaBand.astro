@@ -1,0 +1,63 @@
+---
+import { site } from '@/data/site';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = 'Want results like these?',
+  text = `Tell us what you are building. ${site.contact.person.name} replies within one business day.`,
+} = Astro.props;
+---
+
+<div class="container section">
+  <div class="band frame dash corners" data-frame>
+    <div class="band__ghost" aria-hidden="true">
+      <Ghost size={90} fill="dither" eyes="happy" />
+    </div>
+    <div class="band__text">
+      <h2 class="h-section">{title}</h2>
+      <p class="lead">{text}</p>
+    </div>
+    <div class="band__cta">
+      <a class="btn" href="/#contact">
+        Start a project
+        <PixelIcon name="arrow-right" class="btn__icon" />
+      </a>
+      <a class="link small" href={`mailto:${site.brand.email}`}>{site.brand.email}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .band {
+    display: grid;
+    gap: 32px;
+    padding: var(--frame-pad);
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .band {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 48px;
+    }
+  }
+  .band__ghost {
+    color: var(--accent);
+  }
+  .band__text {
+    display: grid;
+    gap: 16px;
+  }
+  .band__text .lead {
+    color: var(--ink-2);
+  }
+  .band__cta {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+</style>

@@ -1,0 +1,367 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+import WorkImage from '@/components/ui/WorkImage.astro';
+
+const { work } = site;
+const statusLabel = { live: 'Live', supported: 'Supported', done: 'Shipped' } as const;
+---
+
+<div class="container section">
+  <Frame id="work" label={work.label} meta={work.meta} labelledby="work-title">
+    <div class="sec-head">
+      <h2 id="work-title" class="h-section" data-reveal="wipe">{work.title}</h2>
+      <p class="lead" data-reveal>{work.lead}</p>
+    </div>
+
+    <div class="cases">
+      {
+        work.cases.map((c, i) => (
+          <article class:list={['case wimg-host', { 'case--flip': i % 2 === 1 }]} data-case>
+            <div class="case__media">
+              <WorkImage image={c.cover} alt={c.coverAlt} label={c.name} />
+              <span class="case__badge px">Case {String(i + 1).padStart(2, '0')}</span>
+            </div>
+
+            <div class="case__body">
+              <p class="case__meta px">
+                <span>{c.industry}</span>
+                <span aria-hidden="true">·</span>
+                <span>{c.year}</span>
+                <span aria-hidden="true">·</span>
+                <span>{c.duration}</span>
+              </p>
+              <h3 class="case__name">
+                <a class="case__link" href={`/work/${c.slug}/`}>
+                  {c.name}
+                </a>
+              </h3>
+              <p class="case__title">{c.title}</p>
+              <p class="case__summary small">{c.summary}</p>
+
+              <dl class="case__metrics">
+                {c.metrics.map((m) => (
+                  <div>
+                    <dt class="tiny">{m.label}</dt>
+                    <dd class="px tnum">{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div class="case__foot">
+                <div class="tags">
+                  {c.stack.map((t) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                </div>
+                <span class="case__more px" aria-hidden="true">
+                  Read case
+                  <PixelIcon name="arrow-right" />
+                </span>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="log" data-reveal>
+      <div class="log__bar">
+        <h3 class="label">{work.logLabel}</h3>
+        <code class="log__cmd tiny">$ ls ~/projects --sort=year</code>
+      </div>
+      <div class="log__row log__row--head tiny" aria-hidden="true">
+        <span>Year</span>
+        <span>Project</span>
+        <span>Type</span>
+        <span>Stack</span>
+        <span>Status</span>
+      </div>
+      <ul class="log__rows">
+        {
+          work.log.map((r) => (
+            <li class="log__row">
+              <span class="log__year tnum">{r.year}</span>
+              <span class="log__name">{r.name}</span>
+              <span class="log__type">{r.type}</span>
+              <span class="log__stack">{r.stack}</span>
+              <span class:list={['log__status status', { 'status--live': r.status === 'live' }]}>
+                {r.status === 'done' ? (
+                  <PixelIcon name="check" />
+                ) : (
+                  <span class:list={['dot', { 'dot--accent': r.status === 'supported' }]} aria-hidden="true" />
+                )}
+                {statusLabel[r.status]}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .cases {
+    display: grid;
+    gap: 56px;
+  }
+  .case {
+    position: relative;
+    display: grid;
+    gap: 28px;
+  }
+  .case + .case {
+    padding-top: 56px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  @media (min-width: 960px) {
+    .case {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 48px;
+      align-items: center;
+    }
+    .case--flip .case__media {
+      order: 2;
+    }
+  }
+
+  .case__media {
+    position: relative;
+    box-shadow:
+      0 0 0 1px var(--line-2),
+      10px 10px 0 0 var(--tint-2);
+    transition: box-shadow var(--t-med) steps(3);
+  }
+  .case:hover .case__media {
+    box-shadow:
+      0 0 0 1px var(--accent),
+      14px 14px 0 0 var(--tint-3);
+  }
+  .case__badge {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 8px 12px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    z-index: 2;
+  }
+
+  .case__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+  .case__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 16px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+  }
+  .case__name {
+    font-family: var(--font-pixel);
+    font-size: 40px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  .case__link {
+    color: var(--accent);
+  }
+  /* the whole card is clickable through the title link */
+  .case__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
+  .case__link:focus-visible {
+    outline: none;
+  }
+  .case:has(.case__link:focus-visible) {
+    outline: 2px dashed var(--accent-hi);
+    outline-offset: 12px;
+  }
+  .case__title {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .case__summary {
+    color: var(--ink-2);
+  }
+
+  .case__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin-top: 8px;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .case__metrics > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px;
+  }
+  .case__metrics > div + div {
+    box-shadow: inset 1px 0 0 0 var(--line);
+  }
+  .case__metrics dd {
+    font-size: 24px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .case__metrics dt {
+    color: var(--ink-2);
+  }
+  @media (max-width: 479px) {
+    .case__metrics {
+      grid-template-columns: 1fr;
+    }
+    .case__metrics > div {
+      display: grid;
+      grid-template-columns: 7.5em minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+    }
+    .case__metrics dd {
+      order: -1;
+    }
+    .case__metrics > div + div {
+      box-shadow: inset 0 1px 0 0 var(--line);
+    }
+  }
+
+  .case__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .case__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    padding: 8px 0;
+  }
+  .case__more :global(.icon) {
+    transition: transform var(--t-fast) steps(2);
+  }
+  .case:hover .case__more :global(.icon) {
+    transform: translateX(4px);
+  }
+  .case:hover .case__more {
+    color: var(--accent-hi);
+  }
+
+  /* ---------- project log ---------- */
+  .log {
+    margin-top: 72px;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .log__bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    background: var(--tint);
+  }
+  .log__bar h3 {
+    font-weight: 400;
+  }
+  .log__cmd {
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+  }
+  .log__row {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1.25fr) minmax(0, 1.45fr) minmax(0, 1.1fr) 132px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 14px;
+    color: var(--ink-2);
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+    transition:
+      background-color var(--t-fast) steps(2),
+      color var(--t-fast) steps(2);
+  }
+  .log__row--head {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .log__rows .log__row:hover {
+    background-color: var(--tint-2);
+    color: var(--ink);
+  }
+  .log__year {
+    color: var(--ink-3);
+  }
+  .log__name {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .log__status {
+    font-size: 16px;
+  }
+  .log__status :global(.icon) {
+    color: var(--ink-3);
+  }
+  @media (max-width: 859px) {
+    .log__row--head {
+      display: none;
+    }
+    .log__row {
+      grid-template-columns: 48px minmax(0, 1fr);
+      grid-template-areas:
+        'year name'
+        'year type'
+        'year stack'
+        'year status';
+      gap: 2px 12px;
+      align-items: start;
+      padding: 14px 16px;
+    }
+    .log__status {
+      margin-top: 6px;
+    }
+    .log__year {
+      grid-area: year;
+    }
+    .log__name {
+      grid-area: name;
+    }
+    .log__type {
+      grid-area: type;
+    }
+    .log__stack {
+      grid-area: stack;
+      color: var(--ink-3);
+    }
+    .log__status {
+      grid-area: status;
+    }
+  }
+</style>

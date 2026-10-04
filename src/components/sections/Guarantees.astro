@@ -1,0 +1,139 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { guarantees } = site;
+---
+
+<div class="container section">
+  <Frame id="guarantees" label={guarantees.label} meta={guarantees.meta} labelledby="guarantees-title">
+    <div class="sec-head">
+      <h2 id="guarantees-title" class="h-section" data-reveal="wipe">{guarantees.title}</h2>
+      <p class="lead" data-reveal>{guarantees.lead}</p>
+    </div>
+
+    <div class="contract">
+      <div class="contract__tab">
+        <span class="contract__file tiny">
+          <PixelIcon name="lock" />
+          {guarantees.file}
+        </span>
+        <span class="contract__signed px">
+          Signed
+          <PixelIcon name="check" />
+        </span>
+      </div>
+      <ol class="clauses" data-reveal-stagger>
+        {
+          guarantees.items.map((g, i) => (
+            <li class="clause" data-reveal-item>
+              <span class="clause__no px" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}.
+              </span>
+              <div class="clause__body">
+                <h3 class="clause__title px">{g.title}</h3>
+                <p class="small">{g.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .contract {
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .contract__tab {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--tint);
+  }
+  .contract__file {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: var(--ink-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .contract__file :global(.icon) {
+    flex: none;
+  }
+  @media (max-width: 599px) {
+    .contract__tab {
+      padding: 12px 16px;
+    }
+    .clause {
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 12px;
+      padding: 20px 16px;
+    }
+  }
+  .contract__file :global(.icon) {
+    color: var(--accent);
+  }
+  .contract__signed {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    color: var(--on-accent);
+    background: var(--signal);
+  }
+  .clauses {
+    display: grid;
+  }
+  @media (min-width: 900px) {
+    .clauses {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .clause {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 16px;
+    padding: 24px 20px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+    transition: background-color var(--t-fast) steps(2);
+  }
+  @media (min-width: 900px) {
+    .clause:nth-child(even) {
+      box-shadow: inset 1px 0 0 0 var(--line);
+    }
+  }
+  .clause:hover {
+    background-color: var(--tint);
+  }
+  .clause__no {
+    font-size: 16px;
+    color: var(--ink-3);
+    padding-top: 4px;
+  }
+  .clause__body {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+  .clause__title {
+    font-size: 24px;
+    line-height: 1.17;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+  }
+  .clause__body p {
+    color: var(--ink-2);
+    max-width: 48ch;
+  }
+</style>

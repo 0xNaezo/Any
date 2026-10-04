@@ -1,0 +1,63 @@
+---
+import Base from '@/layouts/Base.astro';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+---
+
+<Base title="Page not found" noindex>
+  <section class="container lost" aria-labelledby="lost-title">
+    <div class="lost__frame frame dash corners">
+      <div class="lost__ghost" aria-hidden="true">
+        <Ghost size={150} eyes="dead" fill="dither" />
+      </div>
+      <p class="label lost__code">Error 404</p>
+      <h1 id="lost-title" class="h-section">This page <span class="hl">ghosted you.</span></h1>
+      <p class="lead">It moved, it never existed, or a link somewhere is out of date. Either way, it’s not here.</p>
+      <div class="lost__cta">
+        <a class="btn" href="/">
+          Back to home
+          <PixelIcon name="arrow-right" class="btn__icon" />
+        </a>
+        <a class="btn btn--ghost" href="/#contact">Contact us</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    padding-top: calc(var(--nav-h) + 40px);
+    min-height: 80vh;
+  }
+  .lost__frame {
+    display: grid;
+    justify-items: center;
+    gap: 24px;
+    padding: clamp(48px, 10vw, 120px) var(--frame-pad);
+    text-align: center;
+  }
+  .lost__ghost {
+    color: var(--accent);
+    margin-bottom: 8px;
+    animation: lost-float 2.4s steps(4) infinite alternate;
+  }
+  @keyframes lost-float {
+    to {
+      transform: translateY(-12px);
+    }
+  }
+  .lost__code {
+    color: var(--ink-3);
+  }
+  .lost .lead {
+    color: var(--ink-2);
+    margin-inline: auto;
+  }
+  .lost__cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 24px;
+    margin-top: 16px;
+  }
+</style>

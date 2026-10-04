@@ -1,0 +1,32 @@
+---
+import { icons, type IconName } from '@/lib/icons';
+import { gridToPaths } from '@/lib/pixel';
+
+interface Props {
+  name: IconName;
+  /** Rendered width in CSS px. Keep it a multiple of the grid size for crisp pixels. */
+  size?: number;
+  class?: string;
+  /** Accessible label. Omit for decorative icons. */
+  title?: string;
+}
+
+const { name, size, class: className, title } = Astro.props;
+const { w, h, solid, tone } = gridToPaths(icons[name]);
+const width = size ?? w * 2;
+const height = (width / w) * h;
+---
+
+<svg
+  class:list={['icon', className]}
+  width={width}
+  height={height}
+  viewBox={`0 0 ${w} ${h}`}
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  {tone && <path d={tone} fill="currentColor" opacity="0.4" />}
+  <path d={solid} fill="currentColor" />
+</svg>

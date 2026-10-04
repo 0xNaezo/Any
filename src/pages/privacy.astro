@@ -1,0 +1,74 @@
+---
+import Base from '@/layouts/Base.astro';
+import Frame from '@/components/ui/Frame.astro';
+import { site } from '@/data/site';
+
+const { brand } = site;
+const updated = 'October 2026';
+// TEMPLATE — have this reviewed for your jurisdiction before launch.
+---
+
+<Base title="Privacy policy" description={`How ${brand.name} handles the personal data you send us.`}>
+  <section class="container legal" aria-labelledby="legal-title">
+    <Frame as="div" label="Legal / Privacy" meta={`Updated ${updated}`}>
+      <h1 id="legal-title" class="h-section">Privacy policy</h1>
+      <div class="legal__body">
+        <p class="lead">
+          Short version: we only collect what you send us, we use it to reply, and we don’t track you around the web.
+        </p>
+
+        <h2 class="label">Who we are</h2>
+        <p>
+          {brand.legalName}, {brand.companyId}, {brand.address} (“we”) is the controller of the personal data described
+          here. Contact: <a class="link" href={`mailto:${brand.email}`}>{brand.email}</a>.
+        </p>
+
+        <h2 class="label">What we collect</h2>
+        <p>
+          When you use the contact form or email us, we receive your name, email address, company (optional) and anything
+          you write in your message. We use it only to answer your inquiry and, if we work together, to run the
+          project.
+        </p>
+
+        <h2 class="label">Cookies & analytics</h2>
+        <p>
+          This site sets no tracking cookies and loads no third-party trackers. Fonts are self-hosted. Your browser may
+          store a small flag in session storage so the intro animation plays only once per visit.
+        </p>
+
+        <h2 class="label">How long we keep it</h2>
+        <p>
+          Inquiries that don’t turn into a project are deleted after 24 months. Project correspondence is kept for as
+          long as required by accounting and contract law.
+        </p>
+
+        <h2 class="label">Your rights</h2>
+        <p>
+          You can ask us to access, correct, export or delete your data at any time by emailing
+          <a class="link" href={`mailto:${brand.email}`}>{brand.email}</a>. You also have the right to lodge a
+          complaint with your local data protection authority.
+        </p>
+      </div>
+    </Frame>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    padding-top: calc(var(--nav-h) + 40px);
+  }
+  .legal__body {
+    display: grid;
+    gap: 16px;
+    max-width: 72ch;
+    margin-top: 40px;
+    color: var(--ink-2);
+  }
+  .legal__body .lead {
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .legal__body h2 {
+    margin-top: 24px;
+  }
+</style>

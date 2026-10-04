@@ -1,0 +1,673 @@
+/* ==========================================================================
+   NIGHTLOOM — global styles
+   Design tokens, reset, typography and the shared pixel primitives
+   (frames, dashed lines, corner handles, buttons, tags).
+   Component-specific styles live next to each component.
+   ========================================================================== */
+
+@import '@fontsource/tiny5/latin-400.css';
+@import '@fontsource/tiny5/latin-ext-400.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+@import '@fontsource/ibm-plex-mono/latin-600.css';
+@import 'lenis/dist/lenis.css';
+
+/* ---------- tokens ---------- */
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #05070d;
+  --bg-1: #080c18;
+  --bg-2: #0b1222;
+  --bg-3: #111b33;
+
+  /* text */
+  --ink: #dbe5ff;
+  --ink-2: #9fb0d8;
+  --ink-3: #7182ad;
+
+  /* accent (pixel blue) */
+  --accent: #8fb5ff;
+  --accent-hi: #c4d7ff;
+  --accent-mid: #5b86ff;
+  --accent-deep: #2d5bff;
+  --on-accent: #05070d;
+  --signal: #9dffc4; /* live / available indicators only */
+
+  /* lines & tints */
+  --line: rgb(143 181 255 / 0.2);
+  --line-2: rgb(143 181 255 / 0.42);
+  --line-3: rgb(143 181 255 / 0.72);
+  --tint: rgb(143 181 255 / 0.045);
+  --tint-2: rgb(143 181 255 / 0.085);
+  --tint-3: rgb(143 181 255 / 0.14);
+  --px-shadow: #2a4bbd;
+
+  /* type */
+  --font-pixel: 'Tiny5', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* pixel-font sizes: Tiny5 is drawn on an 8-unit em, so multiples of 8px stay crisp */
+  --fs-hero: 40px;
+  --fs-h2: 32px;
+  --fs-h3: 24px;
+  --fs-label: 16px;
+
+  /* layout */
+  --container: 1280px;
+  --gutter: 16px;
+  --frame-pad: 20px;
+  --section-gap: 72px;
+  --nav-h: 64px;
+  --radius: 0px;
+
+  /* motion */
+  --t-fast: 140ms;
+  --t-med: 320ms;
+}
+
+@media (min-width: 600px) {
+  :root {
+    --fs-hero: 56px;
+    --fs-h2: 40px;
+    --gutter: 24px;
+    --frame-pad: 32px;
+    --section-gap: 96px;
+  }
+}
+@media (min-width: 960px) {
+  :root {
+    --fs-hero: 72px;
+    --fs-h2: 48px;
+    --gutter: 32px;
+    --frame-pad: 48px;
+    --section-gap: 120px;
+    --nav-h: 72px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --fs-hero: 80px;
+    --fs-h2: 56px;
+    --frame-pad: 56px;
+  }
+}
+@media (min-width: 1440px) {
+  :root {
+    --fs-hero: 88px;
+  }
+}
+
+/* ---------- reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+  scrollbar-color: var(--accent-mid) var(--bg);
+  scrollbar-width: thin;
+  hanging-punctuation: first last;
+}
+html:not(.lenis) {
+  scroll-behavior: smooth;
+}
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.7;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+img,
+picture,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+p,
+h1,
+h2,
+h3,
+h4 {
+  overflow-wrap: break-word;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 400;
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+:focus-visible {
+  outline: 2px dashed var(--accent-hi);
+  outline-offset: 4px;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-mid);
+  border: 3px solid var(--bg);
+}
+[id] {
+  scroll-margin-top: calc(var(--nav-h) + 24px);
+}
+
+/* ---------- typography ---------- */
+.px {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.h-hero {
+  font-family: var(--font-pixel);
+  font-size: var(--fs-hero);
+  line-height: 1.125;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--accent);
+}
+.h-section {
+  font-family: var(--font-pixel);
+  font-size: var(--fs-h2);
+  line-height: 1.143;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  color: var(--accent);
+}
+.h-card {
+  font-family: var(--font-pixel);
+  font-size: var(--fs-h3);
+  line-height: 1.167;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+.label {
+  font-family: var(--font-pixel);
+  font-size: var(--fs-label);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.lead {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink);
+  max-width: 62ch;
+}
+@media (min-width: 960px) {
+  .lead {
+    font-size: 17px;
+  }
+}
+.muted {
+  color: var(--ink-2);
+}
+.faint {
+  color: var(--ink-3);
+}
+.small {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.tiny {
+  font-size: 12.5px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* inverse highlight — line boxes stack into a stepped block like a selection */
+.hl {
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0 0.14em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--t-fast) steps(2);
+}
+.link:hover {
+  color: var(--accent-hi);
+  text-decoration-style: solid;
+}
+
+/* ---------- layout ---------- */
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section {
+  position: relative;
+  margin-top: var(--section-gap);
+}
+.stack > * + * {
+  margin-top: var(--stack, 24px);
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 12px;
+  z-index: 1000;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-pixel);
+  text-transform: uppercase;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- pixel primitives ---------- */
+
+/* Dashed 1px outline drawn with gradients: identical dash rhythm in every browser.
+   --draw (0..1) lets JS "plot" the outline from the top-left corner. */
+.dash {
+  position: relative;
+  --dash-c: var(--line-2);
+}
+.dash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, var(--dash-c) 0 4px, transparent 4px 8px) 0 0 / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, var(--dash-c) 0 4px, transparent 4px 8px) 0 100% / 100% 1px no-repeat,
+    repeating-linear-gradient(180deg, var(--dash-c) 0 4px, transparent 4px 8px) 0 0 / 1px 100% no-repeat,
+    repeating-linear-gradient(180deg, var(--dash-c) 0 4px, transparent 4px 8px) 100% 0 / 1px 100% no-repeat;
+  clip-path: inset(0 calc((1 - var(--draw, 1)) * 100%) calc((1 - var(--draw, 1)) * 100%) 0);
+  z-index: 1;
+}
+
+/* Square "selection handles" on the four corners */
+.corners::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  pointer-events: none;
+  --cs: 7px;
+  --cc: var(--accent);
+  background:
+    linear-gradient(var(--cc), var(--cc)) 0 0 / var(--cs) var(--cs) no-repeat,
+    linear-gradient(var(--cc), var(--cc)) 100% 0 / var(--cs) var(--cs) no-repeat,
+    linear-gradient(var(--cc), var(--cc)) 0 100% / var(--cs) var(--cs) no-repeat,
+    linear-gradient(var(--cc), var(--cc)) 100% 100% / var(--cs) var(--cs) no-repeat;
+  opacity: var(--corners, 1);
+  z-index: 2;
+}
+
+/* horizontal dashed rule */
+.rule {
+  height: 1px;
+  border: 0;
+  background: repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px);
+}
+.rule-v {
+  width: 1px;
+  background: repeating-linear-gradient(180deg, var(--line-2) 0 4px, transparent 4px 8px);
+}
+
+/* Frame — every section is a "window" on the dotted canvas */
+.frame {
+  position: relative;
+  background: var(--bg);
+}
+.frame__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  padding: 12px var(--frame-pad);
+  background: var(--tint);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.frame__bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px);
+}
+.frame__bar-meta {
+  color: var(--ink-3);
+  text-align: right;
+  white-space: nowrap;
+}
+@media (max-width: 599px) {
+  .frame__bar {
+    font-size: 16px;
+    min-height: 48px;
+  }
+  .frame__bar-meta {
+    display: none;
+  }
+}
+.frame__body {
+  padding: var(--frame-pad);
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--on-accent);
+  --btn-sh: var(--px-shadow);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 0 24px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  box-shadow: 6px 6px 0 0 var(--btn-sh);
+  transition:
+    transform var(--t-fast) steps(2),
+    box-shadow var(--t-fast) steps(2),
+    background-color var(--t-fast) steps(2),
+    color var(--t-fast) steps(2);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover {
+  --btn-bg: var(--accent-hi);
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 0 var(--btn-sh);
+}
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 0 var(--btn-sh);
+}
+.btn .btn__icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  transition: transform var(--t-fast) steps(2);
+}
+.btn:hover .btn__icon {
+  transform: translateX(4px);
+}
+.btn--ghost {
+  --btn-bg: var(--bg);
+  --btn-fg: var(--accent);
+  --btn-sh: var(--tint-3);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.btn--ghost:hover {
+  --btn-bg: var(--bg-2);
+  --btn-fg: var(--accent-hi);
+}
+.btn--ghost:focus-visible {
+  outline: 2px solid var(--accent-hi);
+  box-shadow:
+    6px 6px 0 0 var(--btn-sh),
+    0 0 0 6px var(--bg),
+    0 0 0 8px var(--accent-hi);
+}
+.btn--sm {
+  min-height: 44px;
+  padding: 0 18px;
+  gap: 10px;
+  box-shadow: 4px 4px 0 0 var(--btn-sh);
+}
+.btn--sm:hover {
+  box-shadow: 6px 6px 0 0 var(--btn-sh);
+}
+.btn--block {
+  width: 100%;
+}
+
+/* ---------- tags & chips ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+  background: var(--tint);
+  box-shadow: inset 0 0 0 1px var(--line);
+  white-space: nowrap;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* blinking live dot */
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--signal);
+  flex: none;
+  animation: blink 1.6s steps(1, end) infinite;
+}
+.dot--accent {
+  background: var(--accent);
+}
+@keyframes blink {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0.15;
+  }
+}
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  vertical-align: -0.18em;
+  background: var(--accent);
+  animation: blink 1.05s steps(1, end) infinite;
+}
+
+/* pixel icon */
+.icon {
+  display: inline-block;
+  flex: none;
+  shape-rendering: crispEdges;
+}
+
+/* ---------- reveal states (JS-enhanced only) ---------- */
+.js [data-reveal] {
+  opacity: 0;
+}
+.js.reveal-fallback [data-reveal],
+.js.reduced [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* content layers sit above the fixed backdrop canvas */
+main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- shared section scaffolding ---------- */
+.sec-head {
+  display: grid;
+  gap: 20px;
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+@media (min-width: 960px) {
+  .sec-head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 48px;
+  }
+  .sec-head .lead {
+    justify-self: end;
+    max-width: 52ch;
+  }
+}
+.sec-head .lead {
+  color: var(--ink-2);
+}
+
+/* card with a dashed outline whose corner handles appear on hover */
+.card {
+  position: relative;
+  --dash-c: var(--line);
+  --corners: 0;
+  background: var(--bg);
+  transition: background-color var(--t-med) steps(3);
+}
+.card.corners::after {
+  transition: opacity var(--t-fast) steps(2);
+}
+.card:hover,
+.card:focus-within {
+  --dash-c: var(--line-2);
+  --corners: 1;
+  background: var(--bg-1);
+}
+
+/* small pixel checklist */
+.checklist {
+  display: grid;
+  gap: 8px;
+}
+.checklist li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.checklist .icon {
+  color: var(--accent);
+  transform: translateY(2px);
+}
+
+/* status chips */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.status--live {
+  color: var(--signal);
+}

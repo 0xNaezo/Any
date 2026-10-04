@@ -1,0 +1,131 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { testimonials } = site;
+const initials = (name: string) =>
+  name
+    .replace(/\./g, '')
+    .split(/\s+/)
+    .map((p) => p[0])
+    .join('')
+    .slice(0, 2);
+---
+
+<div class="container section">
+  <Frame id="reviews" label={testimonials.label} meta={testimonials.meta} labelledby="reviews-title">
+    <div class="sec-head">
+      <h2 id="reviews-title" class="h-section" data-reveal="wipe">{testimonials.title}</h2>
+    </div>
+
+    <ul class="quotes" data-reveal-stagger>
+      {
+        testimonials.items.map((t, i) => (
+          <li class:list={['quote card dash corners', { 'quote--wide': i === 0 }]} data-reveal-item>
+            <figure>
+              <div class="quote__top">
+                <PixelIcon name="quote" size={36} class="quote__mark" />
+                <span class="quote__stars" role="img" aria-label="Rated 5 out of 5">
+                  {Array.from({ length: 5 }, () => (
+                    <PixelIcon name="star" />
+                  ))}
+                </span>
+              </div>
+              <blockquote class="quote__text">
+                <p>{t.text}</p>
+              </blockquote>
+              <figcaption class="quote__who">
+                <span class="quote__avatar px" aria-hidden="true">
+                  {initials(t.author)}
+                </span>
+                <span>
+                  <span class="quote__name">{t.author}</span>
+                  <span class="quote__role tiny">
+                    {t.role}, {t.company}
+                  </span>
+                </span>
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </Frame>
+</div>
+
+<style>
+  .quotes {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 900px) {
+    .quotes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .quote--wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .quote figure {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+    padding: 32px;
+  }
+  .quote__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .quote :global(.quote__mark) {
+    color: var(--accent-mid);
+  }
+  .quote__stars {
+    display: inline-flex;
+    gap: 4px;
+    color: var(--accent);
+  }
+  .quote__text {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  @media (min-width: 900px) {
+    .quote--wide .quote__text {
+      font-size: 21px;
+      line-height: 1.6;
+      max-width: 60ch;
+    }
+  }
+  .quote__who {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: auto;
+    padding-top: 20px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  .quote__avatar {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: none;
+    font-size: 16px;
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+  .quote__who > span:last-child {
+    display: grid;
+    gap: 2px;
+  }
+  .quote__name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .quote__role {
+    color: var(--ink-2);
+  }
+</style>

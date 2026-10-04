@@ -1,0 +1,206 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { process } = site;
+---
+
+<div class="container section">
+  <Frame id="process" label={process.label} meta={process.meta} labelledby="process-title">
+    <div class="sec-head">
+      <h2 id="process-title" class="h-section" data-reveal="wipe">{process.title}</h2>
+      <p class="lead" data-reveal>{process.lead}</p>
+    </div>
+
+    <div class="steps" data-steps>
+      <div class="steps__rail" aria-hidden="true">
+        <span class="steps__fill" data-steps-fill></span>
+        <span class="steps__ghost" data-steps-ghost><Ghost size={30} /></span>
+      </div>
+      <ol class="steps__list">
+        {
+          process.steps.map((s, i) => (
+            <li class="step" data-step>
+              <span class="step__num px" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div class="step__main">
+                <p class="step__when px">{s.when}</p>
+                <h3 class="h-card step__title">{s.title}</h3>
+                <p class="step__text small">{s.text}</p>
+              </div>
+              <p class="step__out">
+                <span class="step__out-label px">You get</span>
+                <span class="small">{s.output}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="weekly" data-reveal>
+      <p class="label">{process.weeklyLabel}</p>
+      <ul>
+        {
+          process.weekly.map((w) => (
+            <li>
+              <PixelIcon name="check" />
+              {w}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .steps {
+    position: relative;
+    --num: 56px;
+  }
+  .steps__rail {
+    position: absolute;
+    left: calc(var(--num) / 2 - 1px);
+    top: 28px;
+    bottom: 28px;
+    width: 2px;
+    background: repeating-linear-gradient(180deg, var(--line-2) 0 4px, transparent 4px 8px);
+  }
+  .steps__fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: top;
+    transform: scaleY(var(--p, 1));
+  }
+  .steps__ghost {
+    position: absolute;
+    left: 50%;
+    width: 30px;
+    top: calc(var(--p, 1) * 100%);
+    color: var(--accent);
+    transform: translate(-50%, -50%);
+    padding: 6px 0;
+    background: var(--bg);
+    display: none;
+    z-index: 0;
+  }
+  :global(.js:not(.reduced)) .steps__ghost {
+    display: block;
+  }
+  .steps__ghost :global(.ghost) {
+    max-width: none;
+  }
+  .steps__list {
+    display: grid;
+  }
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--num) minmax(0, 1fr);
+    gap: 8px 24px;
+    padding: 28px 0;
+  }
+  .step + .step {
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top right / calc(100% - var(--num) - 24px) 1px no-repeat;
+  }
+  @media (min-width: 960px) {
+    .step {
+      grid-template-columns: var(--num) minmax(0, 1fr) minmax(0, 300px);
+      gap: 40px;
+      align-items: start;
+    }
+  }
+  .step__num {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--num);
+    height: var(--num);
+    font-size: 24px;
+    color: var(--accent);
+    background: var(--bg);
+    box-shadow: inset 0 0 0 2px var(--accent);
+    transition:
+      background-color var(--t-fast) steps(2),
+      color var(--t-fast) steps(2);
+  }
+  .step:global(.is-done) .step__num {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .step__main {
+    display: grid;
+    gap: 10px;
+  }
+  .step__when {
+    font-size: 16px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+  }
+  .step__text {
+    color: var(--ink-2);
+    max-width: 58ch;
+  }
+  .step__out {
+    grid-column: 2;
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    background: var(--tint);
+    box-shadow: inset 2px 0 0 0 var(--accent-mid);
+  }
+  @media (min-width: 960px) {
+    .step__out {
+      grid-column: 3;
+      margin-top: 26px;
+    }
+  }
+  .step__out-label {
+    font-size: 16px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+
+  .weekly {
+    display: grid;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 24px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    background: var(--tint);
+  }
+  @media (min-width: 960px) {
+    .weekly {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 32px;
+    }
+  }
+  .weekly .label {
+    color: var(--ink-3);
+  }
+  .weekly ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+  }
+  .weekly li {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .weekly li :global(.icon) {
+    color: var(--signal);
+  }
+</style>

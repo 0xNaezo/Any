@@ -1,0 +1,516 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { contact, brand } = site;
+const primaryTz = brand.cities[0]?.tz ?? 'Europe/Prague';
+---
+
+<div class="container section">
+  <Frame id="contact" label={contact.label} meta={contact.meta} labelledby="contact-title">
+    <div class="contact">
+      <div class="contact__intro">
+        <h2 id="contact-title" class="h-section contact__title">
+          {
+            contact.title.map((line) => (
+              <span class="contact__line">
+                <span class:list={[{ hl: line.hl }]}>{line.text}</span>
+              </span>
+            ))
+          }
+        </h2>
+        <p class="lead">{contact.lead}</p>
+
+        <div class="person dash">
+          <span class="person__avatar">
+            <Ghost eyes={contact.person.eyes} size={45} fill="dither" />
+          </span>
+          <div class="person__text">
+            <p class="person__name px">{contact.person.name}</p>
+            <p class="tiny muted">{contact.person.role}</p>
+          </div>
+          <p class="person__status tiny" data-online={primaryTz} data-on-label="online now" data-off-label="away · replies next business day">
+            <span class="dot" aria-hidden="true"></span>
+            <span data-online-label>replies within 24h</span>
+          </p>
+        </div>
+
+        <ul class="channels">
+          {
+            contact.channels.map((c) => (
+              <li class="channel">
+                <a class="channel__link" href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel={c.href.startsWith('http') ? 'noopener' : undefined}>
+                  <span class="channel__icon">
+                    <PixelIcon name={c.icon} />
+                  </span>
+                  <span class="channel__text">
+                    <span class="channel__label tiny">{c.label}</span>
+                    <span class="channel__value">{c.value}</span>
+                  </span>
+                  <PixelIcon name={c.href.startsWith('http') ? 'arrow-up-right' : 'arrow-right'} class="channel__go" />
+                </a>
+                {c.copy && (
+                  <button class="channel__copy px" type="button" data-copy={c.value} aria-label={`Copy ${c.value}`}>
+                    <PixelIcon name="copy" />
+                    <span data-copy-label>Copy</span>
+                  </button>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="contact__note tiny">
+          <PixelIcon name="lock" />
+          {contact.note}
+        </p>
+      </div>
+
+      <form
+        class="form dash"
+        data-contact-form
+        data-endpoint={contact.formEndpoint}
+        data-email={brand.email}
+        action={contact.formEndpoint || `mailto:${brand.email}`}
+        method="post"
+        novalidate
+      >
+        <div class="form__head">
+          <span class="px">new_inquiry.txt</span>
+          <span class="tiny faint">All fields except company are required</span>
+        </div>
+
+        <div class="form__grid">
+          <div class="field">
+            <label for="f-name" class="field__label px">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="120" placeholder="Jane Doe" />
+            <p class="field__error tiny" data-error-for="name"></p>
+          </div>
+          <div class="field">
+            <label for="f-email" class="field__label px">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="160" placeholder="jane@company.com" />
+            <p class="field__error tiny" data-error-for="email"></p>
+          </div>
+          <div class="field field--full">
+            <label for="f-company" class="field__label px">Company <span class="faint">(optional)</span></label>
+            <input id="f-company" name="company" type="text" autocomplete="organization" maxlength="160" placeholder="Company or website" />
+          </div>
+        </div>
+
+        <fieldset class="chips">
+          <legend class="field__label px">What do you need?</legend>
+          <div class="chips__list">
+            {
+              contact.needs.map((n) => (
+                <label class="chip">
+                  <input type="checkbox" name="needs" value={n} />
+                  <span>{n}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="chips">
+          <legend class="field__label px">Budget</legend>
+          <div class="chips__list">
+            {
+              contact.budgets.map((b) => (
+                <label class="chip">
+                  <input type="radio" name="budget" value={b} />
+                  <span>{b}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="f-message" class="field__label px">About the project</label>
+          <textarea
+            id="f-message"
+            name="message"
+            rows="5"
+            required
+            minlength="10"
+            maxlength="4000"
+            placeholder="What are you building, what's the deadline, what's already in place?"></textarea>
+          <p class="field__error tiny" data-error-for="message"></p>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label for="f-website">Leave this empty</label>
+          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form__foot">
+          <button class="btn" type="submit" data-submit>
+            <span data-submit-label>Send message</span>
+            <PixelIcon name="send" class="btn__icon" />
+          </button>
+          <p class="tiny faint">Reply within one business day. No newsletters, ever.</p>
+        </div>
+
+        <div class="form__status" role="status" aria-live="polite" data-form-status></div>
+      </form>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 1060px) {
+    .contact {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 56px;
+      align-items: start;
+    }
+  }
+  .contact__intro {
+    display: grid;
+    gap: 28px;
+    align-content: start;
+  }
+  .contact__title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .contact__line .hl {
+    padding: 0 0.12em;
+    margin-left: -0.12em;
+  }
+  .contact__intro .lead {
+    color: var(--ink-2);
+  }
+
+  .person {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 16px;
+    padding: 16px;
+    --dash-c: var(--line-2);
+  }
+  .person__avatar {
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    color: var(--accent);
+    background: var(--tint);
+  }
+  .person__name {
+    font-size: 24px;
+    color: var(--accent);
+  }
+  .person__status {
+    grid-column: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-2);
+  }
+  .person__status[data-state='offline'] .dot {
+    background: var(--ink-3);
+    animation: none;
+  }
+
+  .channels {
+    display: grid;
+  }
+  .channel {
+    display: flex;
+    align-items: stretch;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  .channel:last-child {
+    background:
+      repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat,
+      repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) bottom / 100% 1px no-repeat;
+  }
+  .channel__link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 8px;
+    transition: background-color var(--t-fast) steps(2);
+  }
+  .channel__link:hover {
+    background-color: var(--tint);
+  }
+  .channel__icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition:
+      background-color var(--t-fast) steps(2),
+      color var(--t-fast) steps(2);
+  }
+  .channel__link:hover .channel__icon {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .channel__text {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+  }
+  .channel__label {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .channel__value {
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .channel :global(.channel__go) {
+    color: var(--ink-3);
+    transition:
+      transform var(--t-fast) steps(2),
+      color var(--t-fast) steps(2);
+  }
+  .channel__link:hover :global(.channel__go) {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+  @media (max-width: 599px) {
+    .channel :global(.channel__go) {
+      display: none;
+    }
+    .channel__link {
+      gap: 12px;
+    }
+  }
+  .channel__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 16px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    transition:
+      background-color var(--t-fast) steps(2),
+      color var(--t-fast) steps(2);
+  }
+  .channel__copy:hover {
+    background: var(--tint-2);
+  }
+  .channel__copy:global(.is-copied) {
+    color: var(--signal);
+  }
+  .contact__note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-2);
+  }
+  .contact__note :global(.icon) {
+    color: var(--accent);
+    flex: none;
+  }
+
+  /* ---------- form ---------- */
+  .form {
+    display: grid;
+    gap: 24px;
+    padding: 0 24px 28px;
+    background: var(--bg-1);
+    --dash-c: var(--line-2);
+  }
+  @media (min-width: 600px) {
+    .form {
+      padding: 0 32px 32px;
+    }
+  }
+  .form__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 -24px;
+    padding: 16px 24px;
+    background:
+      repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px) bottom / 100% 1px no-repeat,
+      var(--tint);
+    color: var(--accent);
+    font-size: 16px;
+  }
+  @media (min-width: 600px) {
+    .form__head {
+      margin: 0 -32px;
+      padding: 16px 32px;
+    }
+  }
+  .form__grid {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 600px) {
+    .form__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .field--full {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 8px;
+  }
+  .field__label {
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--bg);
+    border: 0;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition: box-shadow var(--t-fast) steps(2);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--ink-3);
+    opacity: 1;
+  }
+  .field input:hover,
+  .field textarea:hover {
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 2px var(--accent),
+      6px 6px 0 0 var(--tint-3);
+  }
+  .field:global(.has-error) input,
+  .field:global(.has-error) textarea {
+    box-shadow: inset 0 0 0 2px #ff8fa3;
+  }
+  .field__error {
+    min-height: 0;
+    color: #ffb3c0;
+  }
+  .field__error:empty {
+    display: none;
+  }
+
+  .chips {
+    border: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .chips legend {
+    padding: 0;
+    margin-bottom: 12px;
+  }
+  .chips__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    position: relative;
+    cursor: pointer;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+  .chip span {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--ink-2);
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition:
+      background-color var(--t-fast) steps(2),
+      color var(--t-fast) steps(2),
+      box-shadow var(--t-fast) steps(2);
+    user-select: none;
+  }
+  .chip:hover span {
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+  }
+  .chip input:checked + span {
+    background: var(--accent);
+    color: var(--on-accent);
+    box-shadow: 3px 3px 0 0 var(--px-shadow);
+  }
+  .chip input:focus-visible + span {
+    outline: 2px dashed var(--accent-hi);
+    outline-offset: 3px;
+  }
+
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    margin-top: 4px;
+  }
+  .form__status:empty {
+    display: none;
+  }
+  .form__status {
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    white-space: pre-wrap;
+  }
+  .form__status:global(.is-ok) {
+    box-shadow: inset 0 0 0 1px var(--signal);
+    color: var(--ink);
+  }
+  .form__status:global(.is-error) {
+    box-shadow: inset 0 0 0 1px #ff8fa3;
+  }
+  .form :global([data-submit][disabled]) {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+</style>

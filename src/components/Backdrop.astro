@@ -1,0 +1,34 @@
+---
+/** Fixed dotted canvas behind the page. See src/scripts/backdrop.ts */
+---
+
+<div class="backdrop" aria-hidden="true">
+  <canvas class="backdrop__canvas" data-backdrop></canvas>
+</div>
+
+<style>
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* CSS fallback: 2px squares every 32px (replaced by the WebGL canvas when ready) */
+    background: conic-gradient(at 2px 2px, transparent 75%, rgb(143 181 255 / 0.32) 0) 0 0 / 32px 32px;
+  }
+  .backdrop:global(.backdrop--ready) {
+    background: none;
+  }
+  .backdrop:global(.backdrop--fallback) .backdrop__canvas {
+    display: none;
+  }
+  .backdrop__canvas {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    opacity: 0;
+    transition: opacity 600ms steps(4);
+  }
+  .backdrop:global(.backdrop--ready) .backdrop__canvas {
+    opacity: 1;
+  }
+</style>

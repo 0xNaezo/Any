@@ -1,0 +1,32 @@
+---
+/**
+ * Frame — a dashed "window" with corner handles and a header bar.
+ * Every homepage section is wrapped in one.
+ */
+interface Props {
+  id?: string;
+  label?: string;
+  meta?: string;
+  class?: string;
+  bodyClass?: string;
+  as?: 'section' | 'div' | 'article' | 'aside';
+  /** Accessible name when the section has no visible heading id */
+  labelledby?: string;
+}
+
+const { id, label, meta, class: className, bodyClass, as: Tag = 'section', labelledby } = Astro.props;
+---
+
+<Tag id={id} class:list={['frame dash corners', className]} aria-labelledby={labelledby} data-frame>
+  {
+    label && (
+      <header class="frame__bar">
+        <span data-scramble>{label}</span>
+        {meta && <span class="frame__bar-meta" data-scramble>{meta}</span>}
+      </header>
+    )
+  }
+  <div class:list={['frame__body', bodyClass]}>
+    <slot />
+  </div>
+</Tag>

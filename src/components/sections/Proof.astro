@@ -1,0 +1,181 @@
+---
+import { site } from '@/data/site';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { clients, stats } = site;
+const loop = [...clients.names, ...clients.names];
+---
+
+<section class="proof container" aria-label="Clients and track record">
+  <div class="proof__frame frame dash corners" data-frame>
+    <div class="marquee">
+      <p class="marquee__label label">{clients.label}</p>
+      <div class="marquee__viewport">
+        <ul class="marquee__track">
+          {
+            loop.map((name, i) => (
+              <li aria-hidden={i >= clients.names.length ? 'true' : undefined}>
+                <span class="marquee__name px">{name}</span>
+                <PixelIcon name="diamond" class="marquee__sep" />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <dl class="stats">
+      {
+        stats.map((s) => (
+          <div class="stat">
+            <dt class="stat__label small">{s.label}</dt>
+            <dd class="stat__value px tnum" data-count={s.value} data-prefix={s.prefix ?? ''} data-suffix={s.suffix}>
+              {`${s.prefix ?? ''}${s.value}${s.suffix}`}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .proof {
+    margin-top: 32px;
+  }
+
+  /* ---------- marquee ---------- */
+  .marquee {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 72px;
+    background: var(--tint);
+  }
+  .marquee::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px);
+  }
+  .marquee__label {
+    flex: none;
+    padding: 0 24px 0 var(--frame-pad);
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .marquee__viewport {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 48s linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee__track li {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-right: 28px;
+  }
+  .marquee__name {
+    font-size: 24px;
+    color: var(--ink-2);
+    white-space: nowrap;
+    transition: color var(--t-fast) steps(2);
+  }
+  .marquee__track li:hover .marquee__name {
+    color: var(--accent-hi);
+  }
+  .marquee :global(.marquee__sep) {
+    color: var(--accent-mid);
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (max-width: 599px) {
+    .marquee {
+      flex-direction: column;
+      align-items: stretch;
+      padding-top: 16px;
+    }
+    .marquee__label {
+      padding: 0 var(--frame-pad);
+    }
+    .marquee__viewport {
+      padding: 14px 0 18px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+      padding: 12px var(--frame-pad);
+    }
+    .marquee__track li[aria-hidden] {
+      display: none;
+    }
+  }
+
+  /* ---------- stats ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 960px) {
+    .stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .stat {
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 32px var(--frame-pad) 36px;
+  }
+  .stat + .stat::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 24px;
+    bottom: 24px;
+    width: 1px;
+    background: repeating-linear-gradient(180deg, var(--line-2) 0 4px, transparent 4px 8px);
+  }
+  @media (max-width: 959px) {
+    .stat:nth-child(3)::before {
+      display: none;
+    }
+    .stat:nth-child(n + 3) {
+      background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+    }
+  }
+  .stat__value {
+    font-size: 48px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  @media (min-width: 960px) {
+    .stat__value {
+      font-size: 64px;
+    }
+  }
+  .stat__label {
+    color: var(--ink-2);
+    max-width: 22ch;
+  }
+</style>

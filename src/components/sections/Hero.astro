@@ -1,0 +1,292 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { hero, brand } = site;
+const pad = (key: string) => `${key} ${'.'.repeat(Math.max(2, 10 - key.length))}`;
+---
+
+<section class="hero container" id="top" aria-labelledby="hero-title">
+  <div class="hero__grid">
+    <Frame as="div" class="hero__main" label={hero.label} meta={hero.meta}>
+      <h1 id="hero-title" class="h-hero hero__title" data-hero-title>
+        {
+          hero.headline.map((line) => (
+            <span class="hero__line" data-hero-line>
+              <span class:list={[{ hl: line.hl }]}>{line.text}</span>
+            </span>
+          ))
+        }
+      </h1>
+
+      <p class="lead hero__lead" data-hero-fade>{hero.lead}</p>
+
+      <div class="hero__ctas" data-hero-fade>
+        <a class="btn" href={hero.primaryCta.href}>
+          {hero.primaryCta.label}
+          <PixelIcon name="arrow-right" class="btn__icon" />
+        </a>
+        <a class="btn btn--ghost" href={hero.secondaryCta.href}>
+          {hero.secondaryCta.label}
+          <PixelIcon name="arrow-down" class="btn__icon btn__icon--down" />
+        </a>
+      </div>
+
+      <ul class="hero__proof" data-hero-fade>
+        {
+          hero.proof.map((p) => (
+            <li>
+              <span class="hero__proof-value px">{p.value}</span>
+              <span class="hero__proof-label tiny">{p.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Frame>
+
+    <div class="hero__side">
+      <div class="hero__stage" data-hero-stage>
+        <canvas class="hero__ghost" data-hero-ghost aria-hidden="true"></canvas>
+        <span class="hero__ghost-fallback"><Ghost size={240} fill="dither" blink={false} /></span>
+        <p class="hero__bubble px" data-hero-bubble aria-hidden="true"></p>
+        <span class="visually-hidden">Nightloom ghost mascot</span>
+      </div>
+
+      <div class="hero__term dash" data-term>
+        <p class="term__row">
+          <span class="term__prompt" aria-hidden="true">&gt;</span>
+          <span data-term-cmd>{hero.terminal.command}</span>
+        </p>
+        <dl class="term__out">
+          {
+            hero.terminal.lines.map((l) => (
+              <div class="term__row" data-term-line>
+                <dt>{pad(l.key)}</dt>
+                <dd>
+                  {l.value === '{clocks}' ? (
+                    brand.cities.map((c, i) => (
+                      <>
+                        {i > 0 && ' · '}
+                        <span>
+                          {c.name.toLowerCase()} <span data-clock={c.tz}>--:--</span>
+                        </span>
+                      </>
+                    ))
+                  ) : (
+                    <>
+                      {l.live && <span class="dot" aria-hidden="true" />}
+                      {l.value}
+                    </>
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="term__row" data-term-end>
+          <span class="term__prompt" aria-hidden="true">&gt;</span>
+          <span class="cursor" aria-hidden="true"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: calc(var(--nav-h) + 40px);
+  }
+  .hero__grid {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 1060px) {
+    .hero {
+      padding-top: calc(var(--nav-h) + 48px);
+    }
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: stretch;
+    }
+  }
+
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 8px;
+  }
+  .hero__line {
+    display: block;
+  }
+  .hero__line .hl {
+    padding: 0 0.12em;
+    margin-left: -0.12em;
+  }
+  .hero__lead {
+    margin-top: 32px;
+    max-width: 54ch;
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 24px;
+    margin-top: 40px;
+  }
+  .hero__ctas :global(.btn__icon--down) {
+    transition: transform var(--t-fast) steps(2);
+  }
+  .hero__ctas .btn:hover :global(.btn__icon--down) {
+    transform: translateY(3px);
+  }
+  .hero__proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+    margin-top: 48px;
+    padding-top: 24px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
+  }
+  .hero__proof li {
+    display: grid;
+    gap: 6px;
+  }
+  .hero__proof-value {
+    font-size: 24px;
+    color: var(--accent);
+  }
+  .hero__proof-label {
+    color: var(--ink-3);
+    text-transform: lowercase;
+  }
+
+  /* ---------- side: ghost + terminal ---------- */
+  .hero__side {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 24px;
+    min-width: 0;
+  }
+  .hero__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 340px;
+    color: var(--accent);
+  }
+  @media (min-width: 1060px) {
+    .hero__stage {
+      min-height: 0;
+    }
+  }
+  .hero__ghost {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+  .hero__ghost-fallback {
+    opacity: 0.9;
+  }
+  .hero__stage:global(.is-live) .hero__ghost {
+    opacity: 1;
+  }
+  .hero__stage:global(.is-live) .hero__ghost-fallback {
+    display: none;
+  }
+  .hero__bubble {
+    position: absolute;
+    top: 8%;
+    right: 6%;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    box-shadow: 4px 4px 0 var(--px-shadow);
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .hero__bubble::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    bottom: -8px;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    box-shadow: -4px 4px 0 var(--accent);
+  }
+
+  .hero__term {
+    background: rgb(5 7 13 / 0.86);
+    padding: 20px 24px;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--ink);
+    min-height: 200px;
+  }
+  .term__row {
+    display: flex;
+    gap: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .term__out {
+    margin: 2px 0;
+  }
+  .term__out .term__row {
+    padding-left: 20px;
+  }
+  .term__out dt {
+    color: var(--ink-3);
+    flex: none;
+  }
+  .term__out dd {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .term__prompt {
+    color: var(--accent);
+  }
+  @media (max-width: 599px) {
+    .hero__term {
+      font-size: 12px;
+      padding: 16px;
+    }
+    .term__out .term__row {
+      padding-left: 0;
+    }
+  }
+</style>
+
+<style>
+  /* hidden until the intro plays (JS + motion only) */
+  :global(.js:not(.reduced):not(.reveal-fallback)) [data-hero-line] {
+    clip-path: inset(0 100% 0 -0.2em);
+  }
+  :global(.js:not(.reduced):not(.reveal-fallback)) [data-hero-fade] {
+    opacity: 0;
+  }
+  :global(.js:not(.reduced):not(.reveal-fallback)) .hero__main {
+    --draw: 0;
+    --corners: 0;
+  }
+  :global(.js:not(.reduced):not(.reveal-fallback)) .hero__term {
+    --draw: 0;
+  }
+  :global(.js:not(.reduced):not(.reveal-fallback)) [data-term-cmd],
+  :global(.js:not(.reduced):not(.reveal-fallback)) [data-term-line],
+  :global(.js:not(.reduced):not(.reveal-fallback)) [data-term-end] {
+    visibility: hidden;
+  }
+</style>

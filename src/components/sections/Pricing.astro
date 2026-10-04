@@ -1,0 +1,229 @@
+---
+import { site } from '@/data/site';
+import Frame from '@/components/ui/Frame.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { pricing, availability } = site;
+---
+
+<div class="container section">
+  <Frame id="pricing" label={pricing.label} meta={pricing.meta} labelledby="pricing-title">
+    <div class="sec-head">
+      <h2 id="pricing-title" class="h-section" data-reveal="wipe">{pricing.title}</h2>
+      <p class="lead" data-reveal>{pricing.lead}</p>
+    </div>
+
+    <ul class="plans" data-reveal-stagger>
+      {
+        pricing.plans.map((p) => (
+          <li class:list={['plan', p.featured ? 'plan--featured' : 'card dash corners']} data-reveal-item>
+            {p.featured && <p class="plan__flag px">Most chosen</p>}
+            <div class="plan__head">
+              <h3 class="h-card">{p.name}</h3>
+              <p class="plan__tagline small">{p.tagline}</p>
+            </div>
+            <p class="plan__price">
+              <span class="plan__amount px">{p.price}</span>
+              <span class="plan__unit tiny">{p.unit}</span>
+            </p>
+            <p class="plan__for small">
+              <span class="faint">For:</span> {p.for}
+            </p>
+            <ul class="plan__features checklist small">
+              {p.features.map((f) => (
+                <li>
+                  <PixelIcon name="check" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <div class="plan__foot">
+              <p class="plan__note tiny">{p.note}</p>
+              <a class:list={['btn btn--block', { 'btn--ghost': !p.featured }]} href="#contact">
+                {p.cta}
+                <PixelIcon name="arrow-right" class="btn__icon" />
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="capacity" data-capacity>
+      <div class="capacity__info">
+        <h3 class="label">{pricing.capacityLabel}</h3>
+        <p class="capacity__next">
+          <span class="dot" aria-hidden="true"></span>
+          Next free slot: <strong class="px">{availability.nextSlot}</strong>
+        </p>
+        <p class="small muted">{availability.note}</p>
+      </div>
+      <ol class="months">
+        {
+          availability.months.map((m) => (
+            <li class="month">
+              <span class="month__label px">{m.label}</span>
+              <span class="month__bar" role="img" aria-label={`${m.label}: ${m.booked * 10}% booked`}>
+                {Array.from({ length: 10 }, (_, i) => (
+                  <i class:list={{ on: i < m.booked }} data-cap-cell />
+                ))}
+              </span>
+              <span class="month__pct tiny tnum">{m.booked >= 10 ? 'full' : `${100 - m.booked * 10}% free`}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Frame>
+</div>
+
+<style>
+  .plans {
+    display: grid;
+    gap: 16px;
+    align-items: stretch;
+  }
+  @media (min-width: 1000px) {
+    .plans {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px 28px 28px;
+  }
+  .plan--featured {
+    background: var(--bg-2);
+    box-shadow:
+      inset 0 0 0 2px var(--accent),
+      10px 10px 0 0 var(--tint-3);
+  }
+  .plan__flag {
+    position: absolute;
+    top: -14px;
+    left: 26px;
+    padding: 6px 10px;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+  .plan__head {
+    display: grid;
+    gap: 8px;
+  }
+  .plan__tagline {
+    color: var(--ink-2);
+  }
+  .plan__price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 18px 0;
+    background:
+      repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat,
+      repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) bottom / 100% 1px no-repeat;
+  }
+  .plan__amount {
+    font-size: 48px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .plan__unit {
+    color: var(--ink-2);
+  }
+  .plan__for {
+    color: var(--ink);
+  }
+  .plan__features {
+    color: var(--ink);
+  }
+  .plan__foot {
+    display: grid;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+  .plan__note {
+    color: var(--ink-3);
+  }
+
+  /* ---------- capacity ---------- */
+  .capacity {
+    display: grid;
+    gap: 28px;
+    margin-top: 48px;
+    padding: 28px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    background: var(--tint);
+  }
+  @media (min-width: 1000px) {
+    .capacity {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+      align-items: center;
+      gap: 48px;
+    }
+  }
+  .capacity__info {
+    display: grid;
+    gap: 12px;
+  }
+  .capacity__info .label {
+    color: var(--ink-3);
+  }
+  .capacity__next {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 16px;
+  }
+  .capacity__next strong {
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--accent);
+  }
+  .months {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 16px;
+  }
+  @media (min-width: 600px) {
+    .months {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+  .month {
+    display: grid;
+    gap: 8px;
+  }
+  .month__label {
+    font-size: 16px;
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+  }
+  .month__bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+  }
+  .month__bar i {
+    aspect-ratio: 1;
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .month__bar i.on {
+    background: var(--accent-mid);
+    box-shadow: none;
+  }
+  .month__pct {
+    color: var(--ink-3);
+  }
+  .month:first-child .month__pct {
+    color: var(--ink-3);
+  }
+</style>

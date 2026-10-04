@@ -1,0 +1,65 @@
+---
+import { ghostPaths, type GhostEyes } from '@/lib/ghost';
+
+interface Props {
+  eyes?: GhostEyes;
+  /** Width in CSS px — multiples of 15 keep every pixel square and crisp. */
+  size?: number;
+  /** Interior treatment. */
+  fill?: 'none' | 'dither' | 'solid';
+  class?: string;
+  title?: string;
+  /** Enable the idle blink animation on the eyes. */
+  blink?: boolean;
+}
+
+const { eyes = 'bars', size = 30, fill = 'none', class: className, title, blink = true } = Astro.props;
+const g = ghostPaths(eyes);
+const height = (size / g.w) * g.h;
+---
+
+<svg
+  class:list={['ghost', className, { 'ghost--blink': blink }]}
+  width={size}
+  height={height}
+  viewBox={`0 0 ${g.w} ${g.h}`}
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  {fill === 'solid' && <path class="ghost__body" d={g.silhouette} fill="currentColor" opacity="0.14" />}
+  {fill === 'dither' && <path class="ghost__dither" d={g.dither} fill="currentColor" opacity="0.4" />}
+  <path class="ghost__outline" d={g.outline} fill="currentColor" />
+  <path class="ghost__eyes" d={g.eyes} fill="currentColor" />
+</svg>
+
+<style>
+  .ghost {
+    display: block;
+    flex: none;
+    shape-rendering: crispEdges;
+    overflow: visible;
+  }
+  .ghost__eyes {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+  }
+  .ghost--blink .ghost__eyes {
+    animation: ghost-blink 5.2s steps(1, end) infinite;
+  }
+  @keyframes ghost-blink {
+    0%,
+    93% {
+      transform: scaleY(1);
+    }
+    94%,
+    96% {
+      transform: scaleY(0.34);
+    }
+    97%,
+    100% {
+      transform: scaleY(1);
+    }
+  }
+</style>

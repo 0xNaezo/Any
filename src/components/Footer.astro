@@ -1,0 +1,185 @@
+---
+import { site } from '@/data/site';
+import Ghost from '@/components/ui/Ghost.astro';
+import PixelIcon from '@/components/ui/PixelIcon.astro';
+
+const { brand, nav, footer, contact } = site;
+const year = new Date().getFullYear();
+---
+
+<footer class="footer section" data-footer>
+  <div class="container">
+    <div class="footer__frame frame dash corners">
+      <div class="footer__top">
+        <div class="footer__intro">
+          <Ghost size={60} fill="dither" class="footer__ghost" />
+          <p class="footer__tagline">{footer.tagline}</p>
+          <a class="btn" href="/#contact">
+            Start a project
+            <PixelIcon name="arrow-right" class="btn__icon" />
+          </a>
+        </div>
+
+        <nav class="footer__cols" aria-label="Footer">
+          <div>
+            <p class="footer__head label">Navigate</p>
+            <ul>
+              {nav.map((item) => <li><a class="footer__link" href={item.href}>{item.label}</a></li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="footer__head label">Contact</p>
+            <ul>
+              {contact.channels.map((c) => <li><a class="footer__link" href={c.href}>{c.value}</a></li>)}
+              <li><a class="footer__link" href={brand.github} rel="me">GitHub</a></li>
+              <li><a class="footer__link" href={brand.linkedin} rel="me">LinkedIn</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="footer__head label">Company</p>
+            <ul class="footer__company">
+              <li>{brand.legalName}</li>
+              <li>{brand.companyId}</li>
+              <li>{brand.address}</li>
+              <li>{brand.workingHours}</li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <p class="footer__word" aria-hidden="true">{brand.name}</p>
+
+      <div class="footer__bar">
+        <p class="tiny faint">© {year} {brand.legalName} · All rights reserved</p>
+        <p class="footer__status tiny">
+          <span class="dot" aria-hidden="true"></span>
+          {footer.status}
+        </p>
+        <div class="footer__legal tiny">
+          {footer.legal.map((l) => <a class="footer__link" href={l.href}>{l.label}</a>)}
+          <a class="footer__top-link px" href="#main" data-to-top>
+            Back to top
+            <PixelIcon name="arrow-up" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer__spacer"></div>
+</footer>
+
+<style>
+  .footer__frame {
+    padding: var(--frame-pad);
+    overflow: hidden;
+  }
+  .footer__top {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 960px) {
+    .footer__top {
+      grid-template-columns: 1fr 1.6fr;
+      gap: 64px;
+    }
+  }
+  .footer__intro {
+    display: grid;
+    justify-items: start;
+    gap: 24px;
+    color: var(--accent);
+  }
+  .footer__tagline {
+    max-width: 30ch;
+    color: var(--ink-2);
+  }
+  .footer__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+  }
+  @media (min-width: 600px) {
+    .footer__cols {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .footer__head {
+    margin-bottom: 16px;
+    color: var(--ink-3);
+  }
+  .footer__cols ul {
+    display: grid;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .footer__link {
+    color: var(--ink-2);
+    transition: color var(--t-fast) steps(2);
+  }
+  .footer__link:hover {
+    color: var(--accent-hi);
+  }
+  .footer__company {
+    color: var(--ink-3);
+  }
+
+  /* giant dithered wordmark */
+  .footer__word {
+    margin: clamp(40px, 7vw, 96px) 0 clamp(24px, 4vw, 48px);
+    font-family: var(--font-pixel);
+    /* the word is ~5.2em wide: size it to the space inside the frame */
+    font-size: min(216px, calc((100vw - 2 * var(--gutter) - 2 * var(--frame-pad)) / 5.3));
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    color: transparent;
+    background: repeating-conic-gradient(var(--accent) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    user-select: none;
+  }
+
+  .footer__bar {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-top: 20px;
+  }
+  .footer__bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--line-2) 0 4px, transparent 4px 8px);
+  }
+  .footer__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-2);
+  }
+  .footer__legal {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .footer__top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: var(--accent);
+  }
+  .footer__top-link:hover {
+    color: var(--accent-hi);
+  }
+  .footer__spacer {
+    height: var(--gutter);
+  }
+</style>
