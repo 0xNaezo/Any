@@ -10,8 +10,9 @@
 | 4 | Квалификация «реальный бизнес с деньгами» | in_progress | `raw/4-business-signals.md` · `findings/4-business-signals.md` | старт 13:11 |
 | 5 | Поиск контакта основателя/мейкера | in_progress | `raw/5-contact-finding.md` · `findings/5-contact-finding.md` | старт 13:11 |
 | 6 | Доставляемость + легальность cold email | in_progress | `raw/6-email-delivery.md` · `findings/6-email-delivery.md` | старт 13:11 |
-| 7 | Ожидаемая отдача / бенчмарки / юнит-экономика | in_progress | `raw/7-roi-benchmarks.md` · `findings/7-roi-benchmarks.md` | старт 13:11 |
+| 7 | Ожидаемая отдача / бенчмарки / юнит-экономика | **done** | `raw/7-roi-benchmarks.md` · `findings/7-roi-benchmarks.md` | готово 13:34 |
 
 ## Журнал
 - 2026-10-04 13:09 UTC — создан скаффолдинг (`plan.md`, `progress.md`, `FINAL.md`, `raw/`, `findings/`). Оси 3–7 реконструированы из механики воронки (см. `plan.md` §2).
 - 2026-10-04 13:11 UTC — запущены 7 сабагентов-исследователей (по одному на ось, параллельно). Статусы → `in_progress`. Жду завершения, затем синтез `FINAL.md`.
+- 2026-10-04 13:34 UTC — **ось 7 done** (бенчмарки cold email — все вендорские, помечены; параметрическая воронка; стоимость стека снята вживую 2026-10-04). Остальные 6 осей ещё в работе.
