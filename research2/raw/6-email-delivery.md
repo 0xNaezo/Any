@@ -417,7 +417,7 @@ GMass (S35), 2023-01-19 (последнее обновление 2023-02-06): «
 
 ### 5.6 Австрия — TKG 2021 §174 (S44; RIS, консолидированная версия; открыто 2026-10-04)
 - **§174(3):** «Die Zusendung einer elektronischen Post – einschließlich SMS – ist ohne vorherige Einwilligung des Empfängers unzulässig, wenn die Zusendung zu Zwecken der Direktwerbung erfolgt.»
-- **§174(4):** исключение для клиентов (4 кумулятивных условия, аналог §7(3) UWG; в т.ч. отказ не заявлен «insbesondere nicht durch Eintragung in die in § 7 Abs. 2 E-Commerce-Gesetz genannte Liste» — ECG-Robinsonliste).
+- **§174(4):** исключение для клиентов (4 кумулятивных условия, аналог §7(3) UWG; в т.ч. отказ не заявлен «insbesondere nicht durch Eintragung in die in § 7 Abs. 2 E-Commerce-Gesetz genannte Liste» — т.е. в «ECG-Liste»).
 - **§174(5):** «Die Zusendung elektronischer Post zu Zwecken der Direktwerbung ist jedenfalls unzulässig, wenn die Identität des Absenders … verschleiert oder verheimlicht wird … oder keine authentische Adresse vorhanden ist, an die der Empfänger eine Aufforderung zur Einstellung solcher Nachrichten richten kann.»
 - **§174(6):** «Wurden Verwaltungsübertretungen nach Absatz 1, 3 oder 5 nicht im Inland begangen, gelten sie als an jenem Ort begangen, an dem die unerbetene Nachricht den Anschluss des Nutzers erreicht.» (Место правонарушения — где письмо дошло до получателя.)
 - **Ведомство (bmwkms.gv.at, «Unerbetene Nachrichten (Spam)»):** «Die Zusendung einer elektrischen Post – einschließlich SMS – ohne vorherige Einwilligung des Empfängers ist sowohl für den Unternehmensbereich als auch im Nichtunternehmerbereich unzulässig, wenn die Zusendung zu Zwecken der Direktwerbung erfolgt.» «Es wird darauf hingewiesen, dass gegen unerbetene Nachrichten von “nicht ausforschbaren” Absendern und solchen aus dem Ausland ein Verwaltungsstrafverfahren nicht Erfolg versprechend ist.» Компетентный орган: «das österreichweit zuständige Fernmeldebüro».
@@ -439,7 +439,7 @@ ICO, «Electronic mail marketing»: «Due to changes made by the Data (Use and A
 - itsalesaas.com: «In most EU countries in this guide, cold email to a named business contact needs the recipient’s prior consent. France, the United Kingdom and Turkey allow cold B2B email under conditions, and the Netherlands only in narrow cases.» Таблица: Czech Republic — No; Germany — No; Austria — No; Poland — No; Spain — No; France — Yes (при релевантности).
 - b2bdataindex.com (обновлено 2026-07-20): для Germany, France, Netherlands, Sweden, Spain, Italy, Poland — «Legitimate interest for B2B (varies by national transposition)» — **противоречит** theagency47/itsalesaas/anwalt.de/ведомству Австрии по Германии (и др.). Вероятнее всего, обобщение GDPR-основания без учёта ePrivacy → не использовать.
 - ripeleads.eu: «Yes, GDPR cold email B2B is legal in the EU. It runs on the GDPR’s legitimate interest basis (Article 6(1)(f))… several countries, Germany and Poland among them, expect consent even for business addresses.» (оговорка в самом тексте).
-- storchak.eu: «France and Belgium treat a generic professional address on an opt-out basis. Germany treats every inbox, business or personal, on an opt-in basis.»; Inventalpartners: «Italy’s regulator rejected exactly that reasoning (legitimate interest for marketing email) in a published decision» — не проверено.
+- storchak.eu: «France and Belgium treat a generic professional address on an opt-out basis. Germany treats every inbox, business or personal, on an opt-in basis.»; Inventalpartners: «Italy’s regulator rejected exactly that reasoning in a published decision» (речь о применении legitimate interest к маркетинговой почте) — не проверено.
 - Warbble (вендор): «in 2026 France and Italy tightened the rules on email tracking too» — не проверено (для Франции согласуется с CNIL pixels 2025).
 - Вывод: надёжно (первичка/регулятор) проверены только **DE, AT, FR, UK**; по остальным странам ЕС — **нет данных**; обзоры расходятся. Для nightloom безопасный подход [ОЦЕНКА]: до проверки юристом не слать в страны ЕС, кроме FR (с условиями) и, возможно, адресатов-юрлиц UK.
 
@@ -534,4 +534,62 @@ ICO, «Electronic mail marketing»: «Due to changes made by the Data (Use and A
 8. **Техническая гигиена** — недостающее выравнивание DKIM/From при отправке через сторонний релей, отсутствие PTR при собственном SMTP, формат RFC 5322 при самосборке заголовков (S1 «messages… might be marked as spam or rejected with a 5.7.26 error»); для M365-автоматизации — отключение Basic auth для SMTP AUTH (S19): по умолчанию выключается в конце декабря 2026 для существующих тенантов, OAuth обязателен.
 
 ---
-<!-- CONTINUE-RAW -->
+## 7. Не подтверждено / «нет данных» / противоречия (сводный список)
+
+**Провайдеры**
+1. Google не публикует числовой порог объёма, при котором в Postmaster Tools появляются данные (S3: «Data might be missing if the total number of messages for a given day is too low»); цифра «~100/день» — только вендор (suped.com), не подтверждена.
+2. Microsoft: официальная страница (S14) внутренне противоречива про момент перехода от «Junk» к отказу (абзац апдейта 30 апреля — отказ «550 5.7.515» с 5 мая; следующий абзац — отказ «in the future (date to be announced)»); подтверждения новых дат на 2026 год из первоисточника нет, есть только вендорские блоги (senderreputation.org, mailreach.co). Как именно Microsoft считает порог 5 000 (по домену в 5322.From на consumer-сервисы — S15) для спорных случаев — нет данных (форумные темы S16 неоднозначны, AI-ответ там не подтверждён).
+3. Google: дата прекращения Less Secure Apps для Workspace — расхождение внутри Google (2025-03-14 в support-статье S11 vs 2025-05-01 в посте Workspace Updates, процитированном в выдаче).
+4. Yahoo: числовой порог bulk не задан (S13: «We will not specify a volume threshold»); «Yahoo Insights Dashboard (октябрь 2025)» — [ВТОР], в этом прогоне не перепроверялся.
+5. Zoho Mail: страница антиспам-политики вернула 404; цены и лимиты отправки — только [ВТОР] (вендор-конкурент LetterDuck «verified August 7, 2026»; codeopx.com); официальная страница цен не отрисовала числа без JS.
+6. SendGrid: цены платных планов не извлечены; Postmark: отдельная страница anti-spam-policy — 404 (использованы ToS); Mailchimp AUP — 404 (вне объёма); Exchange Online Plan 1 — цена только [ВТОР]; Google Workspace flexible (помесячная) цена — только [ВТОР].
+7. Amazon SES: отказ в production-доступе за cold/bulk подтверждён только тредами AWS re:Post (страница knowledge-center не открылась) — [ВТОР]; официальная формулировка: «agree to only send email to individuals who’ve explicitly requested it».
+8. Утверждение litemail.ai «Google Workspace suspended approximately 22% of high-volume new accounts within 90 days» — вендор (продаёт ящики), не проверено.
+
+**Прогрев и доставляемость**
+9. Нет независимых измерений inbox placement/эффекта прогрева на объёме 2–5 писем/день; все числа — вендорские или для больших объёмов.
+10. Позиция Google по сервисам прогрева — только через GMass (вендор; 2023 — «устарело (до 2025)»); официального заявления Google не нашёл.
+11. Validity Heatwave: нет независимого аудита точности; нет доказательств, что Google/Microsoft применяют список (Iverson: «nothing to suggest»); число доменов расходится (>1M у Validity/Spamresource; >1,2M у Resend); утверждение о «постоянном» статусе листинга — слова Resend, не Validity.
+12. Расхождение вендоров по порогу Google для спама: Litemail называет «internal trigger… 0.08%» (без подтверждения); официально — 0,1% (рекомендация) и 0,3% (порог); 0,08% — это порог жалоб Resend (S22).
+
+**Право**
+13. EDPB Guidelines 1/2024 (legitimate interest) — доступна версия, вышедшая на консультацию до 2024-11-20; финальный статус — нет данных; утверждения вторичных источников, что она трактует ePrivacy как lex specialis для direct marketing, не проверены по первичке.
+14. EDPB Guidelines 3/2018 — прочитаны только пересказы (HFW, gdpr-text.com, Walder Wyss); вывод «B2B-оферта юрлицу попадает/не попадает под Art. 3(2)» не подтверждён; необходимость назначения представителя по Art. 27 при регулярной, но малой рассылке («occasional») — нужен юрист.
+15. Другие страны ЕС (кроме DE, AT, FR, UK): обзоры противоречат друг другу (b2bdataindex — «legitimate interest for B2B» для Германии/Польши/Италии и др.; theagency47/itsalesaas/anwalt.de/ведомство Австрии — opt-in). Первичных национальных норм не проверял.
+16. Австрия: размер штрафа (до €50 000, §188(4) Z 28 TKG 2021) — [ВТОР] (Scrutor.at), текст §188 не открывал.
+17. Германия: BGH-решения 2009 г. («устарело (до 2025)» по дате) процитированы по публикации medien-internet-und-recht.de; позднюю судебную практику (2025–2026) не искал; актуальный юрблог (anwalt.de, 2026-02-04) — [ВТОР].
+18. CASL: страница CRTC FAQ вернула 403 на прямой запрос — использованы выдержки Exa; Регламент (SOR/2012-36, B2B-исключение, prescribed info) и Bulletin 2012-548 не открывал; статус частного права иска и практика против мелких иностранных отправителей — нет данных.
+19. CAN-SPAM: применимость к иностранному отправителю, понятие «valid physical postal address» для иностранной компании и законы отдельных штатов — нет данных; сумма штрафа $53,088 — по странице FTC на 2026-10-04 (индексируется ежегодно); уголовная часть санкций в моём фрагменте обрезана.
+20. Украина: ст. 120 ЗУ «Про електронні комунікації» и определение «спам» — [ВТОР]; актуальные редакции не сверены; территориальная сфера ст. 10 ЗУ «Про електронну комерцію» — нет данных.
+21. Изменения регулирования ЕС 2025–2026 (ePrivacy-реформа, «Digital Omnibus» и т.п.) в прогоне **не проверялись** — «нет данных»; ICO сам пишет, что руководство по PECR «under review» из-за Data (Use and Access) Act.
+22. Практика реального преследования за разовое/малообъёмное cold-письмо из-за рубежа в любой из юрисдикций — нет данных.
+
+**Внутренние противоречия источников, зафиксированные в прогоне:** (а) страница Microsoft S14 (см. п.2); (б) даты Google LSA (п.3); (в) обзоры по странам ЕС (п.15); (г) Validity/Resend — число доменов (п.11); (д) в ToS Mailgun/AWS даты редакций старше 2025 («устарело (до 2025)»: AWS AUP 2021-07-01, Mailgun AUP 2023-01-16, Postmark ToS 2024-12-10, Microsoft AUP 2011-02) — формально действующие, но давно не обновлялись.
+
+**Объём работы (для прозрачности):** выполнено ≈43 поисковых запросов (WebSearch + Exa) и ≈39 загрузок страниц через WebFetch/Exa fetch плюс ≈35 прямых curl-загрузок первичных текстов (ToS/AUP/законы) — это больше ориентира «10–18 запросов»; превышение сделано сознательно, чтобы цитаты по ToS/закону брать из полного текста, а не из саммари.
+
+---
+
+## 8. Дополнение к реестру источников (S48+ — использованы в §4–§6 и не вошли в таблицу §1)
+
+| ID | URL | Что | Пометка |
+|---|---|---|---|
+| S48 | https://www.spamresource.com/2025/11/google-warns-sender-requirements.html | Spamresource (Al Iverson), 2025-11-06: «Starting November 2025, Gmail is ramping up its enforcement…» — пересказ WebFetch | независимый эксперт; пересказ саммари |
+| S49 | https://martechedge.com/news/validity-launches-heatwave-to-flag-synthetic-email-warming (2026-09-04); https://www.mediapost.com/publications/article/417701/feeling-the-heat-validity-starts-blacklist-for-fi.html (2026-09-04); поисковая выдача: agilebrandguide.com, techintelpro.com, martechseries.com (не открывал) | Пересказы пресс-релиза Validity Heatwave | пресс-релиз стороны-интересанта (Validity) |
+| S50 | https://sendersignal.com/learn/warmup/warmup-pool-networks-why-fake-engagement-can-backfire | «Warmup Pool Networks: Why Fake Engagement Can Backfire» | вендор мониторинга |
+| S51 | https://www.mailstrike.ai/warmup/google-workspace (2026-08-19); https://www.mailneo.co/blog/what-is-email-warmup (2026-04-13); https://www.celeric.app/blog/email-warmup-guide (2026-04-19); https://cufinder.io/blog/wiki/marketing-metrics/email-warmup/ (2026-07-06); https://litemail.ai/blog/… | Вендорские гайды по прогреву | все — «источник заинтересован» |
+| S52 | https://www.edpb.europa.eu/system/files/2024-10/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_v2_en_0.pdf ; https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf ; https://www.reedsmith.com/media/ic5frfhs/recommendation_tracking_pixels_emails.pdf | EDPB 2/2023 (v1 — 2023-11, v2 — 2024-10) и копия рекомендации CNIL по пикселям | EDPB — [ОФИЦ] (выдержки Exa); CNIL — копия на сайте юрфирмы |
+| S53 | https://gdpr-text.com/sv/guidelines/territorialscope/ ; https://www.hfw.com/insights/the-gdpr-abroad-eu-guidelines-on-territorial-scope-finalised-jan-20/ ; https://datenrecht.ch/wp-content/uploads/190118-Consultation-Guidelines-3-2018-Territorial-Scope-Walder-Wyss-V010.pdf | EDPB 3/2018: копия текста и пересказы | [ВТОР]; «устарело (до 2025)» для HFW/Walder Wyss |
+| S54 | https://medien-internet-und-recht.de/volltext.php?mir_dok_id=2105 (BGH I ZR 201/07, 2009-12-10); https://medien-internet-und-recht.de/volltext.php?mir_dok_id=2012 (BGH I ZR 218/07, 2009-05-20); https://www.ihk.de/ostwestfalen/recht-und-steuern/recht-von-a-z/werbung-per-telefon-fax-und-e-mail-6781658 | Тексты решений BGH и справка IHK | «устарело (до 2025)» по дате решений; IHK — [ВТОР] |
+| S55 | https://www.cnil.fr/fr/communication-electronique-quelles-regles (2026-06-10); https://www.cnil.fr/fr/la-prospection-commerciale-par-courrier-electronique-sms-mms-et-automate-dappel (2026-06-10); https://www.cnil.fr/la-prospection-commerciale-par-courrier-electronique/ ; https://www.cnil.fr/fr/les-regles-dor-de-la-prospection-par-courrier-electronique-0 | CNIL: B2B-проспектинг (prospection) | [ОФИЦ]; последняя — дата не указана |
+| S56 | https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/electronic-and-telephone-marketing/electronic-mail-marketing/ | ICO: Electronic mail marketing | [ОФИЦ]; «under review» |
+| S57 | https://zakon.rada.gov.ua/laws/show/675-19 (print-версия); https://zakon.rada.gov.ua/laws/show/1089-20/ed20260530 ; https://urst.com.ua/pro_elektronni_komunikatsii/st-120 ; https://zakononline.ua/documents/show/491931___665659 ; https://protocol.ua/ua/pro_elektronnu_komertsiyu_stattya_10/ | Украина: ст. 10 ЗУ 675-VIII; ст. 120 ЗУ 1089-IX | ст. 10 — [ОФИЦ]; ст. 120 — [ВТОР] |
+| S58 | https://crtc.gc.ca/eng/com500/faq500.htm (выдержки Exa); https://crtc.gc.ca/eng/com500/guide.htm ; https://www.blg.com/en/insights/2017/11/casl-enforcement-decision--interpretive-guidance-for-compliance-and-penalties (2017-11-21) | CASL: FAQ/guide CRTC и разбор решения CRTC | CRTC — [ОФИЦ] (выдержки); BLG — [ВТОР], «устарело (до 2025)» |
+
+### Передаточные заметки для других осей (факты, не дизайн)
+- **Ось 5 (поиск контакта):** CAN-SPAM §7704(b)(1)(A) — автоскрейпинг адресов с сайтов, у которых есть notice о нераспространении адресов, и подбор адресов перестановками (first.last@) — отягчающее нарушение, если письмо нарушает (a); CASL — адреса из каталога, чьи условия запрещают нежелательные рассылки, не считаются «conspicuously published» (BLG-пересказ решения CRTC); GDPR Art. 14(2)(f) требует указать источник данных в первом письме; Spamhaus называет «scraping contacts from social media and business websites» признаком спама.
+- **Ось 1 (Product Hunt/ToS):** условия площадки на использование данных/контактов для рассылок в этом отчёте не проверялись; влияние ToS площадки на «conspicuous publication» (CASL) и на «no-transfer notice» (CAN-SPAM) — см. пункты выше.
+- **Ось 7 (отдача):** ожидаемая доля писем во «Входящих» ≈ 80–90% [ОЦЕНКА, §6.3] — множитель к ожидаемому reply-rate; прямых данных по reply-rate в этой оси нет (Saleshandy — вендор: reply 0,60% при cold-массовых отправках, к нашему сценарию не приложимо).
+
+---
+Конец RAW-дампа оси 6.
