@@ -513,6 +513,15 @@ p {
 .btn--block {
   width: 100%;
 }
+@media (max-width: 379px) {
+  .btn {
+    gap: 10px;
+    padding: 0 18px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+  }
+}
 
 /* ---------- tags & chips ---------- */
 .tag {

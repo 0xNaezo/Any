@@ -40,14 +40,16 @@ const statusLabel = { live: 'Live', supported: 'Supported', done: 'Shipped' } as
               <p class="case__title">{c.title}</p>
               <p class="case__summary small">{c.summary}</p>
 
-              <dl class="case__metrics">
-                {c.metrics.map((m) => (
-                  <div>
-                    <dt class="tiny">{m.label}</dt>
-                    <dd class="px tnum">{m.value}</dd>
-                  </div>
-                ))}
-              </dl>
+              <div class="case__stats">
+                <dl class="case__metrics">
+                  {c.metrics.map((m) => (
+                    <div>
+                      <dt class="tiny">{m.label}</dt>
+                      <dd class="px tnum">{m.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
 
               <div class="case__foot">
                 <div class="tags">
@@ -200,11 +202,15 @@ const statusLabel = { live: 'Live', supported: 'Supported', done: 'Shipped' } as
     color: var(--ink-2);
   }
 
+  /* query container: the metrics adapt to the column, not the viewport */
+  .case__stats {
+    container-type: inline-size;
+    margin-top: 8px;
+  }
   .case__metrics {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    margin-top: 8px;
     box-shadow: inset 0 0 0 1px var(--line);
   }
   .case__metrics > div {
@@ -224,14 +230,17 @@ const statusLabel = { live: 'Live', supported: 'Supported', done: 'Shipped' } as
   }
   .case__metrics dt {
     color: var(--ink-2);
+    hyphens: auto;
+    overflow-wrap: break-word;
   }
-  @media (max-width: 479px) {
+  /* narrow column (phones, small laptops): one metric per row */
+  @container (max-width: 439px) {
     .case__metrics {
       grid-template-columns: 1fr;
     }
     .case__metrics > div {
       display: grid;
-      grid-template-columns: 7.5em minmax(0, 1fr);
+      grid-template-columns: 6em minmax(0, 1fr);
       align-items: center;
       gap: 12px;
       padding: 12px 14px;

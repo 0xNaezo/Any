@@ -119,6 +119,7 @@ const levelName = ['Not covered', 'Backup', 'Owner'];
 <style>
   .members {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
   @media (min-width: 700px) {
@@ -136,6 +137,11 @@ const levelName = ['Not covered', 'Backup', 'Owner'];
     flex-direction: column;
     gap: 16px;
     padding: 24px;
+  }
+  @media (max-width: 379px) {
+    .member {
+      padding: 20px;
+    }
   }
   .member__top {
     display: flex;
@@ -209,6 +215,7 @@ const levelName = ['Not covered', 'Backup', 'Owner'];
   }
   .member__foot {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     gap: 12px;

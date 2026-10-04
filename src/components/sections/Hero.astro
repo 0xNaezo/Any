@@ -68,7 +68,7 @@ const pad = (key: string) => `${key} ${'.'.repeat(Math.max(2, 10 - key.length))}
                   {l.value === '{clocks}' ? (
                     brand.cities.map((c, i) => (
                       <>
-                        {i > 0 && ' · '}
+                        {i > 0 && '\u00a0· '}
                         <span>
                           {c.name.toLowerCase()} <span data-clock={c.tz}>--:--</span>
                         </span>
@@ -77,7 +77,7 @@ const pad = (key: string) => `${key} ${'.'.repeat(Math.max(2, 10 - key.length))}
                   ) : (
                     <>
                       {l.live && <span class="dot" aria-hidden="true" />}
-                      {l.value}
+                      {l.value.replaceAll(' · ', '\u00a0· ').replace(/(\d) /g, '$1\u00a0')}
                     </>
                   )}
                 </dd>
@@ -150,8 +150,17 @@ const pad = (key: string) => `${key} ${'.'.repeat(Math.max(2, 10 - key.length))}
     padding-top: 24px;
     background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px) top / 100% 1px no-repeat;
   }
+  @media (max-width: 599px) {
+    /* three even columns instead of a lopsided wrap */
+    .hero__proof {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(min-content, 1fr));
+      gap: 12px;
+    }
+  }
   .hero__proof li {
     display: grid;
+    align-content: start;
     gap: 6px;
   }
   .hero__proof-value {
@@ -167,6 +176,8 @@ const pad = (key: string) => `${key} ${'.'.repeat(Math.max(2, 10 - key.length))}
   .hero__side {
     display: grid;
     grid-template-rows: 1fr auto;
+    /* let the terminal shrink below its unwrapped width on small phones */
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     min-width: 0;
   }
@@ -265,6 +276,17 @@ const pad = (key: string) => `${key} ${'.'.repeat(Math.max(2, 10 - key.length))}
     }
     .term__out .term__row {
       padding-left: 0;
+      white-space: normal;
+    }
+    /* on narrow phones long values wrap as plain text under themselves */
+    .term__out dd {
+      display: block;
+    }
+    .term__out dd > span {
+      white-space: nowrap;
+    }
+    .term__out dd .dot {
+      margin-right: 8px;
     }
   }
 </style>

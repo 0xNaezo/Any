@@ -272,9 +272,8 @@ const primaryTz = brand.cities[0]?.tz ?? 'Europe/Prague';
   }
   .channel__value {
     color: var(--ink);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    /* a long address wraps rather than being cut off */
+    overflow-wrap: anywhere;
   }
   .channel :global(.channel__go) {
     color: var(--ink-3);
@@ -311,6 +310,28 @@ const primaryTz = brand.cities[0]?.tz ?? 'Europe/Prague';
   }
   .channel__copy:global(.is-copied) {
     color: var(--signal);
+  }
+  @media (max-width: 479px) {
+    /* icon-only on small phones so the address fits; the aria-label names it */
+    .channel__copy {
+      padding: 0 14px;
+    }
+    .channel__copy [data-copy-label] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+  @media (max-width: 379px) {
+    .channel__icon {
+      display: none;
+    }
+    .channel__value {
+      font-size: 14px;
+    }
   }
   .contact__note {
     display: flex;

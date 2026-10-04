@@ -58,6 +58,7 @@ const jsonLd = {
 <style>
   .faq {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
   }
   @media (min-width: 1000px) {
@@ -73,6 +74,7 @@ const jsonLd = {
   }
   .faq__intro {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     justify-items: start;
   }
@@ -81,9 +83,15 @@ const jsonLd = {
   }
   .faq__ask {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 16px;
     color: var(--accent);
+  }
+  @media (max-width: 379px) {
+    .faq__ask .link {
+      font-size: 14px;
+    }
   }
 
   .qa {

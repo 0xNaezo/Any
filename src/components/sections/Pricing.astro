@@ -80,6 +80,7 @@ const { pricing, availability } = site;
 <style>
   .plans {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
     align-items: stretch;
   }
@@ -133,6 +134,11 @@ const { pricing, availability } = site;
     color: var(--accent);
     letter-spacing: 0.02em;
   }
+  @media (max-width: 379px) {
+    .plan__amount {
+      font-size: 40px;
+    }
+  }
   .plan__unit {
     color: var(--ink-2);
   }
@@ -144,12 +150,18 @@ const { pricing, availability } = site;
   }
   .plan__foot {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
     margin-top: auto;
     padding-top: 8px;
   }
   .plan__note {
     color: var(--ink-3);
+  }
+  @media (max-width: 379px) {
+    .plan {
+      padding: 28px 20px 24px;
+    }
   }
 
   /* ---------- capacity ---------- */
@@ -199,6 +211,7 @@ const { pricing, availability } = site;
   }
   .month {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
   .month__label {
@@ -208,7 +221,7 @@ const { pricing, availability } = site;
   }
   .month__bar {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 3px;
   }
   .month__bar i {

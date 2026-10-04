@@ -21,13 +21,13 @@ const year = new Date().getFullYear();
         </div>
 
         <nav class="footer__cols" aria-label="Footer">
-          <div>
+          <div class="footer__col">
             <p class="footer__head label">Navigate</p>
             <ul>
               {nav.map((item) => <li><a class="footer__link" href={item.href}>{item.label}</a></li>)}
             </ul>
           </div>
-          <div>
+          <div class="footer__col footer__col--contact">
             <p class="footer__head label">Contact</p>
             <ul>
               {contact.channels.map((c) => <li><a class="footer__link" href={c.href}>{c.value}</a></li>)}
@@ -35,7 +35,7 @@ const year = new Date().getFullYear();
               <li><a class="footer__link" href={brand.linkedin} rel="me">LinkedIn</a></li>
             </ul>
           </div>
-          <div>
+          <div class="footer__col">
             <p class="footer__head label">Company</p>
             <ul class="footer__company">
               <li>{brand.legalName}</li>
@@ -98,9 +98,18 @@ const year = new Date().getFullYear();
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 32px 24px;
   }
+  /* phones: contacts get a full-width row so the email address fits */
+  .footer__col--contact {
+    grid-column: 1 / -1;
+    order: 1;
+  }
   @media (min-width: 600px) {
     .footer__cols {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr) minmax(0, 1fr);
+    }
+    .footer__col--contact {
+      grid-column: auto;
+      order: 0;
     }
   }
   .footer__head {
