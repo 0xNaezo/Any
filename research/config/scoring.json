@@ -1,0 +1,14 @@
+{
+  "weights": {
+    "traffic": 25,
+    "demand": 15,
+    "competition": 15,
+    "time_to_10k": 15,
+    "maintenance": 10,
+    "crypto_monet": 10,
+    "synergy": 5,
+    "constraints": 5
+  },
+  "multi_stream_bonus_per_stream": 3,
+  "multi_stream_bonus_max": 6
+}
