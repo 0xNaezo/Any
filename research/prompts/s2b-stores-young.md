@@ -17,12 +17,16 @@
 1. **Как распределяется трафик:** поиск, рекомендации, «featured», автоматический выбор инструмента моделью (для MCP и Apps), правила попадания в каталог.
 2. **Карта категорий:** сколько приложений или серверов в каждой нашей нише и какого они качества — официальные или от комьюнити, звёзды на GitHub, дата обновления, установки или использование, если видны.
 3. **Спрос вне стора:** как часто спрашивают «X MCP server», «ChatGPT app for X» (поиск, Reddit, GitHub issues). Это сигнал спроса, на который ещё нет решения.
-4. **Монетизация:** что разрешено (платные приложения, внешний премиум, API-ключи), возможно ли это без юрлица, можно ли брать крипту.
+4. **Монетизация:**
+   - что разрешено: платные приложения, внешний премиум, API-ключи;
+   - возможно ли это без юрлица;
+   - есть ли выплаты на Payoneer;
+   - можно ли брать крипту.
 5. **Риски:** модерация и реджекты, смена правил, зависимость от одной платформы.
 
 ## Схема `raw.csv`
 ```
-platform,category,niche,n_listings,best_listing,best_listing_metric,metric_type,quality_notes,demand_signal,demand_source_url,gap_description,monetization_allowed,individual_dev_ok,crypto_ok,moderation_risk,source_url,notes
+platform,category,niche,n_listings,best_listing,best_listing_metric,metric_type,quality_notes,demand_signal,demand_source_url,gap_description,monetization_allowed,individual_dev_ok,payoneer_ok,crypto_ok,moderation_risk,source_url,notes
 ```
 
 ## Выход

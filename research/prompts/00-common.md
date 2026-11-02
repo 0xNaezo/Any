@@ -76,7 +76,7 @@ CSV пиши через `python3` и модуль `csv` (он правильно
 | `demand_evidence` | Цифры спроса с типом и источником |
 | `competition_evidence` | Кто занимает нишу и насколько слабо |
 | `analogs` | Похожие продукты с тягой и их цифры; калибрует `time_to_10k` |
-| `monetization` | Модель; как брать крипту |
+| `monetization` | Модель; как получаем деньги (крипта или Payoneer) |
 | `build_effort_days` | Человеко-дни до MVP |
 | `gate` | `pass` / `fail` |
 | `gate_reason` | G1–G4 или пусто |

@@ -20,7 +20,9 @@
    - Как получать деньги:
      - есть ли встроенный биллинг;
      - нужна ли компания;
+     - выплачивает ли платформа на Payoneer — напрямую или на его локальные банковские реквизиты;
      - разрешено ли брать крипту за внешний премиум без нарушения правил стора.
+   - Нужно ли раскрывать адрес и телефон (статус trader по EU DSA).
    - Сколько стоит вход.
 
    Для TMA проверь цепочку Telegram Stars → вывод через Fragment в TON: возможно, это путь к крипто-монетизации без юрлица.
@@ -33,10 +35,10 @@
 
 ## Схема `raw.csv`
 ```
-platform,category,query_or_niche,top1_name,top1_users_or_installs,top1_rating,top1_reviews,top1_last_update,top3_combined_users,n_relevant_competitors,best_rating_among_top5,gap_type,gap_evidence,monetization_options,individual_dev_ok,crypto_payment_ok,source_url,notes
+platform,category,query_or_niche,top1_name,top1_users_or_installs,top1_rating,top1_reviews,top1_last_update,top3_combined_users,n_relevant_competitors,best_rating_among_top5,gap_type,gap_evidence,monetization_options,individual_dev_ok,payoneer_payout_ok,crypto_payment_ok,public_address_required,source_url,notes
 ```
 - `gap_type` — `low-rating` / `abandoned` / `missing` / `cross-platform` / `price`;
-- `individual_dev_ok`, `crypto_payment_ok` — `y` / `n` / `?`.
+- `individual_dev_ok`, `payoneer_payout_ok`, `crypto_payment_ok`, `public_address_required` — `y` / `n` / `?`.
 
 ## Выход
 - `findings.md`. По каждой платформе: механика трафика, условия для физлица и крипты, 3–5 лучших дыр. В конце — **твой топ-15 пар «платформа × категория»**; оркестратор сведёт его с S2b в общий топ-20.

@@ -25,7 +25,7 @@
    - прежний владелец монетизировал вредоносно (инъекции, продажа данных). Такой актив рискует получить бан в сторе.
 3. **Условия сделки:**
    - эскроу;
-   - принимают ли продавец или площадка крипту;
+   - принимают ли продавец или площадка крипту или Payoneer;
    - нужен ли KYC или юрлицо со стороны покупателя;
    - как передаётся актив: домен; аккаунт стора (разрешена ли передача расширения между аккаунтами в CWS); бот (передача владения через BotFather).
 
@@ -41,17 +41,17 @@
 
 ## Схема `raw.csv`
 ```
-listing_id,marketplace,url,listing_date,asset_type,niche,asking_price_usd,monthly_revenue_usd,monthly_profit_usd,multiple,monthly_visits_or_users,traffic_sources,age_months,trend,fake_traffic_risk,risk_evidence,crypto_ok,entity_required,escrow,transfer_notes,build_days_estimate,build_cost_usd,time_to_same_traffic_months,verdict,source_url,notes
+listing_id,marketplace,url,listing_date,asset_type,niche,asking_price_usd,monthly_revenue_usd,monthly_profit_usd,multiple,monthly_visits_or_users,traffic_sources,age_months,trend,fake_traffic_risk,risk_evidence,crypto_ok,payoneer_ok,entity_required,escrow,transfer_notes,build_days_estimate,build_cost_usd,time_to_same_traffic_months,verdict,source_url,notes
 ```
 - `trend`: `up` / `flat` / `down`.
 - `fake_traffic_risk`: `L` / `M` / `H`.
-- `crypto_ok`, `entity_required`: `y` / `n` / `?`.
+- `crypto_ok`, `payoneer_ok`, `entity_required`: `y` / `n` / `?`.
 - `verdict`: `buy` / `watch` / `skip`.
 
 ## Выход
 - `findings.md`:
   - рынок: типичные мультипликаторы по типам активов;
-  - где принимают крипту без юрлица;
+  - где принимают крипту или Payoneer без юрлица;
   - чек-лист проверки на накрутки;
   - **шорт-лист из 5–15 активов**: цена против оценки «построить».
 - `candidates.csv` — шорт-лист:
