@@ -1,0 +1,257 @@
+# S1 — источники
+
+Дата обращения ко всем источникам: **2026-11-02**. Рядом с URL — id строк `raw.csv` / `candidates.csv`, где источник использован. Данные за логином не открывались (помечены в raw).
+
+Инструменты: Exa (`agent_run`, `web_search_exa`, `web_fetch_exa`), прямые запросы к публичным страницам t.me (MAU) и Chrome Web Store (users) без логина.
+
+## Сторы и первичные данные (t.me, CWS, VS Code/VSXRank, Raycast, DefiLlama, GitHub) (37)
+
+- https://defillama.com/protocol/bonkbot — S1-R001
+- https://t.me/bonkbot_bot — S1-R001
+- https://t.me/solana_trojanbot — S1-R002, S1-018
+- https://t.me/MaestroSniperBot — S1-R003
+- https://t.me/RickBurpBot — S1-R005, S1-001
+- https://t.me/SafeguardRobot — S1-R006, S1-010
+- https://t.me/phanes_bot — S1-R007, S1-001
+- https://chromewebstore.google.com/detail/pocket-universe/gacgndbocaddlemdiaadajmlggabdeod — S1-R009
+- https://defillama.com/protocol/smithii — S1-R017
+- https://chromewebstore.google.com/detail/scam-sniffer/mnkbccinkbalkmmnmbcicdobcmgggmfc — S1-R040
+- https://chromewebstore.google.com/detail/ethereum-gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp — S1-R041
+- https://chromewebstore.google.com/detail/llamasearch/iophmfgnjmfjdkodekdffgckoloooaci — S1-R042
+- https://t.me/MissRose_bot — S1-R043
+- https://t.me/GroupHelpBot — S1-R044
+- https://t.me/combot — S1-R045
+- https://t.me/shieldy_bot — S1-R046
+- https://t.me/GPT4Telegrambot — S1-R048
+- https://t.me/tribute — S1-R049
+- https://t.me/SaveAsBot — S1-R054, S1-014
+- https://github.com/firasdib/Regex101/wiki/About — S1-R076
+- https://vsxrank.com/ext/vscode/usernamehw.errorlens — S1-R079
+- https://vsxrank.com/tools/notes-tasks — S1-R080
+- https://vsxrank.com/ext/vscode/humao.rest-client — S1-R081
+- https://www.raycast.com/store — S1-R085
+- https://github.com/usebruno/bruno — S1-R088
+- https://github.com/hoppscotch/hoppscotch — S1-R089
+- https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa — S1-R101
+- https://chromewebstore.google.com/detail/instant-data-scraper/ofaokhiedipichpaobibbnahnkdoiiah — S1-R102, S1-005
+- https://chromewebstore.google.com/detail/web-scraper-free-web-scra/jnhgnonknehpejjnehehllkliplmbmhn — S1-R103
+- https://chromewebstore.google.com/detail/simplescraper-%E2%80%94-a-fast-an/lnddbhdmiciimpkbilgpklcglkdegdkg — S1-R104
+- https://chromewebstore.google.com/detail/superpower-for-chatgpt/amhmeenmapldpjdedekalnfifgnpfnkc — S1-R126
+- https://chromewebstore.google.com/detail/tab-manager-plus-for-chro/cnkdjjdmfiffagllbiiilooaoofcoeff — S1-R132
+- https://chromewebstore.google.com/detail/fdpohaocaechififmbbbbbknoalclacl — S1-R133
+- https://t.me/airtrack_bot — S1-011
+- https://t.me/gpt4telegrambot — S1-014
+- https://chromewebstore.google.com/detail/pocket-universe — S1-017
+- https://defillama.com/protocol/trojan — S1-018
+
+## Маркетплейсы бизнесов (Flippa, Microns, Acquire) (30)
+
+- https://www.microns.io/startup-listings/crypto-newsletter-a473d — S1-R030
+- https://flippa.com/11656155-coinlib-provides-live-and-historic-cryptocurrency-prices-portfolio-alerts-news-charts-and-detailed-coin-data — S1-R031, S1-R164
+- https://flippa.com/9878371-1y-o-cryptocurrency-website-making-540-mo-1k-email-list-social-media-accts — S1-R032, S1-R164
+- https://flippa.com/13431877-selling-my-project-of-45-plus-trading-calculators-for-forex-crypto-stocks-with-monthly-more-then-400-500-premium-visitors-with-seo-and-ai-traffic — S1-R033
+- https://flippa.com/12754019-turnkey-production-ready-crypto-analytics-saas-with-live-terminal-windows-macos-apps-subscription-billing-admin-panel-and-bilingual-seo-website — S1-R034
+- https://flippa.com/11726721-crypto-compare-coin-market-cap-all-in-one-cryptocurrency-app-you-can-potentially-make-1500-10-000-with-this-web-ap — S1-R035
+- https://flippa.com/11694620-easy-to-use-website-with-real-time-cryptocurrency-alerts-earn-easy-money-through-ads-affiliates-and-sponsorships-great-for-any-investor-or-entrepreneur — S1-R036
+- https://flippa.com/11856349-telegram-mini-app-1-9m-monthly-active-users-from-190-countries-advanced-analytics-steady-organic-growth-revenue-from-ads-incl-adsense-and-donations — S1-R037
+- https://www.microns.io/startup-listings/video-summary-extractor-for-social-media — S1-R095
+- https://www.microns.io/startup-listings/apify-actor-suite — S1-R096, S1-015
+- https://www.microns.io/startup-listings/indian-railways-live-data-api — S1-R097
+- https://www.microns.io/startup-listings/software-testing-blog — S1-R098
+- https://www.microns.io/startup-listings/startups-saas-directory-platform — S1-R099, S1-006, S1-019
+- https://flippa.com/12085118-fully-automated-chrome-extension-with-10-5k-active-users-8-4k-yearly-profit-zero-c — S1-R135
+- https://blog.acquire.com/startup-acquisition-episode-99/ — S1-R136
+- https://www.microns.io/startup-listings/browser-extension-for-chatgpt — S1-R137
+- https://www.microns.io/startup-listings/ai-prompt-improver-browser-extension — S1-R138
+- https://www.microns.io/startup-listings/audio-equalizer-browser-extension — S1-R139
+- https://www.microns.io/startup-listings/ai-note-taking-platform — S1-R140
+- https://www.microns.io/startup-listings/snapchat-memories-export-repair-tool — S1-R141
+- https://www.microns.io/startup-listings/reddit-bookmark-manager-extension — S1-R144
+- https://www.microns.io/startup-listings/ai-face-shape-detector — S1-R145
+- https://flippa.com/13841260-30-free-calculator-and-utility-tools-across-8-niches-finance-health-construction-seo-youtube-ai-math-insta-business-seo-traffic-adsense-monetized — S1-R146
+- https://flippa.com/11886276-dominating-the-uae-travel-niche-website-with-1-500-daily-organic-visits-from-google-search-15-essential-uae-tools-calculators-fare-estimators-etc — S1-R147
+- https://flippa.com/12032211-728-peak-monthly-profit-25k-monthly-pageviews-100-margins-passive-calculator-site- — S1-R148
+- https://flippa.com/11593531-high-traffic-site-from-math-conversions-and-calculators-steady-traffic-has-provide — S1-R149
+- https://www.microns.io/startup-listings/nesletter-about-stock-alerts — S1-R159
+- https://www.microns.io/startup-listings/personal-development-and-book-based-learning-newsletter — S1-R160
+- https://www.microns.io/startup-listings/newsletter-about-finances — S1-R161
+- https://flippa.com/12085118 — S1-005
+
+## Истории основателей (Starter Story, Indie Hackers, блоги) (39)
+
+- https://medium.com/@Bondex.app/bondex-acquires-web3-career-6fd55ea43d05 — S1-R025
+- https://www.indiehackers.com/post/i-have-reached-1500-in-monthly-revenue-with-my-travel-chatbot-no-spending-mo — S1-R051
+- https://dev.to/zeshuaro/telegram-pdf-bot-1308 — S1-R053
+- https://www.starterstory.com/pontus — S1-R061
+- https://medium.com/@vivek_70566/futurepedia-went-viral-on-reddit-and-got-40k-views-300-signups-and-250-revenue — S1-R063
+- https://www.starterstory.com/stories/world-of-ai-by-aitools-fyi — S1-R064
+- https://www.starterstory.com/allgpts-co-breakdown — S1-R065
+- https://www.indiehackers.com/post/two-directory-sites-making-10-000-monthly-9e10c20aac — S1-R067
+- https://www.starterstory.com/stories/builtwith-technology-lookup-breakdown — S1-R068
+- https://www.indiehackers.com/product/statusgator/17-000-mrr--Mu6qFEBGelCWKMMpw0h — S1-R069
+- https://dev.to/isdown/best-downdetector-alternatives-for-outage-monitoring-in-2025-4ck5 — S1-R070
+- https://medium.com/write-a-catalyst/i-built-5-n8n-automations-that-generate-3-200-month-passively-72e2a3050e17 — S1-R086
+- https://www.indiehackers.com/post/tech/hitting-25k-mrr-by-making-his-goals-less-ambitious-jQRZDnzwm8DFAaS4Xrq0 — S1-R092
+- https://www.starterstory.com/stories/tldr-newsletter-breakdown — S1-R093
+- https://www.indiehackers.com/post/celebrating-a-milestone-5k-arr-for-uneed-8bebc0c6de — S1-R106
+- https://www.starterstory.com/jobboardsearch-breakdown — S1-R108
+- https://www.indiehackers.com/post/tech/making-3m-per-year-with-a-free-product-axW4u1vB6C8f91Z3Lxu5 — S1-R111
+- https://www.starterstory.com/embed-calculator-in-website — S1-R114
+- https://fernandopessagno.medium.com/boring-business-can-pay-off-big-2d15675c8743 — S1-R117
+- https://www.indiehackers.com/product/visalist/1st-anniversary-2m-users-and-15k-revenue--LuHH2R_95DxEDIz5m9b — S1-R118
+- https://levels.io/photoai-14000-lines-raw-php-revenue — S1-R120
+- https://www.starterstory.com/stories/nomad-list-breakdown — S1-R121
+- https://www.starterstory.com/successful-solopreneurs-making-1-million-per-year — S1-R122, S1-016
+- https://news.tonydinh.com/p/sep-2022-im-on-indie-hackers-podcast — S1-R123
+- https://www.indiehackers.com/post/launching-on-product-hunt-after-9-months-of-work-and-124-mrr-97d539b454 — S1-R124
+- https://www.starterstory.com/stories/how-i-built-it-20k-month-chrome-extension — S1-R126
+- https://www.indiehackers.com/product/easy-folders/6-months-post-launch-my-chrome-extension-has-hit-3-700-in-mr — S1-R127
+- https://www.indiehackers.com/post/i-made-over-100-000-with-a-browser-extension-css-scan-ama-04f2bde465 — S1-R128
+- https://www.starterstory.com/stories/tailscan — S1-R129
+- https://dev.to/ktg0215/i-shipped-43-chrome-extensions-solo-took-22-down-and-narrowed-it-to-2-here-are-all-the- — S1-R142
+- https://www.indiehackers.com/post/i-built-a-chrome-extension-in-2-weeks-10-years-later-20-000-users-10-paying- — S1-R143
+- https://www.starterstory.com/kaching-appz-breakdown — S1-R150
+- https://www.indiehackers.com/post/how-we-validated-grew-a-shopify-app-to-25k-mo-in-less-than-a-year-159f82699c — S1-R151, S1-014
+- https://www.indiehackers.com/post/i-bootstrapped-a-shopify-app-to-78k-cad-mrr-in-3-years-ask-me-anything-5fbbc — S1-R152
+- https://www.indiehackers.com/post/bootstrapped-a-shopify-app-to-500-paying-clients-with-an-mvp-ama-7dbaf8084e — S1-R153
+- https://www.starterstory.com/stories/baxter-inc — S1-R154
+- https://www.starterstory.com/marketing-examples-breakdown — S1-R155
+- https://www.indiehackers.com/post/founder-story-how-buildinpublic-helped-to-reach-2000-mrr-with-a-screenshot-t — S1-R162
+- https://www.indiehackers.com/post/living-the-indie-hacker-dream-jon-yongfook-ef84ee6e2e — S1-R163
+
+## Сайты продуктов, пресса и прочее (134)
+
+- https://solanacompass.com/learn/Unlayered/bonkbot-memecoin-trading-on-telegram-with-karol — S1-R001
+- https://www.coingecko.com/learn/top-telegram-trading-bots — S1-R002
+- https://cryptobriefing.com/maestro-trading-bot-platform/ — S1-R003
+- https://www.coindesk.com/tech/2023/07/28/early-unibot-investors-sit-on-200x-gains-as-unibot-bucks-bitcoin-lull — S1-R004
+- https://www.codex.io/case-studies/rickbot — S1-R005
+- https://docs.safeguard.run/ — S1-R006
+- https://www.caplight.com/company/cielo — S1-R008
+- https://www.theblock.co/news/deals/2025-08-21-crypto-security-firm-kerberus-acquires-power-universe-anti-fraud-browser-extension-ethereum-solana-wallets-367826 — S1-R009
+- https://consensys.com/blog/consensys-acquires-wallet-guard-to-enhance-metamask-security — S1-R010
+- https://www.walletguard.app/blog/wallet-guard-sunset-notice — S1-R010
+- https://www.axios.com/pro/fintech-deals/2023/04/10/fire-crypto-fraud-prevention-startup-3-million — S1-R011
+- https://architectpartners.com/kerberos-acquires-pocket-universe-for-an-undisclosed-amount/ — S1-R011
+- https://revoke.cash/blog/2025/year-in-review — S1-R012
+- https://revoke.cash/blog/2024/year-in-review — S1-R012
+- https://hypestat.com/info/revoke.cash — S1-R012
+- https://decrypt.co/123042/token-sniffer-api-solidus-labs-rug-pulls-scams — S1-R013
+- https://hypestat.com/compare/honeypot.is/tokensniffer.com — S1-R013
+- https://hypestat.com/info/honeypot.is — S1-R014
+- https://degenbench.com/en/best-honeypot-checkers — S1-R014
+- https://solanafloor.com/news/end-memecoin-rugs-fluxbeam-rugcheck-in-talks-exchanges-scam-wallet-interception — S1-R015
+- https://sol-incinerator.com/blog/solana-token-account-closures-data — S1-R016
+- https://www.crunchbase.com/organization/dex-screener — S1-R018
+- https://discuss.octant.app/t/defillama-defi-data/267 — S1-R019
+- https://revelointel.substack.com/p/how-can-eth-become-ultrasound-money — S1-R020
+- https://vote.optimism.io/retropgf/3/application/0xae4aa2fec8bda8568083e9f482cd0a08c278959582fd6776ea1e55230a2a487a — S1-R021
+- https://linkedin.com/company/l2beat — S1-R022
+- https://bitcoinmagazine.com/business/bitcoin-magazine-and-look-into-bitcoin-partner-to-launch-enhanced-bitcoin-magazine-pro — S1-R023
+- https://www.lookintobitcoin.com/about/ — S1-R023
+- https://whale-alert.io/press-release.html — S1-R024
+- https://akta.pro/company-profiles/000bhnw/whale-alert — S1-R024
+- https://hypestat.com/info/web3.career — S1-R025
+- https://jboard.io/blog/alexander-chukovski-jboard-podcast — S1-R026
+- https://cryptojobslist.com/blog/how-i-started-blockchain-job-board-and-grew-online-business — S1-R027
+- https://theygotacquired.com/content/milk-road-acquired-by-bitfo/ — S1-R028
+- https://substack.com/@thedailygwei — S1-R029
+- https://newsletter.failory.com/p/the-token-trap — S1-R038
+- https://www.coindesk.com/business/2025/11/17/E — S1-R038
+- https://devfolio.co/projects/xalpha-c609 — S1-R039
+- https://blog.borodutch.com/im-sunsetting-voicy/ — S1-R047
+- https://icebreaker.media/how-this-russian-immigrant-built-a-booming-ai-chatbot-on-telegram/ — S1-R048
+- https://partnerkin.com/en/blog/case_study/telegram-bot-earnings — S1-R050
+- https://skeddy.me/ — S1-R052
+- https://flexe.io/blog/telegram-crypto-mini-apps/ — S1-R055, S1-004
+- https://www.drops.bot/ — S1-R055, S1-004
+- https://airdropalert.com/airdrop-eligibility-checker/ — S1-R055, S1-004
+- https://tokenscan.app/ — S1-R056
+- https://mp.weixin.qq.com/s/0rmR5hhszd-PEIx7fiE3Bw — S1-R057
+- https://hypestat.com/info/mcp.so — S1-R057
+- https://glama.ai/blog/2025-09-10-glama-mcp-server-hosting — S1-R058
+- https://www.caplight.com/company/glama — S1-R058
+- https://www.pulsemcp.com/work-with-us — S1-R059
+- https://castro.fm/episode/tDfnUG — S1-R060
+- https://www.linkedin.com/posts/pontusabrahamsson_ive-never-shared-mrr-before-but-heres-activity-7372236257554407424-PuSg — S1-R061
+- https://theresanaiforthat.com/about/ — S1-R062
+- https://kulpinski.dev/posts/openalternative-launch/ — S1-R066
+- https://www.startupsfortherestofus.com/episodes/episode-798-lessons-from-10-years-of-saas-growth-without-a-hoc — S1-R069
+- https://isdown.app/about — S1-R070
+- https://artificialanalysis.ai/about — S1-R071
+- https://hackernoon.com/what-happened-when-i-topped-hacker-news-and-pulled-in-12000-readers-overnight — S1-R072
+- https://marketingexamples.com/seo/cronitor — S1-R073
+- https://ja.semrush.com/website/crontab.guru/overview — S1-R073
+- https://blog.healthchecks.io/2024/07/running-one-man-saas-9-years-in/ — S1-R074
+- https://jsonlint.com/about — S1-R075
+- https://www.semrush.com/website/regexr.com/overview/ — S1-R077
+- https://www.thunderclient.com/about — S1-R078
+- https://www.prnewswire.com/news-releases/gitlens-for-visual-studio-code-and-its-creator-eric-amodio-join-gitkr — S1-R082
+- https://startupfounderstories.com/stories/zeno-rocha-dracula-pro-open-source-to-250k — S1-R083
+- https://sujeito-operator.github.io/vscode-marketplace-data/g/is-it-worth-publishing-a-vscode-extension.html — S1-R084
+- https://www.youtube.com/watch?v=FBAexJcc8UA — S1-R087
+- https://coolify.io/sponsorships — S1-R090
+- https://plausible.io/about — S1-R091
+- https://plausible.io/blog/open-source-saas — S1-R091
+- https://console.dev/about — S1-R094
+- https://www.checkbot.io/ — S1-R100
+- https://news.ycombinator.com/item?id=44162008 — S1-R105
+- https://wip.co/posts/how-do-directories-based-businesses-work-ykvx4a/comments/28684 — S1-R107
+- https://admanager.google.com/home/success-stories/creating-free-tools-for-everyone-maple-tech-intl/ — S1-R109
+- https://boringcashcow.com/view/online-calculators-generate-millions-a-year — S1-R110
+- https://startupfounderstories.com/stories/fabrizio-bianchi-coolors-color-palette-generator — S1-R112
+- https://apilist.fun/interview/qrcode-monkey — S1-R113
+- https://vibecoderhq.com/success-stories/rexan-wong — S1-R115
+- https://www.linkedin.com/posts/youtube-transcript-dev_we-just-crossed-10000-users-1000-in-activity-74818047927 — S1-R116
+- https://blog.tally.so/year-1-how-we-bootstrapped-tally-to-11k-users-and-5k-mrr/ — S1-R119
+- https://www.inverse.com/article/53414-this-person-does-not-exist-creator-interview — S1-R125
+- https://web-highlights.com/blog/how-i-calmly-grew-my-chrome-extension-to-100k-users-in-5-years/ — S1-R130
+- https://timleland.com/chrome-extension-now-has-400k-users/ — S1-R131
+- https://closet.tools/ — S1-R134
+- https://www.lennysnewsletter.com/p/2020-year-in-review — S1-R156
+- https://www.beehiiv.com/blog/case-study-young-money-jack-raines — S1-R157
+- https://newsletter.pragmaticengineer.com/p/one-million — S1-R158
+- https://www.proficy.io/ — S1-R165, S1-001, S1-003
+- https://docs.tokenscan.app/tokenscan/start-tokenscan — S1-001
+- https://docs.prysmbot.com/getting-started/what-is-prysm/ — S1-001
+- https://isdown.app/status/solana — S1-002
+- https://instatus.com/now/solana.com — S1-002
+- https://www.pagerly.io/is-it-down/solana-status — S1-002
+- https://pingoru.io/providers/solana — S1-002
+- https://statusstack.com/service/blockchain/solana — S1-002
+- https://honeypot.is — S1-003
+- https://tokensniffer.com — S1-003
+- https://rugcheck.xyz — S1-003
+- https://glama.ai/mcp/servers — S1-003, S1-006, S1-015
+- http://airdropscan.io/ — S1-004
+- https://wenser.xyz/ — S1-004
+- https://webrobots.io — S1-005
+- https://cursor.directory — S1-006
+- https://mcp.so — S1-006
+- https://openalternative.co — S1-006
+- https://openchainbench.com/rpc — S1-007
+- https://rpcnode.io/ — S1-007
+- https://www.comparenodes.com/ — S1-007
+- https://compare.chainstack.com/ — S1-007
+- https://www.quicknode.com/benchmarks — S1-007
+- https://artificialanalysis.ai — S1-008
+- https://pricepertoken.com — S1-008
+- https://openrouter.ai/rankings — S1-008
+- https://ultrasound.money — S1-009
+- https://cryptofees.info — S1-009
+- https://l2beat.com — S1-009
+- https://www.lookintobitcoin.com — S1-009
+- https://whale-alert.io — S1-010
+- https://cielo.finance — S1-011
+- https://eth.sh/ — S1-012
+- https://calldata.dev/ — S1-012
+- https://blockchains.github.io/blockchainlab-tools/ — S1-012
+- https://tools.gizmolab.io/ethereum — S1-012
+- https://crontab.guru — S1-012
+- https://revoke.cash — S1-013
+- https://engine.oddsengine.live/docs.html — S1-013
+- https://sol-incinerator.com — S1-013
+- https://smithery.ai — S1-015
+- https://web3.career — S1-016
+- https://cryptojobslist.com — S1-016
+- https://www.axios.com — S1-017
